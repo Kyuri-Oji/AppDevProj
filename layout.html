@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if title %}
+        <title>name - {{title}}</title>
+    {% else %}
+        <title>name</title>
+    {% endif %} 
+    <!-- Ends the if statement -->
+    
+    <!-- Bulma Frameworks -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind.config.js"></script>
+    
+</head>
+<body>
+    <header class="w-screen | flex | mb-4 pb-2 | border-b-2 border-solid border-blue-400">
+        <div class="| w-1/8 | rounded-r-xl | p-5 | text-3xl | italic | navbar-brand">
+            ActivePlay
+        </div>
+
+        <nav class="navbar-menu">
+            <div class="navbar-item has-dropdown is-hoverable | mx-auto ">
+                <button class="text-xl | navbar-link | rounded-xl |   is-hovered">
+                    Profile
+                </button>
+                <div class="navbar-dropdown">
+                    <a href="" class="navbar-link is-arrowless">
+                        Log In
+                    </a>
+                    <a href="" class="navbar-link is-arrowless">
+                        Register
+                    </a>
+                </div>
+            </div>
+    
+            <div class="navbar-item has-dropdown is-hoverable | mx-auto |">
+                <button class="text-xl | navbar-link | rounded-xl |   is-hovered">
+                    Facilities
+                </button>
+                <div class="navbar-dropdown">
+                    <a href="" class="navbar-link is-arrowless">
+                        Available Places
+                    </a>
+                    <a href="" class="navbar-link is-arrowless">
+                        Bookings
+                    </a>
+                </div>
+            </div>
+            
+            <div class="navbar-item has-dropdown is-hoverable | mx-auto ">
+                <button class="text-xl | navbar-link | rounded-xl |  is-hovered">
+                    Areas
+                </button>
+            </div>
+    
+            <div class="navbar-item has-dropdown is-hoverable | mx-auto text-white">
+                <button class="text-xl | navbar-link | rounded-xl |  is-hovered">
+                    Events
+                </button>
+                <div class="navbar-dropdown">
+                    <a href="" class="navbar-item">
+                        Current Events
+                    </a>
+                    <a href="" class="navbar-item">
+                        Browse Future Events
+                    </a>
+                </div>
+            </div>
+    
+            <div class="navbar-item | mx-auto ">
+                <button class="text-xl">
+                    Contact Us
+                </button>
+            </div>
+        </nav>
+    
+    </header>
+
+    {% block content %}{% endblock %}
+</body>
+</html>
