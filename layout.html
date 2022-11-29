@@ -1,88 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% if title %}
-        <title>name - {{title}}</title>
-    {% else %}
-        <title>name</title>
-    {% endif %} 
-    <!-- Ends the if statement -->
-    
-    <!-- Bulma Frameworks -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-
-    <!-- TailwindCSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="tailwind.config.js"></script>
-    
+    <title>Document</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+        crossorigin="anonymous"></script>
 </head>
-<body>
-    <header class="w-screen | flex | mb-4 pb-2 | border-b-2 border-solid border-blue-400">
-        <div class="| w-1/8 | rounded-r-xl | p-5 | text-3xl | italic | navbar-brand">
-            ActivePlay
-        </div>
 
-        <nav class="navbar-menu">
-            <div class="navbar-item has-dropdown is-hoverable | mx-auto ">
-                <button class="text-xl | navbar-link | rounded-xl |   is-hovered">
-                    Profile
-                </button>
-                <div class="navbar-dropdown">
-                    <a href="" class="navbar-link is-arrowless">
-                        Log In
-                    </a>
-                    <a href="" class="navbar-link is-arrowless">
-                        Register
-                    </a>
-                </div>
+<body>
+    <header class="bg-dark | bg-gradient | sticky-top | py-2">
+        <h1 class="d-flex | flex-row">
+            <div id="titleHeader" class="p-4 ms-3 | bd-highlight | text-primary ">
+                ActivePlay
             </div>
-    
-            <div class="navbar-item has-dropdown is-hoverable | mx-auto |">
-                <button class="text-xl | navbar-link | rounded-xl |   is-hovered">
+            <div class="dropdown | my-auto | px-5 | mx-2 | pb-2 | border-end | border-2 | border-primary | border-gradient">
+                <button class="btn btn-primary | dropdown-toggle | bg-transparent | px-4" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                     Facilities
                 </button>
-                <div class="navbar-dropdown">
-                    <a href="" class="navbar-link is-arrowless">
-                        Available Places
-                    </a>
-                    <a href="" class="navbar-link is-arrowless">
-                        Bookings
-                    </a>
-                </div>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">View Facilities</a></li>
+                    <li><a class="dropdown-item" href="#">Facilities Near You</a></li>
+                    <li><a name="adminOnly" class="dropdown-item text-danger" href="#">Edit Facilities</a></li>
+                </ul>
             </div>
-            
-            <div class="navbar-item has-dropdown is-hoverable | mx-auto ">
-                <button class="text-xl | navbar-link | rounded-xl |  is-hovered">
-                    Areas
-                </button>
-            </div>
-    
-            <div class="navbar-item has-dropdown is-hoverable | mx-auto text-white">
-                <button class="text-xl | navbar-link | rounded-xl |  is-hovered">
+            <div class="dropdown | my-auto | px-5 | mx-2 | pb-2 | border-end | border-2 | border-primary | border-gradient">
+                <button class="btn btn-primary | dropdown-toggle | bg-transparent | px-4" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                     Events
                 </button>
-                <div class="navbar-dropdown">
-                    <a href="" class="navbar-item">
-                        Current Events
-                    </a>
-                    <a href="" class="navbar-item">
-                        Browse Future Events
-                    </a>
-                </div>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">View Events</a></li>
+                    <li><a class="dropdown-item" href="#">Registered Events</a></li>
+                    <li><a  name="adminOnly" class="dropdown-item text-danger" href="#">Edit Events</a></li>
+                </ul>
             </div>
-    
-            <div class="navbar-item | mx-auto ">
-                <button class="text-xl">
-                    Contact Us
+            <div class="dropdown | my-auto | px-5 | mx-2 | pb-2">
+                <button class="btn btn-primary | dropdown-toggle | bg-transparent | px-4" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Booking
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Book Facilities</a></li>
+                    <li><a class="dropdown-item" href="#">Edit Bookings</a></li>
+                    <li><a class="dropdown-item" href="#">View Booking History</a></li>
+                </ul>
+            </div>
+            <div class="my-auto | p-3 | end-0 position-absolute ">
+                <button class="text-primary | bg-transparent | border-0 | fs-5 | pe-3 | border-end | border-2 | border-secondary | border-gradient">
+                    Register
+                </button>
+                <button class="text-primary | bg-transparent | border-0 | fs-5 | pe-5">
+                    Log In
                 </button>
             </div>
-        </nav>
-    
+        </h1>
     </header>
 
     {% block content %}{% endblock %}
+
+    <footer class=" | bg-dark bg-gradient | fixed-bottom">
+        <div class="text-white | p-3 pb-1 ps-4 |">
+            Sports Facilities and Events in Singapore
+        </div>
+        <div class="text-white | p-3 py-1 ps-4 |">
+            cs@ActivePlay.sg ➖ 6612 1231 ➖ 6612 1242
+        </div>
+        <div class="text-white | p-3 pt-1 ps-4 |">
+            Singapore (+65)
+        </div>
+    </footer>
 </body>
+
 </html>
