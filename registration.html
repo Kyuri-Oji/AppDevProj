@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<section class=" | mx-auto text-center">
+    <h1 class='my-2'>
+        Registration Form
+    </h1>
+    <div class='container py-3 | bg-light | rounded-3 border-dark border-2 border'>
+        <form action="" method="post" class='container-sm'>
+            {{ form.hidden_tag() }}
+            {{form.username.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div class='input-group | my-2'>
+                <span class="input-group-text |" id="">@</span>
+                {{form.username(class='form-control')}}
+            </div>
+
+            {{form.firstName.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{form.firstName(class='form-control')}}
+            </div>
+
+            {{form.lastName.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{form.lastName(class='form-control')}}
+            </div>
+
+            {{form.email.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div class='input-group | my-2'>
+                {{form.email(class='form-control')}}
+                <span class="input-group-text" id="">@example.com</span>
+            </div>
+
+            {{form.password.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div class='input-group | my-2'>
+                {{form.password(class='form-control')}}
+            </div>
+
+            {{form.confirm_password.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div class='input-group | my-2'>
+                {{form.confirm_password(class='form-control')}}
+            </div>
+
+            <div class="text-center | my-4">
+                {{ form.submit(class = 'btn btn-primary') }}
+                <input type='reset' class='btn btn-danger'>
+            </div>
+        </form>
+        <div>
+            <small>
+                Already Have An Account? <a href="{{url_for('login')}}">Sign In</a>
+            </small>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
