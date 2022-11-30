@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h1 class='text-center'>
+    Create Events
+</h1>
+<div class='container py-3 | bg-light | rounded-3 border-dark border-2 border | my-3'>
+    <form action="" method="post" class='container-sm'>
+        {{formEvents.hidden_tag()}}
+    
+        {{formEvents.eventName.label(class='text-dark | fs-4 | float-start | ms-2')}}
+        <div class='input-group | my-2'>
+            {{formEvents.eventName(class='form-control')}}
+        </div>
+    
+        {{formEvents.eventDesc.label(class='text-dark | fs-4 | float-start | ms-2')}}
+        <div class='input-group | my-2'>
+            {{formEvents.eventDesc(class='form-control')}}
+        </div>
+
+        {{formEvents.eventVacancy.label(class='text-dark | fs-4 | float-start | ms-2')}}
+        <div>
+            {{formEvents.eventVacancy(class='form-control')}}
+        </div>
+
+        {{formEvents.eventDate.label(class='text-dark | fs-4 | float-start | ms-2')}}
+        {%if formEvents.eventDate.errors%}
+            <div>
+                {{formEvents.eventDate(class='form-control | border-danger', format='%d/%m/%y')}}
+            </div>
+        {%for errors in formEvents.eventDate.errors%}
+            <span class='text-danger'>{{errors}}</span>
+        {%endfor%}
+        {%else%}
+            {{formEvents.eventDate(class='form-control')}}
+        {%endif%}
+
+        <div class="text-center | my-4 mx-auto | " style='width:50%'>
+            {{formEvents.submit(class='btn btn-primary')}}
+        </div>
+    </form>
+</div>
+
+{% endblock %}
