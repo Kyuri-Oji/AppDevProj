@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <header class="bg-dark | bg-gradient | sticky-top | pt-2">
+    <header class="bg-dark | bg-gradient | pt-2">
         <h1 class="d-flex | flex-row">
             <div id="titleHeader" class="p-4 | ms-3 | text-primary ">
                 <a href="/home" class="fst-italic">ActivePlay</a>
@@ -41,7 +41,7 @@
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="#">View Events</a></li>
                     <li><a class="dropdown-item" href="#">Registered Events</a></li>
-                    <li><a  name="adminOnly" class="dropdown-item text-danger" href="#">Edit Events</a></li>
+                    <li><a name="adminOnly" class="dropdown-item text-danger" href="{{url_for('createEvents')}}">Create Events</a></li>
                 </ul>
             </div>
             <div class="dropdown | my-auto px-5 mx-2 pb-2">
@@ -68,7 +68,7 @@
 
     {% block content %}{% endblock %}
 
-    <footer class=" | bg-dark bg-gradient | fixed-bottom">
+    <footer class=" | bg-dark bg-gradient ">
         <div class="text-white | p-3 pb-1 ps-4 |">
             Sports Facilities and Events in Singapore
         </div>
