@@ -35,6 +35,17 @@
             {{formEvents.eventDate(class='form-control')}}
         {%endif%}
 
+        {{formEvents.eventID.label(class='text-dark | fs-4 | float-start | ms-2')}}
+        <div>
+            {{formEvents.eventID(class='form-control')}}
+        </div>
+
+        {{formEvents.eventType.label(class='text-dark | fs-4 | float-start | ms-2 | form-check-label')}}
+        <br>
+        <div class='' style='width:25%'>
+            {{formEvents.eventType(class='fs-4 | form-check form-check-inline')}}
+        </div>
+
         <div class="text-center | my-4 mx-auto | " style='width:50%'>
             {{formEvents.submit(class='btn btn-primary')}}
         </div>
