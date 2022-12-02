@@ -60,7 +60,7 @@ def users():
     
 # Event Functions
 @app.route('/events/createEvents', methods=['GET', 'POST'])
-def createEvents():
+def createEvent():
     formEvents = eventCreateForm()
     if formEvents.validate_on_submit() and request.method == 'POST':
         eventsDict = {}
@@ -77,19 +77,37 @@ def createEvents():
         eventDesc = formEvents.eventDesc.data
         eventVacancy = formEvents.eventVacancy.data
         eventDate = formEvents.eventDate.data
+        eventID = formEvents.eventID.data
+        eventType = formEvents.eventType.data
         
-        createEvents(eventName, eventDesc, eventVacancy, eventDate)
-        eventsDict[createEvents.eventCount] = createEvents
+        ce = createEvents(eventName, eventDesc, eventVacancy, eventDate, eventID, eventType)
+        eventsDict[ce.get_eventID()] = ce
         eventDB['Events'] = eventsDict
         
         eventDB.close()
         
-        return redirect(url_for('home'))
+        return redirect(url_for('eventsPage'))
     return render_template('Events/eventCreate.html', formEvents=formEvents)    
 
 @app.route('/events')
 def eventsPage():
-    return render_template('Events/eventMain.html')
+    eventsDict = {}
+    eventDB = shelve.open('Events')
+    eventsDict = eventDB['Events']
+    
+    eventsList = []
+    for event in eventsDict:
+        events = eventsDict.get(event)
+        eventsList.append(events)
+        
+        
+    print(eventsList)
+    
+    return render_template('Events/eventMain.html', eventsList = eventsList)
+
+@app.route('/booking')
+def bookingPage():
+    return render_template('Booking/bookingMain.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
