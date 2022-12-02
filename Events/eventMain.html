@@ -1,0 +1,24 @@
+{%extends 'layout.html'%}
+{%block content%}
+
+<h1 class='p-4'>
+    Happening in <span class='text-primary | fst-italic'>ActivePlay</span>
+</h1>
+<section class='ms-5'>
+    <div class=''>
+        {%for event in eventsList%}
+        <h1><span class='fs-2'>{{event.get_eventID()}}</span> <span class='fs-2'>)</span> <span class='fs-2 | text-primary'>{{event.get_eventName()}}</span></h1>
+        <div class='ms-5 | bg-light'>
+            <p class='p-2'>
+                <span class='fs-4'>What's Happening?</span> <br> {{event.get_eventDesc()}}
+            </p>
+            <p class='p-2'>
+                Vacancy : {{event.get_eventVacancy()}}
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+
+{%endblock%}
