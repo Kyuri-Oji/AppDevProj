@@ -1,4 +1,5 @@
 import shelve
+import random
 
 dictUsers = {}
 db = shelve.open('users', 'c')
@@ -46,4 +47,15 @@ class User:
         self.password = password
     def get_password(self):
         return self.password
+
+    def get_random_UID(self):
+        tempList = []
+        for i in range(7): # 7-Digit Random
+            randomID = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
+            tempList.append(randomID)
+        return "".join(tempList)
+        
+
+
+
 
