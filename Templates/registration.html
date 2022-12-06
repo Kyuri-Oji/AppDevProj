@@ -28,13 +28,13 @@
             {%endif%}
 
             {{form.firstName.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            {%if form.firstName.errors%}
+            {%if form.firstName.error%}
                 <div>
                     {{form.firstName(class='form-control | border-danger')}}
                 </div>
-            {%for errors in form.firstName.errors%}
+            {%for error in form.firstName.errors%}
                 <span class='text-danger | float-end'>
-                    {{errors}}
+                    {{error}}
                 </span>
             {%endfor%}
             {%else%}

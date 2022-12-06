@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h1 class='text-center | pt-4'>
+    User DataBase
+</h1>
+<p class='text-muted | fst-italic | text-center'><small>“A common mistake that people make when trying to design something completely foolproof is to underestimate the ingenuity of complete fools.” <br>– Douglas Adams</small></p>
+<div class='mx-auto' style="width:70%">
+    <table class="table">
+        <thread>
+           <th scope="col">UID</th>
+           <th scope="col">Username</th>
+           <th scope="col">F. Name</th>
+           <th scope="col">L. Name</th>
+           <th scope="col">Email</th>
+        </thread>
+        {%for user in userList%}
+        <tbody>
+            <tr>
+                <th scope="col">{{user.get_uid()}}</th>
+                <td scope="col">{{user.get_username()}}</td>
+                <td scope="col">{{user.get_firstName()}}</td>
+                <td scope="col">{{user.get_lastName()}}</td>
+                <td scope="col">{{user.get_email()}}</td>
+            </tr>
+        </tbody>
+        {%endfor%}
+    </table>
+
+</div>
+
+{% endblock %}

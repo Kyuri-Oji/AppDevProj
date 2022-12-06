@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h1 class='text-center | mt-15 | mb-10 | p-4'>Facility Booking</h1>
+
+<table class="table | border-1 | m-4 | fs-5 | text-center | w-auto">
+    <thead>
+        <tr>
+            <th>Booking ID</th>
+            <th>Facility</th>
+            <th>Date</th>
+            <th>Timeslot</th>
+        </tr>
+    </thead>
+    <tbody>
+        {%for booking in currentBookings%}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+    </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'layout.html'  %}
+{% block content %}
+
+<h1>
+    Delete Events
+</h1>
+<div class='container | py-3 | bg-light border-dark border-2 border rounded-3 | my-3 '>
+    <form action="" method="post" class='container-sm'>
+        {{formEvents.hidden_tag()}}
+
+        {{formEvents.deleteEventID.label(class='text-dark | fs-4 | float-start | ms-2')}}
+        {%with messages = get_flashed_messages('', 'error')%}
+        {%if messages%}
+            <div>
+                {{formEvents.deleteEventID(class='form-control | my-2 | border-danger')}}
+            </div>
+            {%for message in messages%}
+                <span class='float-end | text-danger'>{{message}}</span>
+            {%endfor%}
+        {%else%}
+            <div>
+                {{formEvents.deleteEventID(class='form-control | my-2')}}
+            </div>
+        {%endif%}
+    {%endwith%}
+    <div class="text-center | my-4 mx-auto | " style='width:50%'>
+        {{formEvents.submit(class='btn btn-primary')}}
+    </div>
+    </form>
+</div>
+{% endblock %}

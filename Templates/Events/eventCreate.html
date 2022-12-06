@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<h1 class='text-center'>
+<h1 class='text-center | py-3'>
     Create Events
 </h1>
 <div class='container | py-3 | bg-light border-dark border-2 border rounded-3 | my-3 '>
@@ -10,9 +10,18 @@
             {{formEvents.hidden_tag()}}
 
             {{formEvents.eventID.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            <div>
-                {{formEvents.eventID(class='form-control | my-2')}}
-            </div>
+            {%if formEvents.eventID.errors%}
+                <div>
+                    {{formEvents.eventID(class='form-control | my-2 | border-danger')}}
+                </div>
+            {%for errors in formEvents.eventID.errors%}
+                <span class='text-danger | float-end'>{{errors}}</span>
+            {%endfor%}
+            {%else%}
+                <div>
+                    {{formEvents.eventID(class='form-control | my-2')}}
+                </div>
+            {%endif%}
 
             {{formEvents.eventName.label(class='text-dark | fs-4 | float-start | ms-2')}}
             <div>
