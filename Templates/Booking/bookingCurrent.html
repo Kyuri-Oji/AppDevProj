@@ -15,11 +15,12 @@
     <tbody>
         {%for booking in currentBookings%}
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{booking.get_booking_id()}}</td>
+                <td>{{booking.get_facility()}}</td>
+                <td>{{booking.get_date()}}</td>
+                <td>{{booking.get_timeslot()}}</td>
             </tr>
+        {%endfor%}
     </tbody>
 </table>
 
