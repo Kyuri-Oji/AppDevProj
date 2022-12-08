@@ -53,9 +53,17 @@ class User:
         for i in range(7): # 7-Digit Random
             randomID = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
             tempList.append(randomID)
-        return "".join(tempList)
+            
+        if str(tempList) not in db:
+            return "".join(tempList)
         
-
-
-
-
+        else:
+            while True:
+                tempList = []
+                for i in range(7): # 7-Digit Random
+                    randomID = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
+                    tempList.append(randomID)
+                    
+                if str(tempList) not in db:
+                    return "".join(tempList)
+                break
