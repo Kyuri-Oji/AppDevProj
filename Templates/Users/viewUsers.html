@@ -8,7 +8,7 @@
 <div class='mx-auto' style="width:70%">
     <table class="table">
         <thread>
-           <th scope="col">UID</th>
+           <th scope="col" class='ps-5'>UID</th>
            <th scope="col">Username</th>
            <th scope="col">F. Name</th>
            <th scope="col">L. Name</th>
@@ -17,8 +17,8 @@
         {%for user in userList%}
         <tbody>
             <tr>
-                <th scope="col">{{user.get_uid()}}</th>
-                <td scope="col">{{user.get_username()}}</td>
+                <th scope="col" class='ps-5'>{{user.get_uid()}}</th>
+                <td scope="col"><a href='#' class='text-decoration-none' data-bs-toggle='modal' data-bs-target='#userModal'>@{{user.get_username()}}</a></td>
                 <td scope="col">{{user.get_firstName()}}</td>
                 <td scope="col">{{user.get_lastName()}}</td>
                 <td scope="col">{{user.get_email()}}</td>

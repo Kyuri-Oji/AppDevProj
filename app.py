@@ -3,10 +3,14 @@ import shelve
 
 from forms import RegistrationForm, LoginForm
 from wtforms.validators import ValidationError
-from eventForms import eventCreateForm, eventEditForm, eventDeleteForm
+from eventForms import eventCreateForm, eventEditForm, eventDeleteForm, eventEditForm2, eventDeleteForm2
+from bookingForms import bookingForm
+from FacilitiesForms import CreateFacilityForm
 
 from OOP.userFunction import *
 from OOP.eventFunction import *
+from OOP.Bookings import *
+from OOP.Facilities import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8ecce6a32ba6703d10b72f3ccea07175'
@@ -150,7 +154,7 @@ def editEvent():
 @app.route('/events/editEvents/<int:id>', methods=['GET', 'POST'])
 def editEventDirect(id):
     # DO NOT TOUCH!!!!!!!!
-    formEvents = eventEditForm()
+    formEvents = eventEditForm2()
     if formEvents.validate_on_submit() and request.method == 'POST':
         eventsDict = {}
         eventDB = shelve.open('Events')
@@ -166,7 +170,7 @@ def editEventDirect(id):
         eventDesc = formEvents.editEventDesc.data
         eventVacancy = formEvents.editEventVacancy.data
         eventDate = formEvents.editEventDate.data
-        eventID = formEvents.editEventID.data
+        eventID = id
         eventType = formEvents.editEventType.data
         
         if eventID not in eventsDict.keys():
@@ -181,7 +185,7 @@ def editEventDirect(id):
             print(eventsDict.keys())
                     
             return redirect(url_for('eventsPage'))
-    return render_template('Events/eventEdit.html', formEvents = formEvents)
+    return render_template('Events/eventEditDirect.html', formEvents = formEvents)
 
 
 @app.route('/events/deleteEvents', methods=['GET', 'POST'])
@@ -204,6 +208,31 @@ def deleteEvent():
         else:
             eventsDict.pop(eventID)  
             eventDB['Events'] = eventsDict  
+            return redirect(url_for('eventsPage'))
+        
+    return render_template('Events/eventDelete.html', formEvents=formEvents, ce=createEvents)
+
+@app.route('/events/deleteEvents/<int:id>', methods=['GET', 'POST'])
+def deleteEventDirect(id):
+    formEvents = eventDeleteForm2()
+    if formEvents.validate_on_submit() and request.method == 'POST':
+        eventDB = shelve.open('Events')
+        eventsDict = {}
+        try:
+            if 'Events' in eventDB:
+                eventsDict = eventDB['Events']
+            else:
+                eventDB['Events'] = eventsDict
+        except:
+            print('Error in retrieving events.')
+        eventID = id
+        
+        if eventID not in eventsDict.keys():
+            flash('Event ID not found!', 'error')
+        else:
+            eventsDict.pop(eventID)  
+            eventDB['Events'] = eventsDict  
+            return redirect(url_for('eventsPage'))
         
     return render_template('Events/eventDelete.html', formEvents=formEvents, ce=createEvents)
 
@@ -218,62 +247,115 @@ def eventsPage():
     for event in eventsDict:
         events = eventsDict.get(event)
         eventsList.append(events)
-        
-    if formEventsEdit.validate_on_submit() and request.method == 'POST':
-        eventsDict = {}
-        eventDB = shelve.open('Events')
-        try:
-            if 'Events' in eventDB:
-                eventsDict = eventDB['Events']
-            else:
-                eventDB['Events'] = eventsDict
-        except:
-            print('Error in retrieving events.')
-            
-        eventName = formEventsEdit.editEventName.data
-        eventDesc = formEventsEdit.editEventDesc.data
-        eventVacancy = formEventsEdit.editEventVacancy.data
-        eventDate = formEventsEdit.editEventDate.data
-        eventType = formEventsEdit.editEventType.data
-        
-        ce = createEvents(eventName, eventDesc, eventVacancy, eventDate, events.get_eventID(), eventType)
-        eventsDict[ce.get_eventID()] = ce
-        eventDB['Events'] = eventsDict
-        
-        eventDB.close()
-        print(eventsDict.keys())
-                
-        return redirect(url_for('eventsPage'))
-    
+  
     return render_template('Events/eventMain.html', eventsList = eventsList, formEventsEdit=formEventsEdit)
 
-# Booking functions
-@app.route('/booking')
-def bookingPage():
-    eventsDict = {}
-    eventDB = shelve.open('Events')
-    eventsDict = eventDB['Events']
-    
-    eventsList = []
-    for event in eventsDict:
-        events = eventsDict.get(event)
-        eventsList.append(events)
 
-    return render_template('Booking/bookingMain.html')
+# Booking functions
+@app.route('/booking',  methods=['GET', 'POST'])
+def bookingPage():
+    formsBooking = bookingForm()
+    if formsBooking.validate_on_submit() and request.method == 'POST':
+        bookingsDict = {}
+        bookingDB = shelve.open('Bookings')
+        try:
+            if 'Bookings' in bookingDB:
+                bookingsDict = bookingDB['Bookings']
+            else:
+                bookingDB['Bookings'] = bookingsDict
+        except:
+            print('Error in retrieving events.')
+    
+        bookFacil = formsBooking.bookingFacility.data
+        bookDate = formsBooking.bookingDate.data
+        bookTime = formsBooking.bookingTimeSlot.data
+
+        fb = FacilityBooking(bookFacil,bookDate,bookTime)
+        bookingsDict[fb.get_booking_id()] = fb
+        bookingDB['Bookings'] = bookingsDict
+        
+        bookingDB.close()
+        print(bookingsDict.keys())
+
+        return redirect(url_for('bookingCurrent'))
+
+    return render_template('Booking/bookingMain.html', formsBooking = formsBooking)
 
 @app.route('/booking/bookingPayment')
 
 @app.route('/booking/bookingCurrent')
 def bookingCurrent():
+    bookingsDict = {}
+    bookingDB = shelve.open('Bookings')
+    bookingsDict = bookingDB['Bookings']
+    
+    bookingsList=[]
+    for booking in bookingsDict:
+        bookings = bookingsDict.get(booking)
+        bookingsList.append(bookings)
+
     return render_template('Booking/bookingCurrent.html')
+
+@app.route('/booking/bookingHistory')
+def bookingHistory():
+    bookingsDict = {}
+    bookingDB = shelve.open('Bookings')
+    bookingsDict = bookingDB['Bookings']
+    
+    bookingsList=[]
+    for booking in bookingsDict:
+        bookings = bookingsDict.get(booking)
+        bookingsList.append(bookings)
+
+    return render_template('Booking/bookingHistory.html')
 
 @app.route('/facilities')
 def facilitiesPage():
-    return render_template('Facilities/facilitiesMain.html')
+    facilDict = {}
+    facilDB = shelve.open('Facilities')
+    facilDict = facilDB['Facilities']
+    
+    facilList = []
+    for facil in facilDict:
+        facilities = facilDict.get(facil)
+        facilList.append(facilities)
+    
+    return render_template('Facilities/facilitiesMain.html', facilList = facilList)
+
+@app.route('/facilities/facilitiesCreate', methods=['GET', 'POST'])
+def createFacilities():
+    formsFacil = CreateFacilityForm()
+    facilDict = {}
+    facilDB = shelve.open('Facilities')
+    if formsFacil.validate_on_submit() and request.method == 'POST':  
+        try:
+            if 'Events' in facilDB:
+                facilDict = facilDB['Facilities']
+            else:
+                facilDB['Events'] = facilDict
+        except:
+            print('Error in retrieving events.')
+                    
+        facilID = formsFacil.facility_id.data
+        facilName = formsFacil.facility_name.data
+        facilStatus = formsFacil.facility_status.data
+        facilSlots = formsFacil.facility_slots.data
+        
+        facil = Facilities(facilID, facilName, facilStatus, facilSlots)
+        facilDict[facil.get_fac_id()] = facil
+        facilDB['Facilities'] = facilDict
+        
+        facilDB.close()
+        return redirect(url_for('facilitiesPage'))
+    return render_template('Facilities/facilitiesCreate.html', formsFacil = formsFacil)
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

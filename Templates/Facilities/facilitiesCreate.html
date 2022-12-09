@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+{%block content%}
+
+<h1 class="text-center | py-3">Create Facility</h1>
+<div class='container | py-3 | bg-light border-dark border-2 border rounded-3 | my-3 '>
+    <form action="" method="post" class='container-sm'>
+        <div class="form-group">
+            {{formsFacil.hidden_tag()}}
+
+            {{formsFacil.facility_id.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsFacil.facility_id.errors%}
+            <div>
+                {{formsFacil.facility_id(class='form-control | border-danger')}}
+            </div>
+            {%for error in formsFacil.facility_id.errors%}
+            <span class="text-danger | float-end">
+                {{error}}
+            </span>
+            {%endfor%}
+            {%else%}
+            <div>
+                {{formsFacil.facility_id(class='form-control')}}
+            </div>
+            {%endif%}
+
+            <br>
+
+            {{formsFacil.facility_name.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsFacil.facility_name.errors%}
+            <div>
+                {{formsFacil.facility_name(class='form-control | border-danger')}}
+            </div>
+            {%for error in formsFacil.facility_name.errors%}
+            <span>
+                {{error}}
+            </span>
+            {%endfor%}
+            {%else%}
+            <div>
+                {{formsFacil.facility_name(class='form-control')}}
+            </div>
+            {%endif%}
+
+            <br>
+
+            {{formsFacil.facility_status.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsFacil.facility_status.errors%}
+            <div>
+                {{formsFacil.facility_status(class='form-control | border-danger')}}
+            </div>
+            {%for error in formsFacil.facility_status.errors%}
+            <span>
+                {{error}}
+            </span>
+            {%endfor%}
+            {%else%}
+            <div>
+                {{formsFacil.facility_status(class='form-control')}}
+            </div>
+            {%endif%}
+
+            <br>
+            {{formsFacil.facility_slots.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{formsFacil.facility_slots(class='form-control')}}
+            </div>
+            <br>
+            <div class="text-center | my-4 mx-auto | " style='width:50%'>
+                {{formsFacil.submit(class='btn btn-primary')}}
+            </div>
+        </div>
+    
+    </form>
+</div>
+{%endblock%}
+
+<!---->
+
+
+
