@@ -1,125 +1,145 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<section class="my-3 mx-auto text-center">
-    <h1 class='my-2'>
-        Registration Form
-    </h1>
-    <div class='container py-3 | bg-light | rounded-3 border-dark border-2 border'>
-        <form action="" method="post" class='container-sm'>
-            {{ form.hidden_tag() }}
-
-            {{form.username.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            {%if form.username.errors%}
-                <div class='input-group | my-2'>
-                    <span class="input-group-text |" id="">@</span>
-                    {{form.username(class='form-control | border-danger')}}
+<div class="mx-auto my-3 | rounded-3 border-dark border-2 border" style='width:80%'>
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src="https://images.unsplash.com/photo-1629901925121-8a141c2a42f4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" class="img-fluid rounded-start" alt="...">
+      </div>
+      <div class="col-md-8">
+        <div class="">
+            <section class="mx-auto">
+                <div class='container | bg-light'>
+                    <form action="" method="post" class='container-sm | py-2'>
+                        {{ form.hidden_tag() }}
+            
+                        {{form.username.label(class='text-dark | fs-4 | float-start')}}
+                        {%if form.username.errors%}
+                            <div class='input-group | my-2'>
+                                <span class="input-group-text |" id="">@</span>
+                                {{form.username(class='form-control | border-danger')}}
+                            </div>
+                            {%for errors in form.username.errors%}
+                                <span class='text-danger | float-end'>
+                                    {{errors}}
+                                </span>
+                            {%endfor%}
+                        {%else%}
+                            <div class='input-group | my-2'>
+                                <span class="input-group-text |" id="">@</span>
+                                {{form.username(class='form-control')}}
+                            </div>
+                        {%endif%}
+            
+                        {{form.firstName.label(class='text-dark | fs-4 | float-start')}}
+                        {%if form.firstName.error%}
+                            <div>
+                                {{form.firstName(class='form-control | border-danger')}}
+                            </div>
+                        {%for error in form.firstName.errors%}
+                            <span class='text-danger | float-end'>
+                                {{error}}
+                            </span>
+                        {%endfor%}
+                        {%else%}
+                            <div class='input-group | my-2'>
+                                {{form.firstName(class='form-control')}}
+                            </div>
+                        {%endif%}
+            
+                        {{form.lastName.label(class='text-dark | fs-4 | float-start | ms-2')}}
+                        {%if form.lastName.errors%}
+                        <div>
+                            {{form.lastName(class='form-control | border-danger')}}
+                        </div>
+                        {%for errors in form.lastName.errors%}
+                            <span class='text-danger | float-end'>
+                                {{errors}}
+                            </span>
+                        {%endfor%}
+                        {%else%}
+                            <div>
+                                {{form.lastName(class='form-control')}}
+                            </div>
+                        {%endif%}
+            
+                        {{form.email.label(class='text-dark | fs-4 | float-start')}}
+                        {%if form.email.errors%}
+                            <div class='input-group | my-2'>
+                                {{form.email(class='form-control | border-danger')}}
+                                <span class="input-group-text | border-danger" id="">@example.com</span>
+                            </div>
+                        {%for errors in form.email.errors%}
+                            <span class='text-danger | float-end'>
+                                {{errors}}
+                            </span>
+                        {%endfor%}
+                        {%else%}
+                            <div class='input-group | my-2'>
+                                {{form.email(class='form-control')}}
+                                <span class="input-group-text" id="">@example.com</span>
+                            </div>
+                        {%endif%}
+            
+                        {{form.password.label(class='text-dark | fs-4 | float-start')}}
+                        {%if form.password.errors%}
+                            <div class='input-group | my-2'>
+                                {{form.password(class='form-control | border-danger')}}
+                            </div>
+                        {%for errors in form.password.errors%}
+                            <span class='text-danger | float-end'>
+                                {{errors}}
+                            </span>
+                        {%endfor%}
+                        {%else%}
+                            <div class='input-group | my-2'>
+                                {{form.password(class='form-control')}}
+                            </div>
+                        {%endif%}
+            
+                        {{form.confirm_password.label(class='text-dark | fs-4 | float-start')}}
+                        {%if form.confirm_password.errors%}
+                            <div class='input-group | my-2'>
+                                {{form.confirm_password(class='form-control | border-danger')}}
+                            </div>
+                        {%for errors in form.confirm_password.errors%}
+                            <span class='text-danger | float-end'>
+                                {{errors}}
+                            </span>
+                        {%endfor%}
+                        {%else%}
+                            <div class='input-group | my-2'>
+                                {{form.confirm_password(class='form-control')}}
+                            </div>
+                        {%endif%}
+            
+                        <div class="text-center | my-4 mx-auto | " style='width:50%'>
+                            {{ form.submit(class = 'btn btn-primary') }}
+                            <input type='reset' class='btn btn-danger'>
+                        </div>
+                    </form>
+                    <div class='text-center'>
+                        <small>
+                            Already Have An Account? <a href="{{url_for('login')}}">Sign In</a>
+                        </small>
+                    </div>
                 </div>
-                {%for errors in form.username.errors%}
-                    <span class='text-danger | float-end'>
-                        {{errors}}
-                    </span>
-                {%endfor%}
-            {%else%}
-                <div class='input-group | my-2'>
-                    <span class="input-group-text |" id="">@</span>
-                    {{form.username(class='form-control')}}
-                </div>
-            {%endif%}
-
-            {{form.firstName.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            {%if form.firstName.error%}
-                <div>
-                    {{form.firstName(class='form-control | border-danger')}}
-                </div>
-            {%for error in form.firstName.errors%}
-                <span class='text-danger | float-end'>
-                    {{error}}
-                </span>
-            {%endfor%}
-            {%else%}
-                <div class='input-group | my-2'>
-                    {{form.firstName(class='form-control')}}
-                </div>
-            {%endif%}
-
-            {{form.lastName.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            {%if form.lastName.errors%}
-            <div>
-                {{form.lastName(class='form-control | border-danger')}}
-            </div>
-            {%for errors in form.lastName.errors%}
-                <span class='text-danger | float-end'>
-                    {{errors}}
-                </span>
-            {%endfor%}
-            {%else%}
-                <div>
-                    {{form.lastName(class='form-control')}}
-                </div>
-            {%endif%}
-
-            {{form.email.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            {%if form.email.errors%}
-                <div class='input-group | my-2'>
-                    {{form.email(class='form-control | border-danger')}}
-                    <span class="input-group-text | border-danger" id="">@example.com</span>
-                </div>
-            {%for errors in form.email.errors%}
-                <span class='text-danger | float-end'>
-                    {{errors}}
-                </span>
-            {%endfor%}
-            {%else%}
-                <div class='input-group | my-2'>
-                    {{form.email(class='form-control')}}
-                    <span class="input-group-text" id="">@example.com</span>
-                </div>
-            {%endif%}
-
-            {{form.password.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            {%if form.password.errors%}
-                <div class='input-group | my-2'>
-                    {{form.password(class='form-control | border-danger')}}
-                </div>
-            {%for errors in form.password.errors%}
-                <span class='text-danger | float-end'>
-                    {{errors}}
-                </span>
-            {%endfor%}
-            {%else%}
-                <div class='input-group | my-2'>
-                    {{form.password(class='form-control')}}
-                </div>
-            {%endif%}
-
-            {{form.confirm_password.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            {%if form.confirm_password.errors%}
-                <div class='input-group | my-2'>
-                    {{form.confirm_password(class='form-control | border-danger')}}
-                </div>
-            {%for errors in form.confirm_password.errors%}
-                <span class='text-danger | float-end'>
-                    {{errors}}
-                </span>
-            {%endfor%}
-            {%else%}
-                <div class='input-group | my-2'>
-                    {{form.confirm_password(class='form-control')}}
-                </div>
-            {%endif%}
-
-            <div class="text-center | my-4 mx-auto | " style='width:50%'>
-                {{ form.submit(class = 'btn btn-primary') }}
-                <input type='reset' class='btn btn-danger'>
-            </div>
-        </form>
-        <div>
-            <small>
-                Already Have An Account? <a href="{{url_for('login')}}">Sign In</a>
-            </small>
+            </section>
         </div>
+      </div>
     </div>
-</section>
+  </div>
 
+  <style>
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    body::-webkit-scrollbar {
+    display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    }
+</style>
 {% endblock %}

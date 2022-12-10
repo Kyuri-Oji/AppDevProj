@@ -1,48 +1,82 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div class='text-center'>
-    <h1 class='p-4'>Facilities Avaliable in <span class="text-primary | fst-italic" >ActivePlay</span></h1>
-    <div>
-        <div class='dropdown'>
+<nav class="navbar bg-light">
+    <div class="container-fluid | py-2">
+        <div class='dropdown | start-0 position-absolute | ps-2'>
             <button class="btn btn-secondary | dropdown-toggle" type="button" id="dropdownLocation" data-bs-toggle="dropdown" aria-expanded="false">
-                Select Location
+                Select Type
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownLocation" >
                 {%for facils in facilLoc%}
                     <li class="dropdown-item"><a href="#" class="text-decoration-none | text-dark">{{facils}}</a></li>
                 {%endfor%}
             </ul>
-            <br>
-            <p class="font-monospace | py-2">Current Location : <span class="text-primary">Ang Mo Kio</span></p>
         </div>
+        <p class="font-monospace | my-auto | text-center" style='width:100vw'>Currently Location : <span class="text-primary">Ang Mo Kio</span></p>
+        <form class="d-flex | end-0 position-absolute | pe-2" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
     </div>
-    {%for facils in facilList%}
-    <div>
-        <table class="table | border-1 | m-4 | fs-5 | text-center | table-striped | mx-auto" style="width: 70%;">
-            <tbody style="width: 70%;">
-                <tr>
-                    <th colspan="3">{{facils.get_fac_name()}} - <span class="font-monospace">{{facils.get_fac_id()}}</span></th>
-                </tr>
-                <thread>
-                    <td scope='col' style="width:33%"><u>Facility Status</u></td>
-                    <td scope='col' style="width:33%"><u>Facility Slots<u></td>   
-                    <td scope='col' style="width:33%"><u>Book Facility<u></td>                 
-                </thread>
-                <tr>
-                    {%if facils.get_fac_status() != 'Available'%}
-                        <td scope='col' class='text-danger'>{{facils.get_fac_status()}}</td>
-                    {%else%}
-                        <td scope='col' class='text-success'>{{facils.get_fac_status()}}</td>
-                    {%endif%}
-                    <td scope='col'>{{facils.get_fac_slots()}}</td>
-                    <td scope='col'>Link for the Facility</td>
-                </tr>
-            </tbody>    
-        </table>
-    </div>
-    {% endfor %}
+</nav>
+
+<div class=''>
+    <div class='mx-auto row' style='width:80%'>
+        {%for facils in facilList%}
+            <div class='mx-auto my-4 col-4'>
+                <div class="card" style="" id='cardExpand'>
+                    <div class="card-body">
+                    <img src="https://images.unsplash.com/photo-1587960184060-aa880aabdd04?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1632&q=80" class="card-img-top" alt="..." style='height:5vw'>
+                    <h5 class="card-title | text-primary | pt-2 ">{{facils.get_fac_id()}}</h5>
+                    <p class="card-text">Facility Type : <span class='text-primary'>{{facils.get_fac_name()}}</span></p>
+                    <div class='p-2 | bg-light border-secondary border-2 border rounded'>
+                        {%if facils.get_fac_status() == 'Available'%}
+                            <p class='mb-0'>Facility Status : <span class='text-success'>{{facils.get_fac_status()}}</span></p>
+                        {%else%}
+                        <p class='mb-0'>Facility Status : <span class='text-danger'>{{facils.get_fac_status()}}</span></p>
+                        {%endif%}
+                        <p class='mb-0'>Facility Slots : <span>{{facils.get_fac_slots()}}</span></p>
+                    </div>
+                    <hr>
+                    <nav class='row align-items-start'>
+                        <form action="" method='POST'class='col-auto'>
+                            <input type='submit' value='Book Now' class='btn btn-primary'>
+                        </form>
+                        <form action="" method='POST'class='col-auto'>
+                            <input type='submit' value='Edit' class='btn btn-success'>
+                        </form>
+                        <form action="" method='POST'class='col-auto'>
+                            <input type='submit' value='Delete' class='btn btn-danger'>
+                        </form>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
 </div>
+
+
+<style>
+    body {
+        background: url('https://images.unsplash.com/photo-1508206661992-0a79b553e6d6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+        -o-background-size: cover;
+      }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    body::-webkit-scrollbar {
+    display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    }
+</style>
 
 
 {% endblock %}

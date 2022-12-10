@@ -1,69 +1,72 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h1 class="text-center my-2">
-    Login Form
-</h1>
-<div class="container py-3 mb-4 | bg-light | rounded-3 border-dark border-2 border">
-    
-    <form action="" method="post" class='container-sm'>
-      {{ form.hidden_tag() }}
-      {{form.username.label(class='text-dark | fs-4 | float-start | ms-2')}}
-      {%if form.username.errors%}
-          <div class='input-group | my-2'>
-              <span class="input-group-text |" id="">@</span>
-              {{form.username(class='form-control | border-danger')}}
-          </div>
-          {%for errors in form.username.errors%}
-              <span class='text-danger | float-end'>
-                  {{errors}}
-              </span>
-          {%endfor%}
-      {%else%}
-          <div class='input-group | my-2'>
-              <span class="input-group-text |" id="">@</span>
-              {{form.username(class='form-control')}}
-          </div>
-      {%endif%}
 
-      {{form.email.label(class='text-dark | fs-4 | float-start | ms-2')}}
-      {%if form.email.errors%}
-          <div class='input-group | my-2'>
-              {{form.email(class='form-control | border-danger')}}
-              <span class="input-group-text | border-danger" id="">@example.com</span>
-          </div>
-      {%for errors in form.email.errors%}
-          <span class='text-danger | float-end'>
-              {{errors}}
-          </span>
-      {%endfor%}
-      {%else%}
-          <div class='input-group | my-2'>
-              {{form.email(class='form-control')}}
-              <span class="input-group-text" id="">@example.com</span>
-          </div>
-      {%endif%}
-
-      {{form.password.label(class='text-dark | fs-4 | float-start | ms-2')}}
-      {%if form.password.errors%}
-          <div class='input-group | my-2'>
-              {{form.password(class='form-control | border-danger')}}
-          </div>
-      {%for errors in form.password.errors%}
-          <span class='text-danger | float-end'>
-              {{errors}}
-          </span>
-      {%endfor%}
-      {%else%}
-          <div class='input-group | my-2'>
-              {{form.password(class='form-control')}}
-          </div>
-      {%endif%}
-
-
-      <div class="text-center">
-        {{form.remember(class='form-check-input')}}
-        {{form.remember.label(class='form-check-label')}}
+<div class="mx-auto my-3 | rounded-3 border-dark border-2 border" style='width:80%'>
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src="https://images.unsplash.com/photo-1629901925121-8a141c2a42f4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" class="img-fluid rounded-start" alt="...">
       </div>
+      <div class="col-md-8">
+        <div class="my-5 py-5 | bg-light">
+            <form action="" method="post" class='container-sm'>
+            {{ form.hidden_tag() }}
+            {{form.username.label(class='text-dark | fs-4 | float-start')}}
+            {%if form.username.errors%}
+                <div class='input-group | my-2'>
+                    <span class="input-group-text |" id="">@</span>
+                    {{form.username(class='form-control | border-danger')}}
+                </div>
+                {%for errors in form.username.errors%}
+                    <span class='text-danger | float-end'>
+                        {{errors}}
+                    </span>
+                {%endfor%}
+            {%else%}
+                <div class='input-group | my-2'>
+                    <span class="input-group-text |" id="">@</span>
+                    {{form.username(class='form-control')}}
+                </div>
+            {%endif%}
+
+            {{form.email.label(class='text-dark | fs-4 | float-start')}}
+            {%if form.email.errors%}
+                <div class='input-group | my-2'>
+                    {{form.email(class='form-control | border-danger')}}
+                    <span class="input-group-text | border-danger" id="">@example.com</span>
+                </div>
+            {%for errors in form.email.errors%}
+                <span class='text-danger | float-end'>
+                    {{errors}}
+                </span>
+            {%endfor%}
+            {%else%}
+                <div class='input-group | my-2'>
+                    {{form.email(class='form-control')}}
+                    <span class="input-group-text" id="">@example.com</span>
+                </div>
+            {%endif%}
+
+            {{form.password.label(class='text-dark | fs-4 | float-start')}}
+            {%if form.password.errors%}
+                <div class='input-group | my-2'>
+                    {{form.password(class='form-control | border-danger')}}
+                </div>
+            {%for errors in form.password.errors%}
+                <span class='text-danger | float-end'>
+                    {{errors}}
+                </span>
+            {%endfor%}
+            {%else%}
+                <div class='input-group | my-2'>
+                    {{form.password(class='form-control')}}
+                </div>
+            {%endif%}
+
+
+        <div class="text-center | pt-2">
+            {{form.remember(class='form-check-input')}}
+            {{form.remember.label(class='form-check-label')}}
+        </div>
 
         <div class="text-center | my-4">
             {{ form.submit(class = 'btn btn-primary') }}
@@ -79,7 +82,22 @@
             Need An Account? <a href="{{ url_for('register') }}"> Sign Up </a>
         </small>
     </div>
-</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <style>
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    body::-webkit-scrollbar {
+    display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    }
+</style>
 {% endblock %}
 
