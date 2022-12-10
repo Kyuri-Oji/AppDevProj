@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h1 class="text-center | py-3">Edit Facility</h1>
+<div class='container | py-3 | bg-light border-dark border-2 border rounded-3 | my-3 '>
+    <form action="" method="post" class='container-sm'>
+        <div class="form-group">
+            {{formsFacil.hidden_tag()}}
+            
+            {{formsFacil.facility_id.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{formsFacil.facility_id(class='form-control')}}
+            </div>
+        </div>
+    </form>
+</div>

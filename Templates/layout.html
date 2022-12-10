@@ -70,7 +70,7 @@
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="{{url_for('facilitiesPage')}}">View Facilities</a></li>
                     <li><a class="dropdown-item" href="#">Facilities Near You</a></li>
-                    <li><a name="adminOnly" class="dropdown-item text-danger" href="#">Create Facilities</a></li>
+                    <li><a name="adminOnly" class="dropdown-item text-danger" href="{{url_for('createFacilities')}}">Create Facilities</a></li>
                     <li><a class='dropdown-item text-danger' href='#'>Edit Facilities</a></li>
                 </ul>
             </div>
@@ -93,10 +93,12 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="{{url_for('bookingPage')}}">Book Facilities</a></li>
-                    <li><a class="dropdown-item" href="{{url_for('bookingCurrent')}}">Edit Bookings</a></li>
-                    <li><a class="dropdown-item" href="#">View Booking History</a></li>
+                    <li><a class="dropdown-item" href="{{url_for('bookingPayment')}}">Temporary - Booking Payment</a></li>
+                    <li><a class="dropdown-item" href="{{url_for('bookingCurrent')}}">View Current Bookings</a></li>
+                    <li><a class="dropdown-item" href="{{url_for('bookingHistory')}}">View Booking History</a></li>
                 </ul>
             </div>
+
             <div class="my-auto | p-3 pt-4 mt-1 | end-0 position-absolute ">
                 <button class="text-primary | bg-transparent | border-0 | fs-5 | pe-3 | border-end | border-2 | border-secondary | border-gradient | ">
                     <a href='/register' class='text-decoration-none'>Register</a>
@@ -113,6 +115,16 @@
             warningText.innerText = '(๑˃̵　ᴗ　˂̵)و   Enjoy Your Time Here!'
         }
     </script>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="text-center | w-1/3 | rounded-lg | bg-stone-300 | mx-auto py-2">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
     {% block content %}{% endblock %}
 

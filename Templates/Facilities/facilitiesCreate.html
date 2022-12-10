@@ -7,6 +7,20 @@
         <div class="form-group">
             {{formsFacil.hidden_tag()}}
 
+            {{formsFacil.facility_location.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{formsFacil.facility_location(class='form-control')}}
+            </div>
+            
+            <br>
+
+            {{formsFacil.facility_amount.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{formsFacil.facility_amount(class='form-control')}}
+            </div>
+            
+            <br>
+
             {{formsFacil.facility_id.label(class='text-dark | fs-4 | float-start | ms-2')}}
             {%if formsFacil.facility_id.errors%}
             <div>
@@ -69,7 +83,6 @@
                 {{formsFacil.submit(class='btn btn-primary')}}
             </div>
         </div>
-    
     </form>
 </div>
 {%endblock%}

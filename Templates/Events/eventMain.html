@@ -6,9 +6,22 @@
 </h1>
 <p class='text-muted | text-center | fst-italic'><small style=''>“If bread is the first necessity of life, recreation is a close second.” <br> <span class='ms-3'>– Edward Bellamy</span></small></p>
 <section class='| mb-3'>
+    <div class='text-center'> 
+        <div class='dropdown'>
+            <button class="btn btn-secondary | dropdown-toggle" type="button" id="dropdownLocation" data-bs-toggle="dropdown" aria-expanded="false">
+                Select Type
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownLocation" >
+                {%for type in eventType%}
+                    <li class="dropdown-item"><a href="#" class="text-decoration-none | text-dark">{{type}}</a></li>
+                {%endfor%}
+            </ul>
+        </div>
+        <p class="font-monospace | py-2">Currently Viewing : <span class="text-primary">Sports</span></p>
+    </div>
     <div class=''>
         {%for event in eventsList%}
-        <h1 class='mx-auto' style='width:80%'><span class='fs-2 fst-italic | text-primary | ms-3'>{{event.get_eventName()}}</span></h1>
+        <h1 class='mx-auto' style='width:80%'><span class='fs-2 | text-primary | ms-3'>{{event.get_eventName()}}</span></h1>
         <div class='mx-auto | bg-light | border-secondary border-2 border | rounded' style='width:80%'>
             <p class='p-2'>
                 <span class='fs-4'>What's Happening?</span> <br> {{event.get_eventDesc()}}
@@ -21,9 +34,12 @@
                 <br>
                 <span class='fs-6'>End Date : {{event.get_eventDate()}}</span>
             </p>
+            <form action="" method='POST'class='col-auto | p-2'>
+                <input type='submit' value='Sign Up' class='btn btn-primary'>
+            </form>
             <nav class='p-2 row align-items-start'>
                 <form action="{{url_for('editEventDirect', id=event.get_eventID())}}" method='POST'class='col-auto'>
-                    <input type='submit' value='Edit' class='btn btn-primary'>
+                    <input type='submit' value='Edit' class='btn btn-success'>
                 </form>
              
                 <form action="{{url_for('deleteEventDirect', id=event.get_eventID())}}" method='POST'class='col-auto'>
@@ -34,6 +50,15 @@
         <hr style='width:90%' class='mx-auto'>
         {% endfor %}
     </div>
+
+    <div class="card" style="width: 33%;">
+        <img src="..." class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{event.get_eventName()}}</h5>
+          <p class="card-text">{{event.get_eventDesc()}}</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
 </section>
 
 

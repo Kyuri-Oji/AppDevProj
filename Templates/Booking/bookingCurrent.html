@@ -1,26 +1,76 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<h1 class='text-center | mt-15 | mb-10 | p-4'>Facility Booking</h1>
+<h1 class='text-center | mt-15 | mb-10 | p-4'>Current Bookings</h1>
 
-<table class="table | border-1 | m-4 | fs-5 | text-center | w-auto">
+<table class="table | border-1 | m-4 | fs-5 | text-center | mx-auto" style="width:70%">
     <thead>
         <tr>
-            <th>Booking ID</th>
-            <th>Facility</th>
-            <th>Date</th>
-            <th>Timeslot</th>
+            <th scope='col' style="width:25%">Booking ID</th>
+            <th scope='col' style="width:25%">Facility</th>
+            <th scope='col' style="width:25%">Date</th>
+            <th scope='col' style="width:25%">Timeslot</th>
+            <th scope='col' style="width:25%"></th>
+            <th scope='col' style="width:25%"></th>
         </tr>
     </thead>
     <tbody>
-        {%for booking in currentBookings%}
+        <!--{%for booking in bookingsList%}
             <tr>
                 <td>{{booking.get_booking_id()}}</td>
                 <td>{{booking.get_facility()}}</td>
                 <td>{{booking.get_date()}}</td>
                 <td>{{booking.get_timeslot()}}</td>
             </tr>
-        {%endfor%}
+        {%endfor%}-->
+        <tr>
+            <td style="width:25%">1512202256BD1C547</td>
+            <td scope='col' style="width:25%">56BD1</td>
+            <td scope='col' style="width:25%">15-12-2022</td>
+            <td scope='col' style="width:25%">10am to 11am</td>
+            <td>
+                <form action="{{url_for('editBookings')}}" method='POST' class='col-auto'>
+                    <input type='submit' value='Edit' class='btn btn-primary'>
+                </form>
+            </td>
+            <td>
+                <form action="#" method='POST'class='col-auto'>
+                    <input type='submit' value='Delete' class='btn btn-danger'>
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:25%">1712202256BD24D2D</td>
+            <td scope='col' style="width:25%">56BD2</td>
+            <td scope='col' style="width:25%">17-12-2022</td>
+            <td scope='col' style="width:25%">11am to 12pm</td>
+            <td>
+                <form action="#" method='POST'class='col-auto'>
+                    <input type='submit' value='Edit' class='btn btn-primary'>
+                </form>
+            </td>
+            <td>
+                <form action="#" method='POST'class='col-auto'>
+                    <input type='submit' value='Delete' class='btn btn-danger'>
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:25%">1912202256BB1BA5E</td>
+            <td scope='col' style="width:25%">56BB1</td>
+            <td scope='col' style="width:25%">19-12-2022</td>
+            <td scope='col' style="width:25%">3pm to 4pm</td>
+            <td>
+                <form action="#" method='POST'class='col-auto'>
+                    <input type='submit' value='Edit' class='btn btn-primary'>
+                </form>
+            </td>
+            <td>
+                <form action="#" method='POST'class='col-auto'>
+                    <input type='submit' value='Delete' class='btn btn-danger'>
+                </form>
+            </td>
+        </tr>
     </tbody>
 </table>
 

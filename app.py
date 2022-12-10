@@ -4,7 +4,7 @@ import shelve
 from forms import RegistrationForm, LoginForm
 from wtforms.validators import ValidationError
 from eventForms import eventCreateForm, eventEditForm, eventDeleteForm, eventEditForm2, eventDeleteForm2
-from bookingForms import bookingForm
+from bookingForms import bookingForm, paymentForm
 from FacilitiesForms import CreateFacilityForm
 
 from OOP.userFunction import *
@@ -63,8 +63,8 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-            flash('You have been logged in!', 'login')
+        if form.email.data == 'admin@activeplay.sg' and form.password.data == 'password':
+            flash('You have been logged in as an administrator.', 'login')
             return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password.', 'danger')
@@ -247,12 +247,14 @@ def eventsPage():
     for event in eventsDict:
         events = eventsDict.get(event)
         eventsList.append(events)
+        
+    eventTypeList = ['Sports', 'Lifestyle', 'Others']
   
-    return render_template('Events/eventMain.html', eventsList = eventsList, formEventsEdit=formEventsEdit)
+    return render_template('Events/eventMain.html', eventsList = eventsList, eventType = eventTypeList, formEventsEdit=formEventsEdit)
 
 
 # Booking functions
-@app.route('/booking',  methods=['GET', 'POST'])
+@app.route('/booking', methods=['GET', 'POST'])
 def bookingPage():
     formsBooking = bookingForm()
     if formsBooking.validate_on_submit() and request.method == 'POST':
@@ -277,9 +279,21 @@ def bookingPage():
         bookingDB.close()
         print(bookingsDict.keys())
 
-        return redirect(url_for('bookingCurrent'))
+        return redirect(url_for('bookingPayment'))
 
     return render_template('Booking/bookingMain.html', formsBooking = formsBooking)
+
+@app.route('/booking/bookingPayment', methods=['GET', 'POST'])
+def bookingPayment():
+    formsPayment = paymentForm()
+    if formsPayment.validate_on_submit() and request.method == 'POST':
+        payMethod = formsPayment.paymentMethod.data
+        cardNum = formsPayment.cardNumber.data
+        expireDate = formsPayment.expirationDate.data
+
+        return redirect(url_for('bookingCurrent'))
+
+    return render_template('Booking/bookingPayment.html', formsPayment = formsPayment)
 
 @app.route('/booking/bookingPayment')
 
@@ -295,6 +309,34 @@ def bookingCurrent():
         bookingsList.append(bookings)
 
     return render_template('Booking/bookingCurrent.html')
+
+@app.route('/booking/bookingEdit', methods=['GET', 'POST'])
+def editBookings():
+    formsBooking = bookingForm()
+    if formsBooking.validate_on_submit() and request.method == 'POST':
+        bookingsDict = {}
+        bookingDB = shelve.open('Bookings')
+        try:
+            if 'Bookings' in bookingDB:
+                bookingsDict = bookingDB['Bookings']
+            else:
+                bookingDB['Bookings'] = bookingsDict
+        except:
+            print('Error in retrieving events.')
+    
+        bookFacil = formsBooking.bookingFacility.data
+        bookDate = formsBooking.bookingDate.data
+        bookTime = formsBooking.bookingTimeSlot.data
+
+        fb = FacilityBooking(bookFacil,bookDate,bookTime)
+        bookingsDict[fb.get_booking_id()] = fb
+        bookingDB['Bookings'] = bookingsDict
+        
+        bookingDB.close()
+        print(bookingsDict.keys())
+
+        return redirect(url_for('bookingCurrent'))
+    return render_template('Booking/bookingEdit.html', formsBooking = formsBooking)
 
 @app.route('/booking/bookingHistory')
 def bookingHistory():
@@ -319,8 +361,10 @@ def facilitiesPage():
     for facil in facilDict:
         facilities = facilDict.get(facil)
         facilList.append(facilities)
+        
+    facilLoc = ['Ang Mo Kio', 'Hougang', 'Macpherson', 'Braddell', 'Seletar', 'Golden Mile']
     
-    return render_template('Facilities/facilitiesMain.html', facilList = facilList)
+    return render_template('Facilities/facilitiesMain.html', facilList = facilList, facilLoc = facilLoc)
 
 @app.route('/facilities/facilitiesCreate', methods=['GET', 'POST'])
 def createFacilities():
@@ -335,13 +379,20 @@ def createFacilities():
                 facilDB['Events'] = facilDict
         except:
             print('Error in retrieving events.')
-                    
-        facilID = formsFacil.facility_id.data
+        
+        facilLocation = formsFacil.facility_location.data
+        location = facilLocation
+        
+        facilAmt = formsFacil.facility_amount.data
+        amt = facilAmt
+        
+        facilID = location + amt + str(formsFacil.facility_id.data) # Hougang Stadium - 53, Sengkang Stadium - 54BD01 - 06
         facilName = formsFacil.facility_name.data
         facilStatus = formsFacil.facility_status.data
-        facilSlots = formsFacil.facility_slots.data
+        facilSlots = formsFacil.facility_slots.data 
         
-        facil = Facilities(facilID, facilName, facilStatus, facilSlots)
+        
+        facil = Facilities(facilID, facilName, facilStatus, facilSlots, facilLocation, facilAmt)
         facilDict[facil.get_fac_id()] = facil
         facilDB['Facilities'] = facilDict
         
