@@ -8,9 +8,12 @@ def all_numbers(form,field):
         raise ValidationError("Field must be all numbers")
 
 class bookingForm(FlaskForm):
-    bookingFacilityID = SelectField('Facility: ',  
+    bookingFacilityLocation = SelectField('Facility Location: ',
+                                         validators=[DataRequired()],
+                                         choices=[('', 'Select'), ('56', 'Ang Mo Kio')])
+    bookingFacilityID = SelectField('Facility ID: ',  
                                  validators=[DataRequired()],
-                                 choices=[('', 'Select'), ('56BD1', 'Ang Mo Kio Badminton Court 1'), ('56BD2', 'Ang Mo Kio Badminton Court 2'), ('56BB1', 'Ang Mo Kio Basketball Court 1')])
+                                 choices=[('', 'Select'), ('BD1', 'Badminton Court 1'), ('BD2', 'Badminton Court 2'), ('BB1', 'Basketball Court 1')])
     bookingDate = DateTimeField('Booking Date: ',
                                 validators=[DataRequired()],
                                 format='%d-%m-%y', default=datetime.now, #datetime formatting, dafault to current date

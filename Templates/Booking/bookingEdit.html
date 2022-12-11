@@ -8,18 +8,53 @@
         <form action="" method="post" class='container-sm'>
             {{formsBooking.hidden_tag()}}
 
-            {{formsBooking.bookingFacility.label(class='text-dark | fs-4 | float-start | ms-2 | form-check-label')}}
+            {{formsBooking.bookingFacilityLocation.label(class='text-dark | fs-4 | float-start | ms-2 | form-check-label')}}
+            {%if formsBooking.bookingFacilityLocation.errors%}
             <div>
-                {{formsBooking.bookingFacility(class='form-control | my-2')}}
+                {{formsBooking.bookingFacilityLocation(class='form-control | my-2 | border-danger')}}
             </div>
+            {%for errors in formsBooking.bookingFacilityLocation.errors%}
+                <span class='text-danger | float-end'>{{errors}}</span>
+            {%endfor%}
+            {%else%}
+            <div>
+                {{formsBooking.bookingFacilityLocation(class='form-control | my-2')}}
+            </div>
+            {%endif%}
+
+            {{formsBooking.bookingFacilityID.label(class='text-dark | fs-4 | float-start | ms-2 | form-check-label')}}
+            {%if formsBooking.bookingFacilityID.errors%}
+            <div>
+                {{formsBooking.bookingFacilityID(class='form-control | my-2 | border-danger')}}
+            </div>
+            {%for errors in formsBooking.bookingFacilityID.errors%}
+                <span class='text-danger | float-end'>{{errors}}</span>
+            {%endfor%}
+            {%else%}
+            <div>
+                {{formsBooking.bookingFacilityID(class='form-control | my-2')}}
+            </div>
+            {%endif%}
+
             {{formsBooking.bookingDate.label(class='text-dark | fs-4 | float-start | ms-2')}}
             <div>
                 {{formsBooking.bookingDate(class='form-control | my-2')}}
             </div>
+
             {{formsBooking.bookingTimeSlot.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsBooking.bookingDate.errors%}
+            <div>
+                {{formsBooking.bookingTimeSlot(class='form-control | my-2 | border-danger')}}
+            </div>
+            {%for errors in formsBooking.bookingDate.errors%}
+                <span class='text-danger | float-end'>{{errors}}</span>
+            {%endfor%}
+            {%else%}
             <div>
                 {{formsBooking.bookingTimeSlot(class='form-control | my-2')}}
             </div>
+            {%endif%}
+
             <div class="text-center | my-4 mx-auto | " style='width:50%'>
                 {{formsBooking.submit(class='btn btn-primary')}}
             </div>

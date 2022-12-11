@@ -14,7 +14,7 @@
                 <a href="{{url_for('eventsPageOthers')}}" class="text-decoration-none | text-dark"><li class="dropdown-item">Others</li></a>
             </ul>
         </div>
-        <p class="font-monospace | my-auto | text-center" style='width:100vw'>Currently Viewing : <span class="text-primary">All</span></p>
+        <p class="font-monospace | my-auto | text-center" style='width:100vw'>Currently Viewing : <span class="text-primary">Sports</span></p>
       <form class="d-flex | end-0 position-absolute | pe-2" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
@@ -24,7 +24,7 @@
 
 <section class='mb-3'>
     <div class='mx-auto row' style='width:80%'>
-    {%for event in eventsList%}
+    {%for event in eventSports%}
         <div class='mx-auto my-4 col-4'>
             <div class="card" style="" id='cardExpand'>
                 <div class="card-body">
