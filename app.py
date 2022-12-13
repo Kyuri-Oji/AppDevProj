@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, redirect, request
+from flask import Flask, render_template, url_for, flash, redirect, request, session
 import shelve
 
 from forms import RegistrationForm, LoginForm
@@ -65,6 +65,10 @@ def login():
     if form.validate_on_submit():
         if form.email.data == 'admin@activeplay.sg' and form.password.data == 'password':
             flash('You have been logged in as an administrator.', 'login')
+            name = "Administrator"
+            adminID = '0000000'
+            session['User'] = name
+            session['UserID'] = adminID
             return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password.', 'danger')
@@ -82,7 +86,17 @@ def users():
         userList.append(user)
         
     return render_template('Users/viewUsers.html', userList = userList)
-    
+
+# DO NOT TOUCH, NO CLUE WHY IT WORKS, IT JUST DOES - WE DON'T KNOW HOW EITHER - CONSULT BUDDHA @ 404
+@app.route('/<user>')
+def account(user):
+    # logout = session.pop('User', None)
+    return render_template('Users/userAccount.html')
+
+@app.route('/admin')
+def adminWorkspace():
+    return render_template('Users/adminWorkspace.html') 
+
 # Event Functions
 @app.route('/events/createEvents', methods=['GET', 'POST'])
 def createEvent():
@@ -214,31 +228,23 @@ def deleteEvent():
 
 @app.route('/events/deleteEvents/<int:id>', methods=['GET', 'POST'])
 def deleteEventDirect(id):
-    formEvents = eventDeleteForm2()
-    if formEvents.validate_on_submit() and request.method == 'POST':
-        eventDB = shelve.open('Events')
-        eventsDict = {}
-        try:
-            if 'Events' in eventDB:
-                eventsDict = eventDB['Events']
-            else:
-                eventDB['Events'] = eventsDict
-        except:
-            print('Error in retrieving events.')
-        eventID = id
-        
-        if eventID not in eventsDict.keys():
-            flash('Event ID not found!', 'error')
+    eventDB = shelve.open('Events')
+    eventsDict = {}
+    try:
+        if 'Events' in eventDB:
+            eventsDict = eventDB['Events']
         else:
-            eventsDict.pop(eventID)  
-            eventDB['Events'] = eventsDict  
-            return redirect(url_for('eventsPage'))
-        
-    return render_template('Events/eventDelete.html', formEvents=formEvents, ce=createEvents)
+            eventDB['Events'] = eventsDict
+    except:
+        print('Error in retrieving events.')
+    eventID = id
+
+    eventsDict.pop(eventID)  
+    eventDB['Events'] = eventsDict  
+    return redirect(url_for('eventsPage'))
 
 @app.route('/events', methods=['GET', 'POST'])
 def eventsPage():
-    formEventsEdit = eventEditForm()
     eventsDict = {}
     eventDB = shelve.open('Events')
     eventsDict = eventDB['Events']
@@ -247,11 +253,162 @@ def eventsPage():
     for event in eventsDict:
         events = eventsDict.get(event)
         eventsList.append(events)
+    print(eventsList)
+    
+    # Please do not touch this, I really have no clue how to solve this if broken.
+    eventSports = []
+    for event in eventsDict:
+        events = (eventsDict.get(event))
+        if 'Sports' in events.get_eventType():
+            eventSports.append(events)
+    print(eventSports) 
+    
+    eventLifestyle = []
+    for event in eventsDict:
+        events = (eventsDict.get(event))
+        if 'Lifestyle' in events.get_eventType():
+            eventLifestyle.append(events)
+    print(eventLifestyle)
         
+    eventOthers = []
+    for event in eventsDict:
+        events = (eventsDict.get(event))
+        if 'Others' in events.get_eventType():
+            eventOthers.append(events)
+    print(eventOthers)
+    
     eventTypeList = ['Sports', 'Lifestyle', 'Others']
+    
+    eventTypeDict = {'Sports' : eventSports, 'Lifestyle' : eventLifestyle, 'Others' : eventOthers}
   
-    return render_template('Events/eventMain.html', eventsList = eventsList, eventType = eventTypeList, formEventsEdit=formEventsEdit)
+    return render_template('Events/eventMain.html', eventsList = eventsList, eventType = eventTypeList, eventSports = eventSports, eventLifestyle = eventLifestyle, eventOthers = eventOthers, eventTypeDict = eventTypeDict)
 
+@app.route('/events/sports', methods=['GET', 'POST'])
+def eventsPageSports():
+    eventsDict = {}
+    eventDB = shelve.open('Events')
+    eventsDict = eventDB['Events']
+    
+    eventsList = []
+    for event in eventsDict:
+        events = eventsDict.get(event)
+        eventsList.append(events)
+    print(eventsList)
+    
+    # Please do not touch this, I really have no clue how to solve this if broken.
+    eventSports = []
+    for event in eventsDict:
+        events = (eventsDict.get(event))
+        if 'Sports' in events.get_eventType():
+            eventSports.append(events)
+    print(eventSports)
+    
+    eventLifestyle = []
+    for event in eventsDict:
+        events = (eventsDict.get(event))
+        if 'Lifestyle' in events.get_eventType():
+            eventLifestyle.append(events)
+    print(eventLifestyle)
+        
+    eventOthers = []
+    for event in eventsDict:
+        events = (eventsDict.get(event))
+        if 'Others' in events.get_eventType():
+            eventOthers.append(events)
+    print(eventOthers)
+    
+    eventTypeList = ['Sports', 'Lifestyle', 'Others']
+    
+    eventTypeDict = {'Sports' : eventSports, 'Lifestyle' : eventLifestyle, 'Others' : eventOthers}
+  
+    return render_template('Events/eventSub/eventSports.html',
+                           eventsList = eventsList, eventType = eventTypeList, eventSports = eventSports, eventLifestyle = eventLifestyle, eventOthers = eventOthers, eventTypeDict = eventTypeDict)
+
+@app.route('/events/lifestyle', methods=['GET', 'POST'])
+def eventsPageLifestyle():
+    eventsDict = {}
+    eventDB = shelve.open('Events')
+    eventsDict = eventDB['Events']
+    
+    eventsList = []
+    for event in eventsDict:
+        events = eventsDict.get(event)
+        eventsList.append(events)
+    print(eventsList)
+    
+    # Please do not touch this, I really have no clue how to solve this if broken.
+    eventSports = []
+    for event in eventsDict:
+        events = (eventsDict.get(event))
+        if 'Sports' in events.get_eventType():
+            eventSports.append(events)
+    print(eventSports)
+    
+    eventLifestyle = []
+    for event in eventsDict:
+        events = (eventsDict.get(event))
+        if 'Lifestyle' in events.get_eventType():
+            eventLifestyle.append(events)
+    print(eventLifestyle)
+        
+    eventOthers = []
+    for event in eventsDict:
+        events = (eventsDict.get(event))
+        if 'Others' in events.get_eventType():
+            eventOthers.append(events)
+    print(eventOthers)
+    
+    eventTypeList = ['Sports', 'Lifestyle', 'Others']
+    
+    eventTypeDict = {'Sports' : eventSports, 'Lifestyle' : eventLifestyle, 'Others' : eventOthers}
+  
+    return render_template('Events/eventSub/eventLifestyle.html',
+                           eventsList = eventsList, eventType = eventTypeList, eventSports = eventSports, eventLifestyle = eventLifestyle, eventOthers = eventOthers, eventTypeDict = eventTypeDict)
+
+@app.route('/events/others', methods=['GET', 'POST'])
+def eventsPageOthers():
+    eventsDict = {}
+    eventDB = shelve.open('Events')
+    eventsDict = eventDB['Events']
+    
+    eventsList = []
+    for event in eventsDict:
+        events = eventsDict.get(event)
+        eventsList.append(events)
+    print(eventsList)
+    
+    # Please do not touch this, I really have no clue how to solve this if broken.
+    eventSports = []
+    for event in eventsDict:
+        events = (eventsDict.get(event))
+        if 'Sports' in events.get_eventType():
+            eventSports.append(events)
+    print(eventSports)
+    
+    eventLifestyle = []
+    for event in eventsDict:
+        events = (eventsDict.get(event))
+        if 'Lifestyle' in events.get_eventType():
+            eventLifestyle.append(events)
+    print(eventLifestyle)
+        
+    eventOthers = []
+    for event in eventsDict:
+        events = (eventsDict.get(event))
+        if 'Others' in events.get_eventType():
+            eventOthers.append(events)
+    print(eventOthers)
+    
+    eventTypeList = ['Sports', 'Lifestyle', 'Others']
+    
+    eventTypeDict = {'Sports' : eventSports, 'Lifestyle' : eventLifestyle, 'Others' : eventOthers}
+  
+    return render_template('Events/eventSub/eventOthers.html',
+                           eventsList = eventsList, eventType = eventTypeList, eventSports = eventSports, eventLifestyle = eventLifestyle, eventOthers = eventOthers, eventTypeDict = eventTypeDict)
+
+@app.route('/events/signup/<int:id>', methods=['GET', 'POST'])
+def eventSignup():
+    return render_template('Events/eventSignUp.html')
 
 # Booking functions
 @app.route('/booking', methods=['GET', 'POST'])
@@ -267,12 +424,15 @@ def bookingPage():
                 bookingDB['Bookings'] = bookingsDict
         except:
             print('Error in retrieving events.')
-    
-        bookFacil = formsBooking.bookingFacility.data
+
+        bookFacilLoc=formsBooking.bookingFacilityLocation.data
+        bookFacil = formsBooking.bookingFacilityID.data
         bookDate = formsBooking.bookingDate.data
         bookTime = formsBooking.bookingTimeSlot.data
 
-        fb = FacilityBooking(bookFacil,bookDate,bookTime)
+        bookFacilID=bookFacilLoc+bookFacil
+
+        fb = FacilityBooking(bookFacilID,bookDate,bookTime)
         bookingsDict[fb.get_booking_id()] = fb
         bookingDB['Bookings'] = bookingsDict
         
@@ -297,7 +457,7 @@ def bookingPayment():
 
 @app.route('/booking/bookingPayment')
 
-@app.route('/booking/bookingCurrent')
+@app.route('/booking/bookingCurrent', methods=['GET', 'POST'])
 def bookingCurrent():
     bookingsDict = {}
     bookingDB = shelve.open('Bookings')
@@ -323,12 +483,15 @@ def editBookings():
                 bookingDB['Bookings'] = bookingsDict
         except:
             print('Error in retrieving events.')
-    
-        bookFacil = formsBooking.bookingFacility.data
+
+        bookFacilLoc=formsBooking.bookingFacilityLocation.data
+        bookFacil = formsBooking.bookingFacilityID.data
         bookDate = formsBooking.bookingDate.data
         bookTime = formsBooking.bookingTimeSlot.data
 
-        fb = FacilityBooking(bookFacil,bookDate,bookTime)
+        bookFacilID=bookFacilLoc+bookFacil
+
+        fb = FacilityBooking(bookFacilID,bookDate,bookTime)
         bookingsDict[fb.get_booking_id()] = fb
         bookingDB['Bookings'] = bookingsDict
         

@@ -2,49 +2,54 @@
 {%block content%}
 
 <section>
-    <div class='row | mx-auto my-3' style='width:80%'>
-        <nav class='row'>
-            <!--User Database-->
-            <div class="card mx-auto my-2" id='cardExpand' style="width: 23rem;">
-                <a href='{{url_for("users")}}' class='text-decoration-none | text-center'>
-                    <div class="card-body | p-4">
-                        <img class="card-img-top" src="http://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" alt="Card image cap" style='width:66%'>
-                        <h5 class="card-title | fs-1 | pt-1">View Users</h5>
-                        <p class="card-text | text-dark fs-4 font-monospace">View / Edit / Delete User Database</p>
+    <div class='card mx-auto my-3 bg-light' style='width:50rem;'>
+        <div class='text-center card-header' style='background-color:#E8E8E8;'>
+            Welcome to the admin panel, {{session.admin}}!
+        </div>
+            <div class='row | mx-auto my-3' style='width:60%'>
+                <nav class='row mx-auto'>
+                    <!--User Database-->
+                    <div class="card mx-auto my-2" id='cardExpand' style="width: 10rem;">
+                        <a href='{{url_for("users")}}' class='text-decoration-none | text-center'>
+                            <div class="card-body | p-4">
+                                <img class="card-img-top" src="http://pluspng.com/img-png/user-png-icon-big-image-png-2240.png" alt="Card image cap" style='width:66%'>
+                                <h5 class="card-title | fs-5 | pt-1">View Users</h5>
+                                <p class="card-text | text-dark fs-6 font-monospace">Modify User Database</p>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
 
-            <div class="card mx-auto my-2" id='cardExpand' style="width: 23rem;">
-                <a href='{{url_for("eventsPage")}}' class='text-decoration-none | text-center'>
-                    <div class="card-body | p-4">
-                        <img class="card-img-top" src="https://www.safeservices.org/wp-content/uploads/2019/09/event-icon-transparent-29.png" alt="Card image cap" style='width:66%'>
-                        <h5 class="card-title | fs-1 | pt-1">View Events</h5>
-                        <p class="card-text | text-dark fs-4 font-monospace">View / Edit / Delete Event Database</p>
+                    <div class="card mx-auto my-2" id='cardExpand' style="width: 10rem;">
+                        <a href='{{url_for("eventsPage")}}' class='text-decoration-none | text-center'>
+                            <div class="card-body | p-4">
+                                <img class="card-img-top" src="https://www.safeservices.org/wp-content/uploads/2019/09/event-icon-transparent-29.png" alt="Card image cap" style='width:66%'>
+                                <h5 class="card-title | fs-5 | pt-1">View Events</h5>
+                                <p class="card-text | text-dark fs-6 font-monospace">Modify Event Database</p>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
 
-            <div class="card mx-auto my-2" id='cardExpand' style="width: 23rem;">
-                <a href='{{url_for("facilitiesPage")}}' class='text-decoration-none | text-center'>
-                    <div class="card-body | p-4">
-                        <img class="card-img-top" src="https://cdn.iconscout.com/icon/premium/png-512-thumb/facility-1783121-1516350.png" alt="Card image cap" style='width:66%'>
-                        <h5 class="card-title | fs-1 | pt-1">View Facilities</h5>
-                        <p class="card-text | text-dark fs-4 font-monospace">View / Edit / Delete Facilities Database</p>
+                    <div class="card mx-auto my-2" id='cardExpand' style="width: 10rem;">
+                        <a href='{{url_for("facilitiesPage")}}' class='text-decoration-none | text-center'>
+                            <div class="card-body | p-4">
+                                <img class="card-img-top" src="https://cdn.iconscout.com/icon/premium/png-512-thumb/facility-1783121-1516350.png" alt="Card image cap" style='width:66%'>
+                                <h5 class="card-title | fs-5 | pt-1">View Facilities</h5>
+                                <p class="card-text | text-dark fs-6 font-monospace">Modify Facility Database</p>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
 
-            <div class="card mx-auto my-2" id='cardExpand' style="width: 23rem;">
-                <a href='{{url_for("bookingCurrent")}}' class='text-decoration-none | text-center'>
-                    <div class="card-body | p-4">
-                        <img class="card-img-top" src="https://cdn.onlinewebfonts.com/svg/img_209028.png" alt="Card image cap" style='width:66%'>
-                        <h5 class="card-title | fs-1 | pt-1">View Bookings</h5>
-                        <p class="card-text | text-dark fs-4 font-monospace">View / Edit / Delete Bookings Database</p>
+                    <div class="card mx-auto my-2" id='cardExpand' style="width: 10rem;">
+                        <a href='{{url_for("bookingCurrent")}}' class='text-decoration-none | text-center'>
+                            <div class="card-body | p-4">
+                                <img class="card-img-top" src="https://cdn.onlinewebfonts.com/svg/img_209028.png" alt="Card image cap" style='width:66%'>
+                                <h5 class="card-title | fs-5 | pt-1">View Bookings</h5>
+                                <p class="card-text | text-dark fs-6 font-monospace">Modify Bookings Database</p>
+                            </div>
+                        </a>
                     </div>
-                </a>
+                </nav>
             </div>
-        </nav>
     </div>
 </section>
 

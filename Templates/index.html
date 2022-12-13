@@ -2,6 +2,15 @@
 {% block content %}
 
 <section>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="text-center | text-info | bg-dark | py-1">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     <div id='activePlayIndicators' class='carousel slide' data-bs-ride='carousel'>
         <div class='carousel-indicators'>
             <button type='button' data-bs-target='#activePlayIndicators' data-bs-slide-to='0' class='active' aria-current='true' aria-label='Slide 1'></button>
@@ -10,21 +19,21 @@
         </div>
         <div class='carousel-inner'>
             <div class='carousel-item active'>
-                <img src="{{url_for('static', filename='badmintonCourt.jpg')}}" class="d-block w-100" alt="..." style='height:600px'>
+                <img src="https://images.unsplash.com/photo-1623998021722-b934f73081df?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" class="d-block w-100" alt="..." style='height:90vh'>
                 <div class="carousel-caption mb-5 | text-start | position-absolute top-50 start-0 | bg-dark bg-opacity-50 | p-4 | rounded-end" style='width:50%'>
                     <p class='text-primary | fs-1 | fst-italic'>Convenient to Access</p>
                     <p class='fs-4'>A sport facility within a stone's throw. <br>Book a facility near you and play today!</p>
                 </div>
             </div>
             <div class='carousel-item'>
-                <img src="{{url_for('static', filename='basketballCourt.jpg')}}" class="d-block w-100" alt="..." style='height:600px'>
+                <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1490&q=80" class="d-block w-100" alt="..." style='height:90vh'>
                 <div class="carousel-caption mb-5 | text-start | position-absolute top-50 start-0 | bg-dark | bg-opacity-50 | p-4" style='width:50%'>
                     <p class='text-primary | fs-1 | fst-italic'>For Everyone</p>
                     <p class='fs-4'>A sport facility of every kind for everyone. <br>Enjoy your favourite sport with friends and family!</p>
                 </div>
             </div>
             <div class='carousel-item'>
-                <img src="{{url_for('static', filename='tennisCourt.jpg')}}" class="d-block w-100" alt="..." style='height:600px'>
+                <img src="https://images.unsplash.com/photo-1519672808815-bdd52bb3bd41?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1174&q=80" class="d-block w-100" alt="..." style='height:90vh'>
                 <div class="carousel-caption mb-5 | text-start | position-absolute top-50 start-0 | bg-dark | bg-opacity-50 | p-4" style='width:50%'>
                     <p class='text-primary | fs-1 | fst-italic'>Cheap and Affordable</p>
                     <p class='fs-4'>A sport facility thats cheap to rent. <br>Book a facility without worrying about monetary issues!</p>

@@ -106,7 +106,12 @@
                     <a href="{{url_for("adminWorkspace")}}" class='text-decoration-none | text-white'>Admin</a>
                 </button>
             </div>
-
+            {%if "User" and "UserID" in session%}
+                <div class='fs-4 | text-primary | m-auto'>
+                    <p class='fst-italic | mb-0'>@{{session.User}}</p>
+                    <small class='fs-6 | text-primary font-monospace'>UID : <span class='fst-italic'>{{session.UserID}}</span></small>
+                </div>
+            {%else%}
             <div class="my-auto | p-3 pt-4 mt-1 | end-0 position-absolute ">
                 <button class="text-primary | bg-transparent | border-0 | fs-5 | pe-3 | border-end | border-2 | border-secondary | border-gradient | ">
                     <a href='/register' class='text-decoration-none'>Register</a>
@@ -115,6 +120,7 @@
                     <a href='/login' class='text-decoration-none'>Login</a>
                 </button>
             </div>
+            {%endif%}
         </h1>
     </header>
     <script>
@@ -123,7 +129,6 @@
             warningText.innerText = '(๑˃̵　ᴗ　˂̵)و   Enjoy Your Time Here!'
         }
     </script>
-
 
 
     {% block content %}{% endblock %}
