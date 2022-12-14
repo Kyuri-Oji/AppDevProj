@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, request, session
 import shelve
+import secrets
 
 from forms import RegistrationForm, LoginForm
 from wtforms.validators import ValidationError
@@ -14,6 +15,7 @@ from OOP.Facilities import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8ecce6a32ba6703d10b72f3ccea07175'
+app.config["SESSION_PERMANENT"] = False
 
 # Main pages
 @app.route('/')
@@ -37,7 +39,7 @@ def register():
     if form.validate_on_submit() and request.method == "POST":
         
         dictUsers = {}
-        db = shelve.open('users', 'c')
+        db = shelve.open('users')
         
         try:
             dictUsers = db['Users']
@@ -62,14 +64,68 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    
+    dictsUser ={}
+    db = shelve.open('users')
+    try:
+        dictsUser = db['Users']
+    except:
+        print('Error in User.db')
+
+    userList = []
+    userNameList = []
+    userEmailList = []
+    userFirstList = []
+    userLastList = []
+    user48afe0ac895d0a6229298679 = [] # For safety reasons, this isnt called userPassList
+    
+    for users in dictsUser:
+        user = dictsUser.get(users)
+        userID = user.get_uid()
+        userList.append(userID)
+
+        userName = user.get_username()
+        userNameList.append(userName)
+        
+        userEmail = user.get_email()
+        userEmailList.append(userEmail)
+        
+        userFirst = user.get_firstName()
+        userFirstList.append(userFirst)
+        
+        userLast = user.get_lastName()
+        userLastList.append(userLast)
+        
+        userPass = user.get_password()
+        user48afe0ac895d0a6229298679.append(userPass)
+        
+    print(userList)
+    print(userEmailList)
+            
     if form.validate_on_submit():
         if form.email.data == 'admin@activeplay.sg' and form.password.data == 'password':
             flash('You have been logged in as an administrator.', 'login')
-            name = "Administrator"
-            adminID = '0000000'
-            session['User'] = name
-            session['UserID'] = adminID
+            userName = "Administrator"
+            userID = '0000000'
+            userEmail = 'admin@activeplay.sg'
+            userFirst = 'Admin'
+            userLast = '-'
+            session['User'] = [userName, userID, userEmail, userFirst, userLast]
             return redirect(url_for('home'))
+        
+        elif form.email.data in userEmailList:
+            index = userEmailList.index(form.email.data)
+            if form.password.data == user48afe0ac895d0a6229298679[index]:
+                userName = userNameList[index]
+                userID = userList[index]
+                userEmail = userEmailList[index]
+                userFirst = userFirstList[index]
+                userLast = userLastList[index]
+                session['User'] = [userName, userID, userEmail, userFirst, userLast]
+                return redirect(url_for('home'))
+            else:
+                flash('Login Unsuccessful. Please check username and password.', 'danger')
+            
         else:
             flash('Login Unsuccessful. Please check username and password.', 'danger')
     return render_template('login.html', title = 'Login', form=form)
@@ -88,10 +144,19 @@ def users():
     return render_template('Users/viewUsers.html', userList = userList)
 
 # DO NOT TOUCH, NO CLUE WHY IT WORKS, IT JUST DOES - WE DON'T KNOW HOW EITHER - CONSULT BUDDHA @ 404
-@app.route('/<user>')
+@app.route('/<user>', methods=['GET', 'POST'])
 def account(user):
-    # logout = session.pop('User', None)
-    return render_template('Users/userAccount.html')
+    form = LoginForm()
+    if request.method == 'POST':
+        return render_template('Users/userAccount.html', user = session['User'][0]) # TODO: Change how the url looks
+    else:
+        return redirect(url_for('home'))
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session.pop('User', None)
+    session.pop('UserID', None)
+    return redirect(url_for('home'))
 
 @app.route('/admin')
 def adminWorkspace():

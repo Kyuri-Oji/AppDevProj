@@ -22,16 +22,40 @@
         <small class='text-muted | font-monospace | ms-3'>To change information, click on item!</small>
         <div class='p-4'>
             <h3 class='text-secondary'>Account Information</h3>
-            <p class='fs-4'>Username : <span class='text-primary | font-monospace fst-italic | ms-2 me-4'>@{{session.User}}</span> 
-                            ID : <span class='text-primary | font-monospace fst-italic | ms-2 me-4'>{{session.UserID}}</span>
+            <p class='fs-4'>Username : <span class='text-primary | font-monospace | ms-2 me-4'>@{{session.User[0]}}</span> 
+                            ID : <span class='text-primary | font-monospace | ms-2 me-4'>{{session.User[1]}}</span>
             </p>
-            {%if session.User == 'Administrator' and session.UserID == "0000000"%}
-            <p class='fs-4'>First Name : <span class='text-primary | font-monospace fst-italic | ms-2 me-4'>Admin</span> 
-                            Last Name : <span class='text-primary | font-monospace fst-italic | ms-2 me-4'>-</span>
+            {%if session.User[0] == 'Administrator' and session.User[1] == "0000000"%}
+            <p class='fs-4'>First Name : <span class='text-primary | font-monospace | ms-2 me-4'>Admin</span> 
+                            Last Name : <span class='text-primary | font-monospace | ms-2 me-4'>-</span>
+            </p>
+            {%else%}
+            <p class='fs-4'>First Name : <span class='text-primary | font-monospace | ms-2 me-4'>{{session.User[3]}}</span> 
+                            Last Name : <span class='text-primary | font-monospace | ms-2 me-4'>{{session.User[4]}}</span>
+            </p>
+            <p class='fs-4'>
+                Email : <span class='text-primary | font-monospace | ms-2 me-4'>{{session.User[2]}}</span>
             </p>
             {%endif%}
         </div>
-        
+        <a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#logoutModal' style="width:10%">Log Out</a>
+                    
+                    <div class='modal fade' id='logoutModal' tabindex='-1' aria-labelledby='logoutModalLabel' aria-hidden='true'>
+                        <div class='modal-dialog'>
+                            <div class='modal-content'>
+                                <div class="modal-body">
+                                    <div class='card-body'>
+                                        <h5 class='card-text'>Confirm Log Out?</h5>
+                                        <form action="{{url_for('logout')}}" method='POST'class='my-2'>
+                                            <input type='submit' value='Log out' class='btn btn-danger'>
+                                        </form>
+                                        
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
     </div>
 </section>
 

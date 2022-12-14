@@ -106,10 +106,12 @@
                     <a href="{{url_for("adminWorkspace")}}" class='text-decoration-none | text-white'>Admin</a>
                 </button>
             </div>
-            {%if "User" and "UserID" in session%}
+            {%if "User" in session%}
                 <div class='fs-4 | text-primary | m-auto'>
-                    <p class='fst-italic | mb-0'>@{{session.User}}</p>
-                    <small class='fs-6 | text-primary font-monospace'>UID : <span class='fst-italic'>{{session.UserID}}</span></small>
+                    <form action="{{url_for('account', user=session.User)}}" method='POST' class=''>
+                        <input type='submit' value='@{{session.User[0]}}' class='fst-italic fs-3 text-primary | mb-0 | bg-transparent | border-0'> <br>
+                        <small class='px-2 | fs-6 | text-primary font-monospace'>UID : <span class='fst-italic'>{{session.User[1]}}</span></small>
+                    </form>
                 </div>
             {%else%}
             <div class="my-auto | p-3 pt-4 mt-1 | end-0 position-absolute ">
