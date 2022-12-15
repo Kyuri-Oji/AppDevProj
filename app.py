@@ -2,8 +2,8 @@ from flask import Flask, render_template, url_for, flash, redirect, request, ses
 import shelve
 import secrets
 
-from forms import RegistrationForm, LoginForm
 from wtforms.validators import ValidationError
+from forms import RegistrationForm, LoginForm, EditForm
 from eventForms import eventCreateForm, eventEditForm, eventDeleteForm, eventEditForm2, eventDeleteForm2
 from bookingForms import bookingForm, paymentForm
 from FacilitiesForms import CreateFacilityForm
@@ -141,7 +141,36 @@ def users():
         user = dictsUser.get(users)
         userList.append(user)
         
-    return render_template('Users/viewUsers.html', userList = userList)
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        return render_template('Users/viewUsers.html', userList = userList) 
+    else:
+        return render_template('404.html')
+
+@app.route('/edit/<id>', methods=['GET', 'POST'])
+def editUser(id):
+    editForm = EditForm()
+    
+    dictsUser ={}
+    db = shelve.open('users')
+    dictsUser = db['Users']
+    
+    userID = id
+    userName = editForm.editUsername.data
+    userFirst = editForm.editFirstName.data
+    userLast = editForm.editLastName.data
+    userEmail = editForm.editEmail.data
+    
+    if userID not in dictsUser.keys():
+        print('Error.')
+        flash('User ID not found in Event Database.', 'error')
+    else:
+        user = User(userName, userFirst, userLast, userEmail, userID)
+        dictsUser[user.get_uid()] = user
+        db['Users'] = dictsUser
+
+        return redirect(url_for('users'))
+    
+    return render_template('Users/userEdit.html', editForm = editForm)
 
 # DO NOT TOUCH, NO CLUE WHY IT WORKS, IT JUST DOES - WE DON'T KNOW HOW EITHER - CONSULT BUDDHA @ 404
 @app.route('/<user>', methods=['GET', 'POST'])
@@ -160,7 +189,10 @@ def logout():
 
 @app.route('/admin')
 def adminWorkspace():
-    return render_template('Users/adminWorkspace.html') 
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        return render_template('Users/adminWorkspace.html') 
+    else:
+        return render_template('404.html')
 
 # Event Functions
 @app.route('/events/createEvents', methods=['GET', 'POST'])
@@ -265,7 +297,6 @@ def editEventDirect(id):
                     
             return redirect(url_for('eventsPage'))
     return render_template('Events/eventEditDirect.html', formEvents = formEvents)
-
 
 @app.route('/events/deleteEvents', methods=['GET', 'POST'])
 def deleteEvent():

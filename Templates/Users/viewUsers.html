@@ -30,7 +30,7 @@
                 <td scope="col">{{user.get_lastName()}}</td>
                 <td scope="col">{{user.get_email()}}</td>
                 <td>
-                    <form action="" method='POST'class='col-auto'>
+                    <form action="{{url_for('editUser', id=user.get_uid())}}" method='POST'class='col-auto'>
                         <input type='submit' value='Edit' class='btn btn-success'>
                     </form>
                 </td>
