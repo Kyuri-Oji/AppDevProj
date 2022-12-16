@@ -25,23 +25,48 @@
         <tbody>
             <tr>
                 <th scope="col" class='ps-5'>{{user.get_uid()}}</th>
-                <td scope="col"><a href='#' class='text-decoration-none' data-bs-toggle='modal' data-bs-target='#userModal'>@{{user.get_username()}}</a></td>
+                <td scope="col" class='text-primary'>@{{user.get_username()}}</td>
                 <td scope="col">{{user.get_firstName()}}</td>
                 <td scope="col">{{user.get_lastName()}}</td>
                 <td scope="col">{{user.get_email()}}</td>
                 <td>
-                    <form action="{{url_for('editUser', id=user.get_uid())}}" method='POST'class='col-auto'>
+                    <form action="{{url_for('editUser', id=user.get_uid())}}" method='POST' class='col-auto'>
                         <input type='submit' value='Edit' class='btn btn-success'>
                     </form>
+                    
                 </td>
                 <td>
-                    <form action="" method='POST'class='col-auto'>
+                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
                         <input type='submit' value='Delete' class='btn btn-danger'>
                     </form>
+                    <!--<a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal' style="width:70%">Delete</a> for when i can figure out this modal bs-->
                 </td>
             </tr>
         </tbody>
+
+        <div class='modal fade' id='deleteModal' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+            <div class='modal-dialog'>
+                <div class='modal-content'>
+                    <div class="modal-body">
+                        <div class='card-body'>
+                            <h3 class='card-title'>User Deletion</h3>
+                            <h5 class='card-text'>Are you sure you want to delete?<br></h5>
+                            <small class='font-monospace | text-muted'>Users once deleted cannot be recovered.</small>
+                            <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                            <h5 class='font-monospace'>Username : <span class='text-primary'>@{{user.get_username()}}</span></h5>
+                            <h5 class='font-monospace'>Email : <span class='text-primary'>@{{user.get_email()}}</span></h5>
+                            <br>
+                            <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                <input type='submit' value='Delete' class='btn btn-danger'>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         {%endfor%}
+        
     </table>
 
 </div>

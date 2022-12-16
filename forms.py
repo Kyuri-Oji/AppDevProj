@@ -30,3 +30,19 @@ class LoginForm(FlaskForm):
                              validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+    
+class EditForm(FlaskForm):
+    editUsername = StringField('Username : ',
+                        render_kw={'placeholder' : 'Username'},
+                        validators=[DataRequired(), Length(min = 2, max = 20)])
+    editFirstName = StringField('First Name : ',
+                            render_kw={'placeholder' : 'Benjamin'},
+                            validators=[DataRequired(), Length(min = 2)])
+    editLastName = StringField('Last Name : ',
+                           render_kw={'placeholder' : 'Franklin'},
+                           validators=[DataRequired(), Length(min = 2)])
+    editEmail = StringField('Email : ',
+                        render_kw={'placeholder' : 'BenjaminFranklin@example.com'},
+                        validators=[DataRequired(), Email()])
+
+    submit = SubmitField('Edit User')

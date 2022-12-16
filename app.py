@@ -50,11 +50,11 @@ def register():
         userFirstName = form.firstName.data
         userLastName =  form.lastName.data
         userEmail = form.email.data
-        userID = User.get_random_UID(None) #DO NOT TOUCH, I REPEAT, DO NOT EVER TOUCH, IT WILL CAUSE A NUCLEAR MELTDOWN
+        userID = str(User.get_random_UID(User)) #DO NOT TOUCH, I REPEAT, DO NOT EVER TOUCH, IT WILL CAUSE A NUCLEAR MELTDOWN
         userPass = form.password.data
         
         user = User(userName, userFirstName, userLastName, userEmail, userID, userPass)
-        dictUsers[user.get_random_UID()] = user
+        dictUsers[user.get_uid()] = user
         db['Users'] = dictUsers
         
         db.close()
@@ -152,25 +152,53 @@ def editUser(id):
     
     dictsUser ={}
     db = shelve.open('users')
-    dictsUser = db['Users']
+    try:
+        if 'Users' in db:
+            dictsUser = db['Users']
+        else:
+            db['Users'] = dictsUser
+    except:
+        print('An Unknown Error Occured')
+    print(dictsUser)
     
     userID = id
+    
+    currentUser = dictsUser.get(userID)
+    currentUserPass = currentUser.get_password()
+    
     userName = editForm.editUsername.data
     userFirst = editForm.editFirstName.data
     userLast = editForm.editLastName.data
     userEmail = editForm.editEmail.data
+    userPass = currentUserPass
+    print(userID)
     
-    if userID not in dictsUser.keys():
-        print('Error.')
-        flash('User ID not found in Event Database.', 'error')
-    else:
-        user = User(userName, userFirst, userLast, userEmail, userID)
+    if editForm.validate_on_submit():
+        user = User(userName, userFirst, userLast, userEmail, userID, userPass)
         dictsUser[user.get_uid()] = user
         db['Users'] = dictsUser
 
         return redirect(url_for('users'))
     
     return render_template('Users/userEdit.html', editForm = editForm)
+
+@app.route('/delete/<id>', methods=['GET', 'POST'])
+def deleteUser(id):
+    dictsUsers = {}
+    db = shelve.open('users')
+    try:
+        if 'Users' in db:
+            dictsUsers = db['Users']
+        else:
+            db['Users'] = dictsUsers
+    except:
+        print('An Unknown Error Occured.')
+        
+    userID = id
+    dictsUsers.pop(userID)
+    db['Users'] = dictsUsers
+    
+    return redirect(url_for('users'))
 
 # DO NOT TOUCH, NO CLUE WHY IT WORKS, IT JUST DOES - WE DON'T KNOW HOW EITHER - CONSULT BUDDHA @ 404
 @app.route('/<user>', methods=['GET', 'POST'])
@@ -260,7 +288,7 @@ def editEvent():
             print(eventsDict.keys())
                     
             return redirect(url_for('eventsPage'))
-    return render_template('Events/eventEdit.html', formEvents = formEvents)\
+    return render_template('Events/eventEdit.html', formEvents = formEvents)
 
 @app.route('/events/editEvents/<int:id>', methods=['GET', 'POST'])
 def editEventDirect(id):
@@ -667,5 +695,8 @@ def page_not_found(e):
 def page_not_found(e):
     return render_template('500.html'), 500
 
+@app.errorhandler(403)
+def page_not_found(e):
+    return render_template('unknownError.html')
 if __name__ == '__main__':
     app.run(debug=True)

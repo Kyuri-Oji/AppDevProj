@@ -37,30 +37,15 @@
                         <p class='mb-0'>Event Type : <span>{{event.get_eventType()}}</span></p>
                     </div>
                     <hr>
-                <nav class='row '>
+                <nav class='row '> <!--change for loop-->
                     <form action="" method='POST'class='col-auto'>
                         <input type='submit' value='Sign Up' class='btn btn-primary'>
                     </form>
                     
-                    <a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal' style="width:25%">Delete</a>
-                    
-                    <div class='modal fade' id='deleteModal' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
-                        <div class='modal-dialog'>
-                            <div class='modal-content'>
-                                <div class="modal-body">
-
-                                    <div class='card-body'>
-                                        
-                                        <form action="{{url_for('deleteEventDirect', id=event.get_eventID())}}" method='POST'class='col-auto'>
-                                            <input type='submit' value='Delete' class='btn btn-danger'>
-                                        </form>
-                                        
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <form action="{{url_for('deleteEventDirect', id=event.get_eventID())}}" method='POST' class='my-3'>
+                        <input type='submit' value='Delete' class='btn btn-danger'>
+                    </form>
+                    <!--<a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal' style="width:25%">Delete</a> for when i can figure out this modal bs-->
 
                     <form action="{{url_for('editEventDirect', id=event.get_eventID())}}" method='POST'class='col-auto'>
                         <input type='submit' value='Edit' class='btn btn-success'>
@@ -69,7 +54,24 @@
                 </div>
             </div>
         </div>
+        <div class='modal fade' id='deleteModal' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+            <div class='modal-dialog'>
+                <div class='modal-content'>
+                    <div class="modal-body">
+                        <div class='card-body'>
+                            <h3 class='card-title'>Event Deletion</h3>
+                            <h5 class='card-text'>Are you sure you want to delete ID : <span class='text-primary'>{{event.get_eventID()}}</span>?</h5>
+                            <small class='font-monospace | text-muted'>Events once deleted cannot be recovered.</small>
+                            <form action="{{url_for('deleteEventDirect', id=event.get_eventID())}}" method='POST' class='my-3'>
+                                <input type='submit' value='Delete' class='btn btn-danger'>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     {%endfor%}
+    
 </section>
 <style>
     div#cardExpand {
