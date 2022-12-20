@@ -6,7 +6,7 @@ from wtforms.validators import ValidationError
 from forms import RegistrationForm, LoginForm, EditForm
 from eventForms import eventCreateForm, eventEditForm, eventDeleteForm, eventEditForm2, eventDeleteForm2
 from bookingForms import bookingForm, paymentForm
-from FacilitiesForms import CreateFacilityForm
+from FacilitiesForm import CreateFacilityForm
 
 from OOP.userFunction import *
 from OOP.eventFunction import *
