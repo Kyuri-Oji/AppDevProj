@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, DateTimeField, TextAreaField, PasswordField, SubmitField, BooleanField, RadioField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from datetime import datetime
+import time
 import shelve
 
 class eventCreateForm(FlaskForm):
@@ -20,7 +21,7 @@ class eventCreateForm(FlaskForm):
                            render_kw={'placeholder' : '001'})
     eventType = RadioField('Event Type : ',
                            validators=[DataRequired()],
-                           choices=[('S', 'Sports'), ('L', 'Lifestyle'), ('O', 'Others')])
+                           choices=[('Sports', 'Sports'), ('Lifestyle', 'Lifestyle'), ('Others', 'Others')])
     submit = SubmitField('Create Events')
     
     def validate_eventID(self, eventID):
@@ -57,25 +58,42 @@ class eventEditForm(FlaskForm):
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
     editEventType = RadioField('Edit Event Type : ',
                                validators=[DataRequired()],
-                               choices=[('S', 'Sports'), ('L', 'Lifestyle'), ('O', 'Others')])
+                               choices=[('Sports', 'Sports'), ('Lifestyle', 'Lifestyle'), ('Others', 'Others')])
     submit = SubmitField('Edit Events')
-    
-    def validate_eventID(self, editEventID):
-        eventsDict = {}
-        eventDB = shelve.open('Events')
-        try:
-            if 'Events' in eventDB:
-                eventsDict = eventDB['Events']
-            else:
-                eventDB['Events'] = eventsDict
-        except:
-            print('Error in retrieving events.')
-            
-        # if self.editEventID.data not in eventsDict.keys():
-        #     raise ValidationError('Event ID not found in Database!')
+
+class eventEditForm2(FlaskForm):
+   
+    editEventName = StringField('Edit Event Name : ',
+                                validators=[],
+                                render_kw={'placeholder' : ''})
+    editEventDesc = TextAreaField('Edit Event Descriptrion : ',
+                                  validators=[],
+                                  render_kw={'placeholder' : ''})
+    editEventVacancy = IntegerField('Edit Event Vacancy : ',
+                               validators=[],
+                               render_kw={'placeholder' : ''})
+    editEventDate = DateTimeField('Event End Date : ',
+                              validators=[],
+                              format='%d-%m-%y',#datetime formatting, dafault to current date
+                              render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
+    editEventType = RadioField('Edit Event Type : ',
+                               validators=[DataRequired()],
+                               choices=[('Sports', 'Sports'), ('Lifestyle', 'Lifestyle'), ('Others', 'Others')])
+    submit = SubmitField('Edit Events')
         
 class eventDeleteForm(FlaskForm):
     deleteEventID = IntegerField('Event ID to delete : ', 
                                  validators=[DataRequired()])
     submit = SubmitField('Delete Events')
+    
+class eventDeleteForm2(FlaskForm):
+    deleteEventID = IntegerField('Event ID to delete : ', 
+                                 validators=[DataRequired()],
+                                 render_kw={'placeholder' : 'Re-enter ID to delete. (Found in URL)'})
+    submit = SubmitField('Delete Events')
+    
+class eventSignup(FlaskForm):
+    eventID = IntegerField('Event ID : ', 
+                           validators=[DataRequired()])
+    submit = SubmitField('Sign Up')
         
