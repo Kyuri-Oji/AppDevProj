@@ -10,7 +10,7 @@ def all_numbers(form,field):
 class bookingForm(FlaskForm):
     bookingFacilityLocation = SelectField('Facility Location: ',
                                          validators=[DataRequired()],
-                                         choices=[('', 'Select'), ('56', 'Ang Mo Kio')])
+                                         choices=[('', 'Select'), ('56', 'Ang Mo Kio'), ('53', 'Hougang'), ('37', 'Macpherson'), ('35', 'Braddell'), ('79', 'Seletar'), ('19', 'Golden Mile')])  
     bookingFacilityID = SelectField('Facility ID: ',  
                                  validators=[DataRequired()],
                                  choices=[('', 'Select'), ('BD1', 'Badminton Court 1'), ('BD2', 'Badminton Court 2'), ('BB1', 'Basketball Court 1')])
@@ -29,9 +29,12 @@ class paymentForm(FlaskForm):
                                 choices=[('', 'Select'), ('American Express', 'American Express'), ('Mastercard', 'Mastercard'), ('VISA', 'VISA')])
     cardNumber = StringField('Card Number: ',
                             validators=[DataRequired(), all_numbers, Length(min = 12, max = 12)])
-    expirationDate = DateTimeField('Booking Date: ',
+    expirationDate = DateTimeField('Expiration Date: ',
                                 validators=[DataRequired()],
                                 format='%m-%y', default=datetime.now, #datetime formatting, dafault to current date
                                 render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
     submit = SubmitField('Book Facility')
     
+# Use data from facilitiesdb for choices
+# Set restrictions using data from facilitiesdb
+# When editting, use data from booking as placeholder

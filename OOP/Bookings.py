@@ -18,13 +18,21 @@ class Bookings:
      def get_type(self):
           return self.__type
      
-class FacilityBooking(Bookings):
-     def __init__(self,type,facility,date,timeslot):
-          Bookings.__init__(self,type)
+class FacilityBooking:
+     def __init__(self,facility,date,timeslot):
+          self.__booking_id=""
           self.__facility=facility
           self.__date=date
           self.__timeslot=timeslot
 
+     def set_booking_id(self):
+          day,month,year=str(self.__date).split("-")
+          facility=self.__facility
+          randomID=""
+          for i in range(4): # 4-Digit Random
+            randomID+=random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
+          self.__booking_id=day+month+year+facility+randomID
+     
      def set_facility(self,facility):
           self.__facility=facility
 
@@ -33,6 +41,9 @@ class FacilityBooking(Bookings):
 
      def set_timeslot(self,timeslot):
           self.__timeslot=timeslot
+
+     def get_booking_id(self):
+          return self.__booking_id
 
      def get_facility(self):
           return self.__facility

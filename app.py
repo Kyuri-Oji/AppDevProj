@@ -554,9 +554,10 @@ def bookingPage():
         bookDate = formsBooking.bookingDate.data
         bookTime = formsBooking.bookingTimeSlot.data
 
-        bookFacilID=bookFacilLoc+bookFacil
+        bookFacilID = bookFacilLoc+bookFacil
 
         fb = FacilityBooking(bookFacilID,bookDate,bookTime)
+        fb.set_booking_id()
         bookingsDict[fb.get_booking_id()] = fb
         bookingDB['Bookings'] = bookingsDict
         
@@ -586,7 +587,7 @@ def bookingCurrent():
     bookingsDict = {}
     bookingDB = shelve.open('Bookings')
     bookingsDict = bookingDB['Bookings']
-    
+
     bookingsList=[]
     for booking in bookingsDict:
         bookings = bookingsDict.get(booking)
@@ -595,7 +596,7 @@ def bookingCurrent():
     return render_template('Booking/bookingCurrent.html')
 
 @app.route('/booking/bookingEdit', methods=['GET', 'POST'])
-def editBookings():
+def editBookings(id):
     formsBooking = bookingForm()
     if formsBooking.validate_on_submit() and request.method == 'POST':
         bookingsDict = {}
@@ -607,16 +608,19 @@ def editBookings():
                 bookingDB['Bookings'] = bookingsDict
         except:
             print('Error in retrieving events.')
-
-        bookFacilLoc=formsBooking.bookingFacilityLocation.data
+        
+        bookFacilLoc = formsBooking.bookingFacilityLocation.data
         bookFacil = formsBooking.bookingFacilityID.data
         bookDate = formsBooking.bookingDate.data
         bookTime = formsBooking.bookingTimeSlot.data
 
-        bookFacilID=bookFacilLoc+bookFacil
+        bookFacilID = bookFacilLoc+bookFacil
 
-        fb = FacilityBooking(bookFacilID,bookDate,bookTime)
-        bookingsDict[fb.get_booking_id()] = fb
+        fb = bookingsDict[id]
+        fb.set_facility(bookFacilID)
+        fb.set_date(bookDate)
+        fb.set_timeslot(bookTime)
+        bookingsDict[id] = fb
         bookingDB['Bookings'] = bookingsDict
         
         bookingDB.close()
