@@ -73,8 +73,12 @@
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="{{url_for('facilitiesPage')}}">View Facilities</a></li>
                     <li><a class="dropdown-item" href="#">Facilities Near You</a></li>
-                    <li><a name="adminOnly" class="dropdown-item text-danger" href="{{url_for('createFacilities')}}">Create Facilities</a></li>
-                    <li><a class='dropdown-item text-danger' href='#'>Edit Facilities</a></li>
+                    {%if "User" in session%}
+                        {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
+                            <li><a name="adminOnly" class="dropdown-item text-danger" href="{{url_for('createFacilities')}}">Create Facilities</a></li>
+                            <li><a class='dropdown-item text-danger' href='#'>Edit Facilities</a></li>
+                        {%endif%}
+                    {%endif%}
                 </ul>
             </div>
             <div class="dropdown | my-auto px-5 mx-2 pb-2 | border-end border-2 border-primary | border-gradient">
@@ -85,8 +89,12 @@
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="{{url_for('eventsPage')}}">View Events</a></li>
                     <li><a class="dropdown-item" href="#">Registered Events</a></li>
-                    <li><a name="adminOnly" class="dropdown-item text-danger" href="{{url_for('createEvent')}}">Create Events</a></li>
-                    <li><a name='adminOnly' class='dropdown-item text-danger' href="{{url_for('editEvent')}}">Edit Events</a><li>
+                    {%if "User" in session%}
+                        {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
+                            <li><a name="adminOnly" class="dropdown-item text-danger" href="{{url_for('createEvent')}}">Create Events</a></li>
+                            <li><a name='adminOnly' class='dropdown-item text-danger' href="{{url_for('editEvent')}}">Edit Events</a><li>
+                        {%endif%}
+                    {%endif%}
                 </ul>
             </div>
             <div class="dropdown | my-auto px-5 mx-2 pb-2 | border-end border-2 border-primary | border-gradient">

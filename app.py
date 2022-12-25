@@ -179,26 +179,31 @@ def editUser(id):
         db['Users'] = dictsUser
 
         return redirect(url_for('users'))
-    
-    return render_template('Users/userEdit.html', editForm = editForm)
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        return render_template('Users/userEdit.html', editForm = editForm)
+    else:
+        return render_template('404.html')
 
 @app.route('/delete/<id>', methods=['GET', 'POST'])
 def deleteUser(id):
-    dictsUsers = {}
-    db = shelve.open('users')
-    try:
-        if 'Users' in db:
-            dictsUsers = db['Users']
-        else:
-            db['Users'] = dictsUsers
-    except:
-        print('An Unknown Error Occured.')
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        dictsUsers = {}
+        db = shelve.open('users')
+        try:
+            if 'Users' in db:
+                dictsUsers = db['Users']
+            else:
+                db['Users'] = dictsUsers
+        except:
+            print('An Unknown Error Occured.')
+            
+        userID = id
+        dictsUsers.pop(userID)
+        db['Users'] = dictsUsers
         
-    userID = id
-    dictsUsers.pop(userID)
-    db['Users'] = dictsUsers
-    
-    return redirect(url_for('users'))
+        return redirect(url_for('users'))
+    else:
+        return render_template('404.html')
 
 # DO NOT TOUCH, NO CLUE WHY IT WORKS, IT JUST DOES - WE DON'T KNOW HOW EITHER - CONSULT BUDDHA @ 404
 @app.route('/<user>', methods=['GET', 'POST'])
@@ -251,7 +256,11 @@ def createEvent():
         eventDB.close()
         
         return redirect(url_for('eventsPage'))
-    return render_template('Events/eventCreate.html', formEvents=formEvents)    
+    
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        return render_template('Events/eventCreate.html', formEvents=formEvents)   
+    else:
+        return render_template('404.html') 
 
 # EDIT EVENTS ROUTING
 @app.route('/events/editEvents', methods=['GET', 'POST'])
@@ -288,7 +297,11 @@ def editEvent():
             print(eventsDict.keys())
                     
             return redirect(url_for('eventsPage'))
-    return render_template('Events/eventEdit.html', formEvents = formEvents)
+        
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        return render_template('Events/eventEdit.html', formEvents = formEvents)
+    else:
+        return render_template('404.html')
 
 @app.route('/events/editEvents/<int:id>', methods=['GET', 'POST'])
 def editEventDirect(id):
@@ -324,7 +337,11 @@ def editEventDirect(id):
             print(eventsDict.keys())
                     
             return redirect(url_for('eventsPage'))
-    return render_template('Events/eventEditDirect.html', formEvents = formEvents)
+        
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        return render_template('Events/eventEditDirect.html', formEvents = formEvents)
+    else:
+        return render_template('404.html')
 
 @app.route('/events/deleteEvents', methods=['GET', 'POST'])
 def deleteEvent():
@@ -348,24 +365,30 @@ def deleteEvent():
             eventDB['Events'] = eventsDict  
             return redirect(url_for('eventsPage'))
         
-    return render_template('Events/eventDelete.html', formEvents=formEvents, ce=createEvents)
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        return render_template('Events/eventDelete.html', formEvents=formEvents, ce=createEvents)
+    else:
+        return render_template('404.html')
 
 @app.route('/events/deleteEvents/<int:id>', methods=['GET', 'POST'])
 def deleteEventDirect(id):
-    eventDB = shelve.open('Events')
-    eventsDict = {}
-    try:
-        if 'Events' in eventDB:
-            eventsDict = eventDB['Events']
-        else:
-            eventDB['Events'] = eventsDict
-    except:
-        print('Error in retrieving events.')
-    eventID = id
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        eventDB = shelve.open('Events')
+        eventsDict = {}
+        try:
+            if 'Events' in eventDB:
+                eventsDict = eventDB['Events']
+            else:
+                eventDB['Events'] = eventsDict
+        except:
+            print('Error in retrieving events.')
+        eventID = id
 
-    eventsDict.pop(eventID)  
-    eventDB['Events'] = eventsDict  
-    return redirect(url_for('eventsPage'))
+        eventsDict.pop(eventID)  
+        eventDB['Events'] = eventsDict  
+        return redirect(url_for('eventsPage'))
+    else:
+        return render_template('404.html')
 
 @app.route('/events', methods=['GET', 'POST'])
 def eventsPage():
@@ -554,10 +577,9 @@ def bookingPage():
         bookDate = formsBooking.bookingDate.data
         bookTime = formsBooking.bookingTimeSlot.data
 
-        bookFacilID = bookFacilLoc+bookFacil
+        bookFacilID=bookFacilLoc+bookFacil
 
         fb = FacilityBooking(bookFacilID,bookDate,bookTime)
-        fb.set_booking_id()
         bookingsDict[fb.get_booking_id()] = fb
         bookingDB['Bookings'] = bookingsDict
         
@@ -587,7 +609,7 @@ def bookingCurrent():
     bookingsDict = {}
     bookingDB = shelve.open('Bookings')
     bookingsDict = bookingDB['Bookings']
-
+    
     bookingsList=[]
     for booking in bookingsDict:
         bookings = bookingsDict.get(booking)
@@ -596,7 +618,7 @@ def bookingCurrent():
     return render_template('Booking/bookingCurrent.html')
 
 @app.route('/booking/bookingEdit', methods=['GET', 'POST'])
-def editBookings(id):
+def editBookings():
     formsBooking = bookingForm()
     if formsBooking.validate_on_submit() and request.method == 'POST':
         bookingsDict = {}
@@ -608,19 +630,16 @@ def editBookings(id):
                 bookingDB['Bookings'] = bookingsDict
         except:
             print('Error in retrieving events.')
-        
-        bookFacilLoc = formsBooking.bookingFacilityLocation.data
+
+        bookFacilLoc=formsBooking.bookingFacilityLocation.data
         bookFacil = formsBooking.bookingFacilityID.data
         bookDate = formsBooking.bookingDate.data
         bookTime = formsBooking.bookingTimeSlot.data
 
-        bookFacilID = bookFacilLoc+bookFacil
+        bookFacilID=bookFacilLoc+bookFacil
 
-        fb = bookingsDict[id]
-        fb.set_facility(bookFacilID)
-        fb.set_date(bookDate)
-        fb.set_timeslot(bookTime)
-        bookingsDict[id] = fb
+        fb = FacilityBooking(bookFacilID,bookDate,bookTime)
+        bookingsDict[fb.get_booking_id()] = fb
         bookingDB['Bookings'] = bookingsDict
         
         bookingDB.close()
@@ -701,4 +720,4 @@ def page_not_found(e):
 
 if __name__ == '__main__':
     app.run(debug=True)
-# 700th line :D
+# 723rd line :D
