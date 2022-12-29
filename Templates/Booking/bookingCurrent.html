@@ -17,10 +17,20 @@
     <tbody>
         {%for booking in bookingsList%}
             <tr>
-                <td>{{booking.get_booking_id()}}</td>
-                <td>{{booking.get_facility()}}</td>
-                <td>{{booking.get_date()}}</td>
-                <td>{{booking.get_timeslot()}}</td>
+                <td style="width:25%">{{booking.get_booking_id()}}</td>
+                <td scope='col' style="width:25%">{{booking.get_facility()}}</td>
+                <td scope='col' style="width:25%">{{booking.get_date()}}</td>
+                <td scope='col' style="width:25%">{{booking.get_timeslot()}}</td>
+                <td>
+                    <form action="{{url_for('editBookings', id=booking.get_booking_id())}}" method='POST' class='col-auto'>
+                        <input type='submit' value='Edit' class='btn btn-primary'>
+                    </form>
+                </td>
+                <td>
+                    <form action="#" method='POST' class='col-auto'>
+                        <input type='submit' value='Delete' class='btn btn-danger'>
+                    </form>
+                </td>
             </tr>
         {%endfor%}
         <tr>
@@ -29,7 +39,7 @@
             <td scope='col' style="width:25%">15-12-2022</td>
             <td scope='col' style="width:25%">10am to 11am</td>
             <td>
-                <form action="{{url_for('editBookings')}}" method='POST' class='col-auto'>
+                <form action="#" method='POST' class='col-auto'>
                     <input type='submit' value='Edit' class='btn btn-primary'>
                 </form>
             </td>
