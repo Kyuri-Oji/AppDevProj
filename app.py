@@ -572,14 +572,16 @@ def bookingPage():
         except:
             print('Error in retrieving events.')
 
-        bookFacilLoc=formsBooking.bookingFacilityLocation.data
-        bookFacil = formsBooking.bookingFacilityID.data
+        bookFacilLoc = formsBooking.bookingFacilityLocation.data
+        bookFacilType = formsBooking.bookingFacilityID.data
         bookDate = formsBooking.bookingDate.data
         bookTime = formsBooking.bookingTimeSlot.data
 
-        bookFacilID=bookFacilLoc+bookFacil
+        bookDate = bookDate.split(" ")[0]
+        bookFacil = bookFacilLoc+bookFacilType
 
-        fb = FacilityBooking(bookFacilID,bookDate,bookTime)
+        fb = FacilityBooking(bookFacil,bookDate,bookTime)
+        fb.set_booking_id()
         bookingsDict[fb.get_booking_id()] = fb
         bookingDB['Bookings'] = bookingsDict
         
@@ -615,10 +617,10 @@ def bookingCurrent():
         bookings = bookingsDict.get(booking)
         bookingsList.append(bookings)
 
-    return render_template('Booking/bookingCurrent.html')
+    return render_template('Booking/bookingCurrent.html', bookingsList = bookingsList)
 
-@app.route('/booking/bookingEdit', methods=['GET', 'POST'])
-def editBookings():
+@app.route('/booking/bookingEdit/<id>', methods=['GET', 'POST'])
+def editBookings(id):
     formsBooking = bookingForm()
     if formsBooking.validate_on_submit() and request.method == 'POST':
         bookingsDict = {}
@@ -631,14 +633,18 @@ def editBookings():
         except:
             print('Error in retrieving events.')
 
-        bookFacilLoc=formsBooking.bookingFacilityLocation.data
-        bookFacil = formsBooking.bookingFacilityID.data
+        bookFacilLoc = formsBooking.bookingFacilityLocation.data
+        bookFacilType = formsBooking.bookingFacilityID.data
         bookDate = formsBooking.bookingDate.data
         bookTime = formsBooking.bookingTimeSlot.data
 
-        bookFacilID=bookFacilLoc+bookFacil
+        bookDate = str(bookDate).split(" ")[0]
+        bookFacil = bookFacilLoc+bookFacilType
 
-        fb = FacilityBooking(bookFacilID,bookDate,bookTime)
+        fb = bookingsDict[id]
+        fb.set_facility(bookFacil)
+        fb.set_date(bookDate)
+        fb.set_timeslot(bookTime)
         bookingsDict[fb.get_booking_id()] = fb
         bookingDB['Bookings'] = bookingsDict
         
@@ -658,6 +664,7 @@ def bookingHistory():
     for booking in bookingsDict:
         bookings = bookingsDict.get(booking)
         bookingsList.append(bookings)
+    
 
     return render_template('Booking/bookingHistory.html')
 

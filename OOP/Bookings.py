@@ -26,7 +26,7 @@ class FacilityBooking:
           self.__timeslot=timeslot
 
      def set_booking_id(self):
-          day,month,year=str(self.__date).split("-")
+          year,month,day=str(self.__date).split("-")
           facility=self.__facility
           randomID=""
           for i in range(4): # 4-Digit Random
@@ -49,7 +49,11 @@ class FacilityBooking:
           return self.__facility
 
      def get_date(self):
-          return self.__date
+          year,month,day=str(self.__date).split("-")
+          date=day+"-"+month+"-"+year
+          return date
 
      def get_timeslot(self):
           return self.__timeslot
+     
+#Implement session

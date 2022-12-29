@@ -15,10 +15,10 @@
     <tbody>
         {%for booking in bookingsList%}
             <tr>
-                <td>{{booking.get_booking_id()}}</td>
-                <td>{{booking.get_facility()}}</td>
-                <td>{{booking.get_date()}}</td>
-                <td>{{booking.get_timeslot()}}</td>
+                <td style="width:25%">{{booking.get_booking_id()}}</td>
+                <td scope='col' style="width:25%">{{booking.get_facility()}}</td>
+                <td scope='col' style="width:25%">{{booking.get_date()}}</td>
+                <td scope='col' style="width:25%">{{booking.get_timeslot()}}</td>
             </tr>
         {%endfor%}
         <tr>
