@@ -400,7 +400,6 @@ def eventsPage():
     for event in eventsDict:
         events = eventsDict.get(event)
         eventsList.append(events)
-    print(eventsList)
     
     # Please do not touch this, I really have no clue how to solve this if broken.
     eventSports = []
@@ -408,26 +407,34 @@ def eventsPage():
         events = (eventsDict.get(event))
         if 'Sports' in events.get_eventType():
             eventSports.append(events)
-    print(eventSports) 
     
     eventLifestyle = []
     for event in eventsDict:
         events = (eventsDict.get(event))
         if 'Lifestyle' in events.get_eventType():
             eventLifestyle.append(events)
-    print(eventLifestyle)
         
     eventOthers = []
     for event in eventsDict:
         events = (eventsDict.get(event))
         if 'Others' in events.get_eventType():
             eventOthers.append(events)
-    print(eventOthers)
     
     eventTypeList = ['Sports', 'Lifestyle', 'Others']
-    
     eventTypeDict = {'Sports' : eventSports, 'Lifestyle' : eventLifestyle, 'Others' : eventOthers}
-  
+    
+    
+    eventSignUp = []
+    eventSignUpDB = {}
+    try:
+        if 'eventSignUp' in eventSignUpDB:
+            eventSignUpDict = eventSignUpDB['eventSignUp']
+        else:
+            eventSignUpDB['eventSignUp'] = eventSignUpDict
+    except:
+        print('An Unknown Error Occured.')
+    # fk it im tired do tmr
+            
     return render_template('Events/eventMain.html', eventsList = eventsList, eventType = eventTypeList, eventSports = eventSports, eventLifestyle = eventLifestyle, eventOthers = eventOthers, eventTypeDict = eventTypeDict)
 
 @app.route('/events/sports', methods=['GET', 'POST'])
@@ -554,8 +561,70 @@ def eventsPageOthers():
                            eventsList = eventsList, eventType = eventTypeList, eventSports = eventSports, eventLifestyle = eventLifestyle, eventOthers = eventOthers, eventTypeDict = eventTypeDict)
 
 @app.route('/events/signup/<int:id>', methods=['GET', 'POST'])
-def eventSignup():
-    return render_template('Events/eventSignUp.html')
+def eventSignup(id):
+    eventSignUpList = []
+    eventSignUpDB = shelve.open('eventSignUp')
+    eventSignUpDict = {}
+    
+    # list the userID under the event ID, find users registered to the event not event registered to the user
+    eventID = id
+    if 'User' in session:
+        userID = session['User'][1]
+
+        try:
+            if 'eventSignUp' in eventSignUpDB:
+                eventSignUpDict = eventSignUpDB['eventSignUp']
+            else:
+                eventSignUpDB['eventSignUp'] = eventSignUpDict
+        except:
+            print('An Unknown Error Occured.')
+            
+        # Check whether event key already in dictionary
+        if eventID in eventSignUpDict.keys():
+            eventList = []
+            
+            for events in eventSignUpDict[eventID]:
+                eventList.append(events)
+                
+            if userID not in eventList:
+                eventList.append(userID)
+                print(eventList)
+                eventSignUpDict[eventID] = eventList
+            else:
+                print('User already registered!')
+        else:
+            eventSignUpList.append(userID)
+            eventSignUpDict[eventID] = eventSignUpList
+            eventSignUpDB['eventSignUp'] = eventSignUpDict
+            
+        return redirect(url_for('eventsPage'))
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/events/registered', methods=['GET', 'POST'])
+def eventRegistered():
+    if 'User' in session:
+        userID = session['User'][1]
+        eventSignUpDB = shelve.open('eventSignUp')
+        eventSignUpDict = {}
+        
+        try:
+            if 'eventSignUp' in eventSignUpDB:
+                eventSignUpDict[userID] = eventSignUpDB['eventSignUp']
+            else:
+                eventSignUpDB['eventSignUp'] = eventSignUpDict
+        except:
+            print('An Unknown Error Occured.')
+            
+        eventSignUpList = []
+        for users in eventSignUpDict:
+            user = eventSignUpDict.get(users)
+            eventSignUpList.append(user)
+        
+        print(eventSignUpList)
+        return render_template('Events/eventRegistered.html')
+    else:
+        return redirect(url_for('login'))
 
 # Booking functions
 @app.route('/booking', methods=['GET', 'POST'])
