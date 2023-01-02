@@ -27,63 +27,32 @@
                     </form>
                 </td>
                 <td>
-                    <form action="#" method='POST' class='col-auto'>
-                        <input type='submit' value='Delete' class='btn btn-danger'>
-                    </form>
+                    <a href="#" class='text-decoration-none btn btn-danger | mx-2' data-bs-toggle='modal' data-bs-target='#deleteModal_{{booking.get_booking_id()}}'>Delete</a>
                 </td>
             </tr>
+
+            <div class='modal fade' id='deleteModal_{{booking.get_booking_id()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                <div class='modal-dialog'>
+                    <div class='modal-content'>
+                        <div class="modal-body">
+                            <div class='card-body'>
+                                <h3 class='card-title'>Booking Deletion</h3>
+                                <h5 class='card-text'>Are you sure you want to delete?</h5>
+                                <small class='font-monospace | text-muted'>Bookings once deleted cannot be recovered.</small>
+                                <h5 class='font-monospace'>Booking ID: <span class='text-primary'>{{booking.get_booking_id()}}</span></h5>
+                                <h5 class='font-monospace'>Facility: <span class='text-primary'>{{booking.get_facility()}}</span></h5>
+                                <h5 class='font-monospace'>Booking Date: <span class='text-primary'>{{booking.get_date()}}</span></h5>
+                                <h5 class='font-monospace'>Booking Timeslot: <span class='text-primary'>{{booking.get_timeslot()}}</span></h5>
+                                <form action="{{url_for('deleteBookings', id=booking.get_booking_id())}}" method='POST' class='mt-3'>
+                                    <input type='submit' value='Delete' class='btn btn-danger'>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         {%endfor%}
-        <tr>
-            <td style="width:25%">1512202256BD1C547</td>
-            <td scope='col' style="width:25%">56BD1</td>
-            <td scope='col' style="width:25%">15-12-2022</td>
-            <td scope='col' style="width:25%">10am to 11am</td>
-            <td>
-                <form action="#" method='POST' class='col-auto'>
-                    <input type='submit' value='Edit' class='btn btn-primary'>
-                </form>
-            </td>
-            <td>
-                <form action="#" method='POST'class='col-auto'>
-                    <input type='submit' value='Delete' class='btn btn-danger'>
-                </form>
-            </td>
-        </tr>
-        <tr>
-            <td style="width:25%">1712202256BD24D2D</td>
-            <td scope='col' style="width:25%">56BD2</td>
-            <td scope='col' style="width:25%">17-12-2022</td>
-            <td scope='col' style="width:25%">11am to 12pm</td>
-            <td>
-                <form action="#" method='POST'class='col-auto'>
-                    <input type='submit' value='Edit' class='btn btn-primary'>
-                </form>
-            </td>
-            <td>
-                <form action="#" method='POST'class='col-auto'>
-                    <input type='submit' value='Delete' class='btn btn-danger'>
-                </form>
-            </td>
-        </tr>
-        <tr>
-            <td style="width:25%">1912202256BB1BA5E</td>
-            <td scope='col' style="width:25%">56BB1</td>
-            <td scope='col' style="width:25%">19-12-2022</td>
-            <td scope='col' style="width:25%">3pm to 4pm</td>
-            <td>
-                <form action="#" method='POST'class='col-auto'>
-                    <input type='submit' value='Edit' class='btn btn-primary'>
-                </form>
-            </td>
-            <td>
-                <form action="#" method='POST'class='col-auto'>
-                    <input type='submit' value='Delete' class='btn btn-danger'>
-                </form>
-            </td>
-        </tr>
     </tbody>
 </table>
 
 {% endblock %}
-
-<!--Implement delete booking function-->

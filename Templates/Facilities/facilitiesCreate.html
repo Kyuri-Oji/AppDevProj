@@ -39,24 +39,6 @@
 
             <br>
 
-            {{formsFacil.facility_name.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            {%if formsFacil.facility_name.errors%}
-            <div>
-                {{formsFacil.facility_name(class='form-control | border-danger')}}
-            </div>
-            {%for error in formsFacil.facility_name.errors%}
-            <span>
-                {{error}}
-            </span>
-            {%endfor%}
-            {%else%}
-            <div>
-                {{formsFacil.facility_name(class='form-control')}}
-            </div>
-            {%endif%}
-
-            <br>
-
             {{formsFacil.facility_status.label(class='text-dark | fs-4 | float-start | ms-2')}}
             {%if formsFacil.facility_status.errors%}
             <div>

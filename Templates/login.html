@@ -1,6 +1,5 @@
 {% extends 'layout.html' %}
 {% block content %}
-
 <div class="mx-auto my-3 | rounded-3 border-dark border-2 border" style='width:80%'>
     <div class="row g-0">
       <div class="col-md-4">
@@ -30,20 +29,18 @@
 
             {{form.email.label(class='text-dark | fs-4 | float-start')}}
             {%if form.email.errors%}
-                <div class='input-group | my-2'>
-                    {{form.email(class='form-control | border-danger')}}
-                    <span class="input-group-text | border-danger" id="">@example.com</span>
-                </div>
+            <div class='input-group | my-2 | dropdown'>
+                {{form.email(class='form-control | border-danger')}}
+            </div>
             {%for errors in form.email.errors%}
                 <span class='text-danger | float-end'>
                     {{errors}}
                 </span>
             {%endfor%}
             {%else%}
-                <div class='input-group | my-2'>
-                    {{form.email(class='form-control')}}
-                    <span class="input-group-text" id="">@example.com</span>
-                </div>
+            <div class='input-group | my-2 | dropdown'>
+                {{form.email(class='form-control')}}
+            </div>
             {%endif%}
 
             {{form.password.label(class='text-dark | fs-4 | float-start')}}
@@ -62,6 +59,15 @@
                 </div>
             {%endif%}
 
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="text-center | text-danger">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
         <div class="text-center | pt-2">
             {{form.remember(class='form-check-input')}}

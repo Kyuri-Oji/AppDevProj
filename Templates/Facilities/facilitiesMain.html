@@ -5,7 +5,7 @@
     <div class="container-fluid | py-2">
         <div class='dropdown | start-0 position-absolute | ps-2'>
             <button class="btn btn-secondary | dropdown-toggle" type="button" id="dropdownLocation" data-bs-toggle="dropdown" aria-expanded="false">
-                Select Type
+                Select Location
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownLocation" >
                 {%for facils in facilLoc%}
@@ -13,7 +13,7 @@
                 {%endfor%}
             </ul>
         </div>
-        <p class="font-monospace | my-auto | text-center" style='width:100vw'>Currently Location : <span class="text-primary">Ang Mo Kio</span></p>
+        <p class="font-monospace | my-auto | text-center" style='width:100vw'>Current Location : <span class="text-primary">Ang Mo Kio</span></p>
         <form class="d-flex | end-0 position-absolute | pe-2" role="search">
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
@@ -29,7 +29,7 @@
                     <div class="card-body">
                     <img src="https://images.unsplash.com/photo-1587960184060-aa880aabdd04?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1632&q=80" class="card-img-top" alt="..." style='height:5vw'>
                     <h5 class="card-title | text-primary | pt-2 ">{{facils.get_fac_id()}}</h5>
-                    <p class="card-text">Facility Type : <span class='text-primary'>{{facils.get_fac_name()}}</span></p>
+                    <p class="card-text">Facility Type : <span class='text-primary'>{{facils.get_fac_amt()}}</span></p>
                     <div class='p-2 | bg-light border-secondary border-2 border rounded'>
                         {%if facils.get_fac_status() == 'Available'%}
                             <p class='mb-0'>Facility Status : <span class='text-success'>{{facils.get_fac_status()}}</span></p>
@@ -43,10 +43,10 @@
                         <form action="" method='POST'class='col-auto'>
                             <input type='submit' value='Book Now' class='btn btn-primary'>
                         </form>
-                        <form action="" method='POST'class='col-auto'>
+                        <form action="{{url_for('editFacilities2', id = facils.get_fac_id())}}" method='POST'class='col-auto'>
                             <input type='submit' value='Edit' class='btn btn-success'>
                         </form>
-                        <form action="" method='POST'class='col-auto'>
+                        <form action="{{url_for('deleteFacilitiesDirect', id = facils.get_fac_id())}}" method='POST'class='col-auto'>
                             <input type='submit' value='Delete' class='btn btn-danger'>
                         </form>
                     </nav>

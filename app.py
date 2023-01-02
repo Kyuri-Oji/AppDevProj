@@ -1,17 +1,19 @@
 from flask import Flask, render_template, url_for, flash, redirect, request, session
 import shelve
 import secrets
+import random
 
 from wtforms.validators import ValidationError
 from forms import RegistrationForm, LoginForm, EditForm
 from eventForms import eventCreateForm, eventEditForm, eventDeleteForm, eventEditForm2, eventDeleteForm2
 from bookingForms import bookingForm, paymentForm
-from FacilitiesForm import CreateFacilityForm
+from FacilitiesForm import CreateFacilityForm, EditFacilityForm
 
 from OOP.userFunction import *
 from OOP.eventFunction import *
 from OOP.Bookings import *
 from OOP.Facilities import *
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8ecce6a32ba6703d10b72f3ccea07175'
@@ -425,7 +427,8 @@ def eventsPage():
     
     
     eventSignUp = []
-    eventSignUpDB = {}
+    eventSignUpDict = {}
+    eventSignUpDB = shelve.open('eventSignUp')
     try:
         if 'eventSignUp' in eventSignUpDB:
             eventSignUpDict = eventSignUpDB['eventSignUp']
@@ -433,7 +436,9 @@ def eventsPage():
             eventSignUpDB['eventSignUp'] = eventSignUpDict
     except:
         print('An Unknown Error Occured.')
-    # fk it im tired do tmr
+    
+    eventSignUp = eventSignUpDict
+    print(eventSignUp)
             
     return render_template('Events/eventMain.html', eventsList = eventsList, eventType = eventTypeList, eventSports = eventSports, eventLifestyle = eventLifestyle, eventOthers = eventOthers, eventTypeDict = eventTypeDict)
 
@@ -590,6 +595,8 @@ def eventSignup(id):
                 eventList.append(userID)
                 print(eventList)
                 eventSignUpDict[eventID] = eventList
+                
+                eventSignUpDB['eventSignUp'] = eventSignUpDict
             else:
                 print('User already registered!')
         else:
@@ -610,19 +617,40 @@ def eventRegistered():
         
         try:
             if 'eventSignUp' in eventSignUpDB:
-                eventSignUpDict[userID] = eventSignUpDB['eventSignUp']
+                eventSignUpDict = eventSignUpDB['eventSignUp']
             else:
                 eventSignUpDB['eventSignUp'] = eventSignUpDict
         except:
             print('An Unknown Error Occured.')
-            
-        eventSignUpList = []
-        for users in eventSignUpDict:
-            user = eventSignUpDict.get(users)
-            eventSignUpList.append(user)
+
+        userRegisteredList = []
+        for events in eventSignUpDict:
+            if userID in eventSignUpDict[events]:
+                userRegisteredList.append(events)
+        print(userRegisteredList)
         
-        print(eventSignUpList)
-        return render_template('Events/eventRegistered.html')
+        eventsDict = {}
+        eventDB = shelve.open('Events')
+        eventsDict = eventDB['Events']
+
+        eventInfoID = []
+        eventInfoName = []
+        eventDisplayName = []
+        for i in eventsDict:
+            eventID = eventsDict[i].get_eventID()
+            print(eventID)
+            eventInfoID.append(eventID)
+            eventName = eventsDict[i].get_eventName()
+            print(eventName)
+            eventInfoName.append(eventName)
+        
+        for id in userRegisteredList:
+            index = eventInfoID.index(id)
+            eventNameIndex = eventInfoName[index]
+            eventDisplayName.append(eventNameIndex)
+        
+        print(eventDisplayName)
+        return render_template('Events/eventRegistered.html', registeredEventList = userRegisteredList, registeredEventName = eventDisplayName)
     else:
         return redirect(url_for('login'))
 
@@ -639,14 +667,14 @@ def bookingPage():
             else:
                 bookingDB['Bookings'] = bookingsDict
         except:
-            print('Error in retrieving events.')
+            print('Error in retrieving bookings.')
 
         bookFacilLoc = formsBooking.bookingFacilityLocation.data
         bookFacilType = formsBooking.bookingFacilityID.data
         bookDate = formsBooking.bookingDate.data
         bookTime = formsBooking.bookingTimeSlot.data
 
-        bookDate = bookDate.split(" ")[0]
+        bookDate = str(bookDate).split(" ")[0]
         bookFacil = bookFacilLoc+bookFacilType
 
         fb = FacilityBooking(bookFacil,bookDate,bookTime)
@@ -673,20 +701,22 @@ def bookingPayment():
 
     return render_template('Booking/bookingPayment.html', formsPayment = formsPayment)
 
-@app.route('/booking/bookingPayment')
-
 @app.route('/booking/bookingCurrent', methods=['GET', 'POST'])
 def bookingCurrent():
-    bookingsDict = {}
-    bookingDB = shelve.open('Bookings')
-    bookingsDict = bookingDB['Bookings']
+    if 'User' in session:
+        userID = session['User'][1]
+        bookingsDict = {}
+        bookingDB = shelve.open('Bookings')
+        bookingsDict = bookingDB['Bookings']
     
-    bookingsList=[]
-    for booking in bookingsDict:
-        bookings = bookingsDict.get(booking)
-        bookingsList.append(bookings)
+        bookingsList=[]
+        for booking in bookingsDict:
+            bookings = bookingsDict.get(booking)
+            bookingsList.append(bookings)
 
-    return render_template('Booking/bookingCurrent.html', bookingsList = bookingsList)
+        return render_template('Booking/bookingCurrent.html', bookingsList = bookingsList)
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/booking/bookingEdit/<id>', methods=['GET', 'POST'])
 def editBookings(id):
@@ -700,7 +730,7 @@ def editBookings(id):
             else:
                 bookingDB['Bookings'] = bookingsDict
         except:
-            print('Error in retrieving events.')
+            print('Error in retrieving bookings.')
 
         bookFacilLoc = formsBooking.bookingFacilityLocation.data
         bookFacilType = formsBooking.bookingFacilityID.data
@@ -723,19 +753,43 @@ def editBookings(id):
         return redirect(url_for('bookingCurrent'))
     return render_template('Booking/bookingEdit.html', formsBooking = formsBooking)
 
-@app.route('/booking/bookingHistory')
-def bookingHistory():
+@app.route('/booking/deleteBooking/<id>', methods=['GET', 'POST'])
+def deleteBookings(id):
     bookingsDict = {}
     bookingDB = shelve.open('Bookings')
-    bookingsDict = bookingDB['Bookings']
-    
-    bookingsList=[]
-    for booking in bookingsDict:
-        bookings = bookingsDict.get(booking)
-        bookingsList.append(bookings)
-    
+    try:
+        if 'Bookings' in bookingDB:
+            bookingsDict = bookingDB['Bookings']
+        else:
+            bookingDB['Bookings'] = bookingsDict
+    except:
+        print('Error in retrieving bookings.')
 
-    return render_template('Booking/bookingHistory.html')
+    bookingsDict.pop(id)  
+    bookingDB['Bookings'] = bookingsDict
+
+    bookingDB.close()
+    print(bookingsDict.keys())
+
+    return redirect(url_for('bookingCurrent'))
+
+
+@app.route('/booking/bookingHistory')
+def bookingHistory():
+    if 'User' in session:
+        userID = session['User'][1]
+        bookingsDict = {}
+        bookingDB = shelve.open('Bookings')
+        bookingsDict = bookingDB['Bookings']
+    
+        bookingsList=[]
+        for booking in bookingsDict:
+            bookings = bookingsDict.get(booking)
+            bookingsList.append(bookings)
+    
+        return render_template('Booking/bookingHistory.html')
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/facilities')
 def facilitiesPage():
@@ -758,13 +812,13 @@ def createFacilities():
     facilDict = {}
     facilDB = shelve.open('Facilities')
     if formsFacil.validate_on_submit() and request.method == 'POST':  
-        try:
-            if 'Events' in facilDB:
+        try:    
+            if 'Facilites' in facilDB:
                 facilDict = facilDB['Facilities']
             else:
-                facilDB['Events'] = facilDict
+                facilDB['Facilites'] = facilDict
         except:
-            print('Error in retrieving events.')
+            print('Error in retrieving facilites.')
         
         facilLocation = formsFacil.facility_location.data
         location = facilLocation
@@ -773,18 +827,101 @@ def createFacilities():
         amt = facilAmt
         
         facilID = location + amt + str(formsFacil.facility_id.data) # Hougang Stadium - 53, Sengkang Stadium - 54BD01 - 06
-        facilName = formsFacil.facility_name.data
         facilStatus = formsFacil.facility_status.data
         facilSlots = formsFacil.facility_slots.data 
         
         
-        facil = Facilities(facilID, facilName, facilStatus, facilSlots, facilLocation, facilAmt)
+        facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilAmt)
         facilDict[facil.get_fac_id()] = facil
         facilDB['Facilities'] = facilDict
         
         facilDB.close()
         return redirect(url_for('facilitiesPage'))
     return render_template('Facilities/facilitiesCreate.html', formsFacil = formsFacil)
+
+@app.route('/facilities/facilitiesEdit/', methods=['GET', 'POST'])
+def editFacilities():
+    formsFacil = EditFacilityForm()
+    facilDict = {}
+    facilDB = shelve.open('Facilities')
+    if formsFacil.validate_on_submit() and request.method == 'POST':  
+        try:    
+            if 'Facilites' in facilDB:
+                facilDict = facilDB['Facilities']
+            else:
+                facilDB['Facilites'] = facilDict
+        except:
+            print('Error in retrieving facilites.')
+        
+        facilLocation = formsFacil.edit_facility_location.data
+        location = facilLocation
+        
+        facilAmt = formsFacil.edit_facility_amount.data
+        amt = facilAmt
+        
+        facilID = str(formsFacil.edit_facility_id.data) # Hougang Stadium - 53, Sengkang Stadium - 54BD01 - 06
+        facilStatus = formsFacil.edit_facility_status.data
+        facilSlots = formsFacil.edit_facility_slots.data
+
+        facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilAmt)
+        facilDict[facil.get_fac_id()] = facil  
+        facilDB['Facilities'] = facilDict
+        
+        facilDB.close()
+        return redirect(url_for('facilitiesPage'))
+    return render_template('Facilities/facilitiesEdit.html', formsFacil = formsFacil)
+
+@app.route('/facilities/facilitiesEdit/<id>', methods=['GET', 'POST'])
+def editFacilities2(id):
+    formsFacil = EditFacilityForm()
+    facilDict = {}
+    facilDB = shelve.open('Facilities')
+    if formsFacil.validate_on_submit() and request.method == 'POST':  
+        try:    
+            if 'Facilites' in facilDB:
+                facilDict = facilDB['Facilities']
+            else:
+                facilDB['Facilites'] = facilDict
+        except:
+            print('Error in retrieving facilites.')
+        
+        facilLocation = formsFacil.edit_facility_location.data
+        location = facilLocation
+        
+        facilAmt = formsFacil.edit_facility_amount.data
+        amt = facilAmt
+        
+        facilID = str(formsFacil.edit_facility_id.data) # Hougang Stadium - 53, Sengkang Stadium - 54BD01 - 06
+        facilStatus = formsFacil.edit_facility_status.data
+        facilSlots = formsFacil.edit_facility_slots.data
+
+        facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilAmt)
+        facilDict[facil.get_fac_id()] = facil  
+        facilDB['Facilities'] = facilDict
+        
+        facilDB.close()
+        return redirect(url_for('facilitiesPage'))
+    return render_template('Facilities/facilitiesEdit.html', formsFacil = formsFacil)
+
+@app.route('/facilities/facilitiesDelete/<id>', methods=['GET', 'POST'])
+def deleteFacilitiesDirect(id):
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        facilDB = shelve.open('Facilities')
+        facilDict = {}
+        try:
+            if 'Facilities' in facilDB:
+                facilDict = facilDB['Facilities'] 
+            else:
+                facilDB['Facilities'] = facilDict
+        except:
+            print('Error in retrieving Facilities.')
+        facilID = id
+
+        facilDict.pop(facilID)  
+        facilDB['Facilities'] = facilDict  
+        return redirect(url_for('facilitiesPage'))
+    else:
+        return render_template('404.html')
 
 @app.errorhandler(404)
 def page_not_found(e):

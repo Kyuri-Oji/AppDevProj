@@ -6,8 +6,6 @@ import shelve
 class CreateFacilityForm(FlaskForm):
     facility_id = IntegerField('Facility ID : ', 
                                validators=[DataRequired()], render_kw={'placeholder' : '001'})
-    facility_name = StringField('Facility Name : ', 
-                                validators=[DataRequired(), Length(min = 2, max = 30)])
     facility_status = SelectField('Facility Status : ', 
                                   validators=[DataRequired()], 
                                   choices=[('', 'Select'), ('Available', 'Available'), ('Unavailable', 'Unavailable')],
@@ -40,16 +38,14 @@ default='')
 
 
 class EditFacilityForm(FlaskForm):
-    edit_facility_id = IntegerField('Facility ID to edit : ', validators=[DataRequired()], render_kw={'placeholder' : '001'})
-    edit_facility_name = StringField('Rename Facility : ', validators =[Length(min = 2, max = 30)], render_kw={'placeholder' : "Leave empty if no changes"})
-    edit_facility_status = SelectField('Edit Facility Status (Leave empty if no changes) : ', choices=[('', 'Select'), ('Available', 'Available'), ('Unavailable', 'Unavailable')],
-default='')
-    edit_facility_slots = IntegerField('Edit Factility Slots: ', render_kw={'placeholder' : '0 (Leave empty if no changes'})
+    edit_facility_id = StringField('Facility ID to edit : ',
+                                     validators=[DataRequired()])
+    edit_facility_status = SelectField('Edit Facility Status (Leave empty if no changes) : ',
+                                     choices=[('', 'Select'), ('Available', 'Available'), ('Unavailable', 'Unavailable')], default='')
+    edit_facility_slots = IntegerField('Edit Factility Slots: ',
+                                     render_kw={'placeholder' : '0 (Leave empty if no changes'})
     edit_facility_location = SelectField('Facility Location : ',
-                                    validators=[DataRequired()],
                                     choices=[('', 'Select'), ('56', 'Ang Mo Kio'), ('53', 'Hougang'), ('37', 'Macpherson'), ('35', 'Braddell'), ('79', 'Seletar'), ('19', 'Golden Mile')])
-    #location changes ID which need to think for a while
-    edit_facility_amount = SelectField('Facility Type Amount : ',
-                                  validators=[DataRequired()],
+    edit_facility_amount = SelectField('Facility Type: ',
                                   choices=[('', 'Select'), ('BD', 'Badminton'), ('BB', 'Basketball'), ('SQ', 'Squash'), ('FB', 'Football'), ('TN', 'Tennis'), ('TT', 'Table Tennis')])
     submit = SubmitField('Submit') 

@@ -1,10 +1,9 @@
 class Facilities:
     fac_count = 0
 
-    def __init__(self, fac_id, fac_name, fac_status, fac_slots, fac_loc, fac_amt):
+    def __init__(self, fac_id, fac_status, fac_slots, fac_loc, fac_amt):
         Facilities.fac_count += 1
         self.__fac_id = fac_id
-        self.__fac_name = fac_name
         self.__fac_status = fac_status
         self.__fac_slots = fac_slots
         self.__fac_loc = fac_loc
@@ -12,9 +11,6 @@ class Facilities:
 
     def set_fac_id(self, fac_id):
         self.__fac_id = fac_id
-
-    def set_fac_name(self, fac_name):
-        self.__fac_name = fac_name
 
     def set_fac_status(self, fac_status):
         self.__fac_status = fac_status
@@ -30,9 +26,6 @@ class Facilities:
 
     def get_fac_id(self):
         return self.__fac_id
-
-    def get_fac_name(self):
-        return self.__fac_name
 
     def get_fac_status(self):
         return self.__fac_status

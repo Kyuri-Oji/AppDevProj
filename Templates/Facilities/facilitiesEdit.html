@@ -7,10 +7,43 @@
         <div class="form-group">
             {{formsFacil.hidden_tag()}}
             
-            {{formsFacil.facility_id.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {{formsFacil.edit_facility_id.label(class='text-dark | fs-4 | float-start | ms-2')}}
             <div>
-                {{formsFacil.facility_id(class='form-control')}}
+                {{formsFacil.edit_facility_id(class='form-control')}}
+            </div>
+
+            <br>
+            
+            {{formsFacil.edit_facility_location.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{formsFacil.edit_facility_location(class='form-control')}}
+            </div> 
+
+            <br>
+
+            {{formsFacil.edit_facility_amount.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{formsFacil.edit_facility_amount(class='form-control')}}   
+            </div>
+
+            <br>
+
+            {{formsFacil.edit_facility_status.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{formsFacil.edit_facility_status(class='form-control')}}
+            </div>
+
+            <br>
+
+            {{formsFacil.edit_facility_slots.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{formsFacil.edit_facility_slots(class='form-control')}}
+            </div>
+            <br>
+            <div class="text-center | my-4 mx-auto | " style='width:50%'>
+                {{formsFacil.submit(class='btn btn-primary')}}
             </div>
         </div>
     </form>
 </div>
+{%endblock%}

@@ -23,19 +23,39 @@
         </div>
     </nav>
 
-    <div>
-        
-        <tbody>
-            <tr>
-                <th scope="col" class='ps-5'></th>
-                <td scope="col" class='text-primary'></td>
-                <td scope="col"></td>
-                <td scope="col"></td>
-                <td scope="col"></td>
-            </tr>
-        </tbody>
+    <div class='mx-auto my-2 py-2 | bg-light' style='width:80%'>
+        <div class='p-3 | '>
+            <h3 class='text-secondary'>Registered Events</h3>
+            <table class='table'>
+                <thread class='row'>
+                    <tr>
+                        <th>
+                            <p class='text-primary | font-monospace | fs-4 | mb-0' scope='col'>Event ID</p>
+                        </th>
+                        <th>
+                            <p class='text-primary | font-monospace | fs-4 | mb-0' scope='col'>Event Name</p>
+                        </th>
+                    <tr>
+                </thread>
+                <tbody>
+                    <tr>
+                        <td scope='col'>
+                            {%for events in registeredEventList%}
+                                <p class='fs-4 | font-monospace | mb-0'>{{events}}</p>
+                            {%endfor%}
+                        </td>
+                        <td>
+                            {%for name in registeredEventName%}
+                                <p class='fs-4 | font-monospace | mb-0'>{{name}}</p>
+                            {%endfor%}
+                        </td>
+                    </tr>
+                </tbody>
+                
+            </table>
+        </div>
     </div>
-   
+    
 </section>
 
 
