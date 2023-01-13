@@ -274,8 +274,6 @@ def createEvent():
         eventsDict[ce.get_eventID()] = ce
         eventDB['Events'] = eventsDict
         
-        eventDB.close()
-        
         return redirect(url_for('eventsPage'))
     
     if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
@@ -713,6 +711,7 @@ def bookingPage():
         bookDate = formsBooking.bookingDate.data
         bookTime = formsBooking.bookingTimeSlot.data
 
+        bookDate = str(bookDate).split(" ")[0]
         bookFacil = bookFacilLoc+bookFacilType
 
         fb = FacilityBooking(bookFacil,bookDate,bookTime)
@@ -775,7 +774,7 @@ def editBookings(id):
         bookDate = formsBooking.bookingDate.data
         bookTime = formsBooking.bookingTimeSlot.data
 
-        bookDate = (bookDate).split(" ")[0]
+        bookDate = str(bookDate).split(" ")[0]
         bookFacil = bookFacilLoc+bookFacilType
 
         fb = bookingsDict[id]
@@ -789,26 +788,6 @@ def editBookings(id):
         print(bookingsDict.keys())
 
         return redirect(url_for('bookingCurrent'))
-    
-    else:
-        bookingsDict = {}
-        bookingDB = shelve.open('Bookings')
-        bookingsDict = {}
-        
-        try:
-            if 'Bookings' in bookingDB:
-                bookingsDict = bookingDB['Bookings']
-            else:
-                bookingDB['Bookings'] = bookingsDict
-        except:
-            print('Error in retrieving bookings.')
-            
-        booking = bookingsDict.get(id)
-        formsBooking.bookingFacilityLocation.data = booking.get_facility()
-        formsBooking.bookingFacilityID.data = booking.get_booking_id()
-        formsBooking.bookingTimeSlot.data = booking.get_timeslot()
-        formsBooking.bookingDate.data = booking.get_date()
-            
     return render_template('Booking/bookingEdit.html', formsBooking = formsBooking)
 
 @app.route('/booking/deleteBooking/<id>', methods=['GET', 'POST'])
@@ -854,11 +833,13 @@ def facilitiesPage():
     facilDict = {}
     facilDB = shelve.open('Facilities')
     facilDict = facilDB['Facilities']
+    print(facilDict)
     
     facilList = []
     for facil in facilDict:
         facilities = facilDict.get(facil)
         facilList.append(facilities)
+    print(facilList)
         
     facilLoc = ['Ang Mo Kio', 'Hougang', 'Macpherson', 'Braddell', 'Seletar', 'Golden Mile']
     
@@ -869,17 +850,14 @@ def createFacilities():
     formsFacil = CreateFacilityForm()
     facilDict = {}
     facilDB = shelve.open('Facilities')
-    if formsFacil.validate_on_submit() and request.method == 'POST':  
+    if formsFacil.validate_on_submit() and request.method == 'POST':   
         try:    
             if 'Facilites' in facilDB:
                 facilDict = facilDB['Facilities']
             else:
                 facilDB['Facilites'] = facilDict
-            #c=len(facilDict)
-            #id = c
         except:
-            #id=1
-            print('Error in retrieving facilities.')
+            print('Error in retrieving facilites.')
         
         facilLocation = formsFacil.facility_location.data
         location = facilLocation
@@ -887,13 +865,17 @@ def createFacilities():
         facilType = formsFacil.facility_type.data
         type = facilType
         
-        facilID = location + type + str(formsFacil.facility_id.data) # Hougang Stadium - 53, Sengkang Stadium - 54BD01 - 06
+        facilID = str(formsFacil.facility_id.data) # Hougang Stadium - 53, Sengkang Stadium - 54BD01 - 06
         facilStatus = formsFacil.facility_status.data
-        facilSlots = formsFacil.facility_slots.data 
+        facilSlots = formsFacil.facility_slots.data
         
-        facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilType)
-        facilDict[facil.get_fac_id()] = facil # get id
+        uniqueID = len(facilDict)
+        uniqueID += 1
+        
+        facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilType, uniqueID)
+        facilDict[facil.get_uniqueID()] = facil # get id
         facilDB['Facilities'] = facilDict
+        
         
         facilDB.close()
         return redirect(url_for('facilitiesPage'))
@@ -925,14 +907,14 @@ def editFacilities():
             print('Error.')
             flash('Facility ID not found in Facilities Database.')
         else:
-            facil = Facilities(facilityID, facilStatus, facilSlots, facilLocation, facilType)
-            facilDict[facil.get_fac_id()] = facil
+            facil = Facilities(facilityID, facilStatus, facilSlots, facilLocation, facilType, id)
+            facilDict[facil.get_uniqueID()] = facil
             facilDB['Facilities'] = facilDict
     
         return redirect(url_for('facilitiesPage'))
     return render_template('Facilities/facilitiesEdit.html', formsFacil = formsFacil)
 
-@app.route('/facilities/facilitiesEdit/<id>', methods=['GET', 'POST'])
+@app.route('/facilities/facilitiesEdit/<int:id>', methods=['GET', 'POST'])
 def editFacilities2(id):
     formsFacil = EditFacilityForm()
     facilDict = {}
@@ -956,8 +938,9 @@ def editFacilities2(id):
         facilStatus = formsFacil.edit_facility_status.data
         facilSlots = formsFacil.edit_facility_slots.data
 
-        facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilLocation)
-        facilDict[facil.get_fac_id()] = facil  
+        
+        facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilLocation, id)
+        facilDict[id] = facil  
         facilDB['Facilities'] = facilDict
         
         facilDB.close()
@@ -973,13 +956,19 @@ def editFacilities2(id):
                 facilDB['Facilites'] = facilDict
         except:
             print('Error in retrieving facilites.')
+        
+        id = int(id)
+        if id in facilDict:
+            facility = facilDict.get(id)
+            print(facility)
+            formsFacil.edit_facility_id.data = facility.get_fac_id()
+            formsFacil.edit_facility_location.data = facility.get_fac_loc()
+            formsFacil.edit_facility_slots.data = facility.get_fac_slots()
+            formsFacil.edit_facility_status.data = facility.get_fac_status()
+            formsFacil.edit_facility_type.data = facility.get_fac_amt()
             
-        facility = facilDict.get(id)
-        formsFacil.edit_facility_id.data = facility.get_fac_id()
-        formsFacil.edit_facility_location.data = facility.get_fac_loc()
-        formsFacil.edit_facility_slots.data = facility.get_fac_slots()
-        formsFacil.edit_facility_status.data = facility.get_fac_status()
-        formsFacil.edit_facility_type.data = facility.get_fac_amt()
+        else:
+            print('An Error Is Here')
             
     return render_template('Facilities/facilitiesEdit.html', formsFacil = formsFacil)
 
@@ -995,7 +984,7 @@ def deleteFacilitiesDirect(id):
                 facilDB['Facilities'] = facilDict
         except:
             print('Error in retrieving Facilities.')
-        facilID = id
+        facilID = int(id)
 
         facilDict.pop(facilID)  
         facilDB['Facilities'] = facilDict  
