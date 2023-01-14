@@ -24,18 +24,50 @@
             {%endif%}
 
             {{formEvents.eventName.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            <div>
-                {{formEvents.eventName(class='form-control | my-2')}}
-            </div>
+            {%if formEvents.eventName.errors%}
+                <div>
+                    {{formEvents.eventName(class='form-control | my-2 | border-danger')}}
+                </div>
+                {%for errors in formEvents.eventName.errors%}
+                    <span class='text-danger | float-end'>{{errors}}</span>
+                {%endfor%}
+                {%else%}
+                <div>
+                    {{formEvents.eventName(class='form-control | my-2')}}
+                </div>
+            {%endif%}
 
             {{formEvents.eventDesc.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            <div>
-                {{formEvents.eventDesc(class='form-control | my-2')}}
-            </div>
+            {%if formEvents.eventDesc.errors%}
+                <div>
+                    {{formEvents.eventDesc(class='form-control | my-2 | border-danger')}}
+                </div>
+                {%for errors in formEvents.eventDesc.errors%}
+                    <span class='text-danger | float-end'>{{errors}}</span>
+                {%endfor%}
+                {%else%}
+                <div>
+                    {{formEvents.eventDesc(class='form-control | my-2')}}
+                </div>
+            {%endif%}
 
             {{formEvents.eventVacancy.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formEvents.eventVacancy.errors%}
+                <div>
+                    {{formEvents.eventVacancy(class='form-control | my-2 | border-danger')}}
+                </div>
+                {%for errors in formEvents.eventVacancy.errors%}
+                    <span class='text-danger | float-end'>{{errors}}</span>
+                {%endfor%}
+                {%else%}
+                <div>
+                    {{formEvents.eventVacancy(class='form-control | my-2')}}
+                </div>
+            {%endif%}
+
+            {{formEvents.eventStartDate.label(class='text-dark | fs-4 | float-start | ms-2')}}
             <div>
-                {{formEvents.eventVacancy(class='form-control | my-2')}}
+                {{formEvents.eventStartDate(class='form-control | my-2')}}
             </div>
 
             {{formEvents.eventDate.label(class='text-dark | fs-4 | float-start | ms-2')}}
@@ -43,10 +75,26 @@
                 {{formEvents.eventDate(class='form-control | my-2')}}
             </div>
 
+
             {{formEvents.eventType.label(class='text-dark | fs-4 | float-start | ms-2 | form-check-label')}}
             <br>
             <div class='start-0' style='width:25%'>
                 {{formEvents.eventType(class='fs-4 | form-check form-check-inline')}}
+            </div>
+
+            {{formEvents.eventLocation.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{formEvents.eventLocation(class='form-control | my-2')}}
+            </div>
+
+            {{formEvents.eventVenue.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{formEvents.eventVenue(class='form-control | my-2')}}
+            </div>
+
+            {{formEvents.eventStatus.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{formEvents.eventStatus(class='form-control | ms-2')}}
             </div>
 
             <div class="text-center | my-4 mx-auto | " style='width:50%'>

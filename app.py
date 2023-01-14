@@ -267,10 +267,14 @@ def createEvent():
         eventDesc = formEvents.eventDesc.data
         eventVacancy = formEvents.eventVacancy.data
         eventDate = formEvents.eventDate.data
+        eventStartDate = formEvents.eventStartDate.data
         eventID = formEvents.eventID.data
         eventType = formEvents.eventType.data
-        
-        ce = createEvents(eventName, eventDesc, eventVacancy, eventDate, eventID, eventType)
+        eventLocation = formEvents.eventLocation.data        
+        eventVenue = formEvents.eventVenue.data
+        eventStatus = formEvents.eventStatus.data    
+            
+        ce = createEvents(eventName, eventDesc, eventVacancy, eventDate, eventStartDate, eventID, eventType, eventLocation, eventVenue, eventStatus)
         eventsDict[ce.get_eventID()] = ce
         eventDB['Events'] = eventsDict
         
@@ -341,14 +345,18 @@ def editEventDirect(id):
         eventDesc = formEvents.editEventDesc.data
         eventVacancy = formEvents.editEventVacancy.data
         eventDate = formEvents.editEventDate.data
+        eventStartDate = formEvents.editEventStartDate.data
         eventID = id
         eventType = formEvents.editEventType.data
+        eventLocation = formEvents.editEventLocation.data
+        eventVenue = formEvents.editEventVenue.data
+        eventStatus = formEvents.editEventStatus.data
         
         if eventID not in eventsDict.keys():
             print('Error.')
             flash('Event ID not found in Event Database.', 'error')
         else:
-            ce = createEvents(eventName, eventDesc, eventVacancy, eventDate, eventID, eventType)
+            ce = createEvents(eventName, eventDesc, eventVacancy, eventDate, eventStartDate, eventID, eventType, eventLocation, eventVenue, eventStatus)
             eventsDict[ce.get_eventID()] = ce
             eventDB['Events'] = eventsDict
             
@@ -375,7 +383,11 @@ def editEventDirect(id):
         formEvents.editEventDesc.data = event.get_eventDesc()
         formEvents.editEventVacancy.data = event.get_eventVacancy()
         formEvents.editEventDate.data = event.get_eventDate()
+        formEvents.editEventStartDate.data = event.get_eventStartDate()
         formEvents.editEventType.data = event.get_eventType()
+        formEvents.editEventLocation.data = event.get_eventLocation()
+        formEvents.editEventVenue.data = event.get_eventVenue()
+        formEvents.editEventStatus.data = event.get_eventStatus()
         
     if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
         return render_template('Events/eventEditDirect.html', formEvents = formEvents)
