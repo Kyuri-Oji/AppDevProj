@@ -28,6 +28,7 @@
                 <div class="card" style="" id='cardExpand'>
                     <div class="card-body">
                     <img src="https://images.unsplash.com/photo-1587960184060-aa880aabdd04?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1632&q=80" class="card-img-top" alt="..." style='height:5vw'>
+                    <h5 class="card-title | text-primary | pt-2 ">{{facils.get_uniqueID()}}</h5>
                     <h5 class="card-title | text-primary | pt-2 ">{{facils.get_fac_id()}}</h5>
                     <p class="card-text">Facility Type : <span class='text-primary'>{{facils.get_fac_amt()}}</span></p>
                     <div class='p-2 | bg-light border-secondary border-2 border rounded'>
@@ -43,12 +44,16 @@
                         <form action="" method='POST'class='col-auto'>
                             <input type='submit' value='Book Now' class='btn btn-primary'>
                         </form>
-                        <form action="{{url_for('editFacilities2', id = facils.get_fac_id())}}" method='POST'class='col-auto'>
+                        {%if "User" in session%}
+                        {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
+                        <form action="{{url_for('editFacilities2', id = facils.get_uniqueID())}}" method='POST'class='col-auto'>
                             <input type='submit' value='Edit' class='btn btn-success'>
                         </form>
-                        <form action="{{url_for('deleteFacilitiesDirect', id = facils.get_fac_id())}}" method='POST'class='col-auto'>
+                        <form action="{{url_for('deleteFacilitiesDirect', id = facils.get_uniqueID())}}" method='POST'class='col-auto'>
                             <input type='submit' value='Delete' class='btn btn-danger'>
                         </form>
+                        {%endif%}
+                        {%endif%}
                     </nav>
                 </div>
             </div>

@@ -252,6 +252,28 @@ def adminWorkspace():
 @app.route('/events/createEvents', methods=['GET', 'POST'])
 def createEvent():
     formEvents = eventCreateForm()
+    # Before Form Submission
+    facilDict = {}
+    facilDB = shelve.open('Facilities')
+    try:    
+        if 'Facilites' in facilDB:
+            facilDict = facilDB['Facilities']
+        else:
+            facilDB['Facilites'] = facilDict
+    except:
+        print('Error in retrieving facilites.')
+        
+    facilityIDList = []
+    facilityUIDList = []
+    for facil in facilDict:
+        facils = facilDict.get(facil)
+        facilAvailability = facils.get_fac_status()
+        if facilAvailability == 'Available':
+            facilityUID = facils.get_uniqueID()
+            facilityUIDList.append(facilityUID)
+            facilityID = facils.get_fac_id()
+            facilityIDList.append(facilityID)
+            
     if formEvents.validate_on_submit() and request.method == 'POST':  
         eventsDict = {}
         eventDB = shelve.open('Events')
@@ -262,6 +284,7 @@ def createEvent():
                 eventDB['Events'] = eventsDict
         except:
             print('Error in retrieving events.')
+    
                      
         eventName = formEvents.eventName.data
         eventDesc = formEvents.eventDesc.data
@@ -891,7 +914,11 @@ def createFacilities():
         
         facilDB.close()
         return redirect(url_for('facilitiesPage'))
-    return render_template('Facilities/facilitiesCreate.html', formsFacil = formsFacil)
+    
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        return render_template('Facilities/facilitiesCreate.html', formsFacil = formsFacil)
+    else:
+        return render_template('404.html')
 
 @app.route('/facilities/facilitiesEdit/', methods=['GET', 'POST'])
 def editFacilities():
@@ -924,7 +951,11 @@ def editFacilities():
             facilDB['Facilities'] = facilDict
     
         return redirect(url_for('facilitiesPage'))
-    return render_template('Facilities/facilitiesEdit.html', formsFacil = formsFacil)
+    
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        return render_template('Facilities/facilitiesEdit.html', formsFacil = formsFacil)
+    else:
+        return render_template('404.html')
 
 @app.route('/facilities/facilitiesEdit/<int:id>', methods=['GET', 'POST'])
 def editFacilities2(id):
@@ -981,8 +1012,11 @@ def editFacilities2(id):
             
         else:
             print('An Error Is Here')
-            
-    return render_template('Facilities/facilitiesEdit.html', formsFacil = formsFacil)
+    
+    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
+        return render_template('Facilities/facilitiesEdit.html', formsFacil = formsFacil)
+    else:
+        return render_template('404.html')
 
 @app.route('/facilities/facilitiesDelete/<id>', methods=['GET', 'POST'])
 def deleteFacilitiesDirect(id):

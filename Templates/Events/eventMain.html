@@ -48,21 +48,17 @@
                     </div>
                     <hr>
                 <nav class='row '> <!--change for loop-->
-                    <!--<form action="{{url_for('eventSignup', id=event.get_eventID())}}" method='POST'class='col-auto'>
-                        <input type='submit' value='Sign Up' class='btn btn-primary'>
-                    </form>-->
                     <a href="#" class='text-decoration-none btn btn-primary | mx-2' data-bs-toggle='modal' data-bs-target='#signUpModal_{{event.get_eventID()}}' style="width:25%">Sign Up</a>
-                    
-                    <!-- 
-                        <form action="{{url_for('deleteEventDirect', id=event.get_eventID())}}" method='POST' class='my-3'>
-                            <input type='submit' value='Delete' class='btn btn-danger'>
-                        </form>
-                    -->
+
+                    {%if "User" in session%}
+                    {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
                     <a href="#" class='text-decoration-none btn btn-danger | mx-2' data-bs-toggle='modal' data-bs-target='#deleteModal_{{event.get_eventID()}}' style="width:25%">Delete</a>
 
                     <form action="{{url_for('editEventDirect', id=event.get_eventID())}}" method='POST'class='col-auto'>
                         <input type='submit' value='Edit' class='btn btn-success'>
                     </form>
+                    {%endif%}
+                    {%endif%}
                 </nav>
                 </div>
             </div>

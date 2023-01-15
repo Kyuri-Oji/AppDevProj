@@ -1,9 +1,34 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, DateTimeField, TextAreaField, PasswordField, SubmitField, BooleanField, RadioField, SelectField
+from wtforms import StringField, IntegerField, DateTimeField, TextAreaField, PasswordField, SubmitField, BooleanField, RadioField, SelectField, DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from datetime import datetime
 import time
 import shelve
+
+facilDict = {}
+facilDB = shelve.open('Facilities')
+try:    
+    if 'Facilites' in facilDB:
+        facilDict = facilDB['Facilities']
+    else:
+        facilDB['Facilites'] = facilDict
+except:
+    print('Error in retrieving facilites.')
+
+facilIDList = []
+facilityIDList = []
+facilityUIDList = []
+for facil in facilDict:
+    facils = facilDict.get(facil)
+    facilAvailability = facils.get_fac_status()
+    if facilAvailability == 'Available':
+        facilityUID = facils.get_uniqueID()
+        facilityUIDList.append(facilityUID)
+        facilityID = facils.get_fac_id()
+        facilityIDList.append(facilityID)
+        
+print(facilityUIDList)
+print(facilityIDList)
 
 class eventCreateForm(FlaskForm):
     eventName = StringField('Event Name :', 
@@ -14,11 +39,11 @@ class eventCreateForm(FlaskForm):
                                 validators=[DataRequired()])
     eventDate = DateTimeField('Event End Date : ',
                               validators=[DataRequired()],
-                              format='%d-%m-%y', default=datetime.now, #datetime formatting, dafault to current date
+                              format='%d-%m-%y %H:%M:%S', default=datetime.now, #datetime formatting, dafault to current date
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
     eventStartDate = DateTimeField('Event Start Date : ',
                               validators=[DataRequired()],
-                              format='%d-%m-%y', default=datetime.now, #datetime formatting, dafault to current date
+                              format='%d-%m-%y %H:%M:%S', default=datetime.now, #datetime formatting, dafault to current date
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
     eventID = IntegerField('Event ID : ',
                            validators=[DataRequired()],
@@ -31,11 +56,12 @@ class eventCreateForm(FlaskForm):
                                 choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Braddell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])
     eventVenue = SelectField('Event Venue : ',
                              validators=[DataRequired()],
-                             choices=[('', 'Select'), ('Event Hall', 'Event Hall (Max 100 People)'), ('Badminton Court', 'Badminton Court (Max 15 People)')])
+                             choices=[(facilityIDList[i], f"{facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))])
     eventStatus = SelectField('Event Status : ',
                               validators=[DataRequired()],
                               choices=[('', 'Select'), ('Active', 'Active'), ('Closed', 'Closed')])
     submit = SubmitField('Create Events')
+    
     
     def validate_eventID(self, eventID):
         eventsDict = {}
@@ -63,18 +89,36 @@ class eventCreateForm(FlaskForm):
         except:
             print('Error in retrieving events.')
             
-        eventVenueList = ['Event Hall', 'Badminton Court']
-        eventVenueSpace = [100, 15]
-        
-        if self.eventVenue.data in eventVenueList:
-            index = eventVenueList.index(self.eventVenue.data)
-            
-            eventVenueMaxVal = eventVenueSpace[index]
-            print(eventVenueMaxVal)
-            if self.eventVacancy.data > eventVenueMaxVal:
-                print(f'Maximum amount of vacancies is {eventVenueMaxVal}')
+        facilDict = {}
+        facilDB = shelve.open('Facilities')
+        try:    
+            if 'Facilites' in facilDB:
+                facilDict = facilDB['Facilities']
+            else:
+                facilDB['Facilites'] = facilDict
+        except:
+            print('Error in retrieving facilites.')
 
-                raise ValidationError(f'Max Event Vacancies is {eventVenueMaxVal}!')
+        facilityIDList = []
+        facilitySlotsList = []
+        for facil in facilDict:
+            facils = facilDict.get(facil)
+            facilAvailability = facils.get_fac_status()
+            if facilAvailability == 'Available':             
+                facilityID = facils.get_fac_id()
+                facilityIDList.append(facilityID)
+                
+                facilitySlots = facils.get_fac_slots()
+                facilitySlotsList.append(facilitySlots)
+                
+        eventVenueChosen = self.eventVenue.data
+        eventVacancyChosen = self.eventVacancy.data
+        if eventVenueChosen in facilityIDList:
+            index = facilityIDList.index(eventVenueChosen)
+            if eventVacancyChosen > facilitySlotsList[index]:
+                raise ValidationError(f'Max Event Vacancies is {facilitySlotsList[index]}!')
+            
+        print(facilityIDList)
     
 class eventEditForm(FlaskForm):
     editEventID = IntegerField('Enter Event ID to Edit : ',
@@ -90,11 +134,11 @@ class eventEditForm(FlaskForm):
                                render_kw={'placeholder' : 'Leave empty if no change.'})
     editEventDate = DateTimeField('Event End Date : ',
                               validators=[],
-                              format='%d-%m-%y',#datetime formatting, dafault to current date
+                              format='%d-%m-%y %H:%M:%S',#datetime formatting, dafault to current date
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
     editEventStartDate = DateTimeField('Event Start Date : ',
                               validators=[],
-                              format='%d-%m-%y',#datetime formatting, dafault to current date
+                              format='%d-%m-%y %H:%M:%S',#datetime formatting, dafault to current date
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
     editEventType = RadioField('Edit Event Type : ',
                                validators=[DataRequired()],
@@ -122,11 +166,11 @@ class eventEditForm2(FlaskForm):
                                render_kw={'placeholder' : 'Leave empty if no change.'})
     editEventDate = DateTimeField('Event End Date : ',
                               validators=[],
-                              format='%d-%m-%y',#datetime formatting, dafault to current date
+                              format='%d-%m-%y %H:%M:%S',#datetime formatting, dafault to current date
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
     editEventStartDate = DateTimeField('Event Start Date : ',
                               validators=[],
-                              format='%d-%m-%y',#datetime formatting, dafault to current date
+                              format='%d-%m-%y %H:%M:%S',#datetime formatting, dafault to current date
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
     editEventType = RadioField('Edit Event Type : ',
                                validators=[DataRequired()],
