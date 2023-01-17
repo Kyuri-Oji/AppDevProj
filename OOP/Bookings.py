@@ -1,4 +1,5 @@
 import random
+from datetime import datetime
      
 class FacilityBooking:
      def __init__(self,facility,date,timeslot):
@@ -31,9 +32,7 @@ class FacilityBooking:
           return self.__facility
 
      def get_date(self):
-          year,month,day=str(self.__date).split("-")
-          date=day+"-"+month+"-"+year
-          return date
+          return self.__date
 
      def get_timeslot(self):
           return self.__timeslot

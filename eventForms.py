@@ -148,7 +148,7 @@ class eventEditForm(FlaskForm):
                                 choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Braddell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])
     editEventVenue = SelectField('Event Venue : ',
                              validators=[DataRequired()],
-                             choices=[('', 'Select'), ('Event Hall', 'Event Hall (Max 100 People)'), ('Badminton Court', 'Badminton Court (Max 15 People)')])
+                             choices=[(facilityIDList[i], f"{facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))])
     editEventStatus = SelectField('Event Status : ',
                               validators=[DataRequired()],
                               choices=[('', 'Select'), ('Active', 'Active'), ('Closed', 'Closed')])
@@ -180,11 +180,51 @@ class eventEditForm2(FlaskForm):
                                 choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Braddell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])
     editEventVenue = SelectField('Event Venue : ',
                              validators=[DataRequired()],
-                             choices=[('', 'Select'), ('Event Hall', 'Event Hall (Max 100 People)'), ('Badminton Court', 'Badminton Court (Max 15 People)')])
+                             choices=[(facilityIDList[i], f"{facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))])
     editEventStatus = SelectField('Event Status : ',
                               validators=[DataRequired()],
                               choices=[('', 'Select'), ('Active', 'Active'), ('Closed', 'Closed')])
     submit = SubmitField('Edit Events')
+    
+    def validate_eventVacancy(self, eventVenue):
+        eventsDict = {}
+        eventDB = shelve.open('Events')
+        try:
+            if 'Events' in eventDB:
+                eventsDict = eventDB['Events']
+            else:
+                eventDB['Events'] = eventsDict
+        except:
+            print('Error in retrieving events.')
+            
+        facilDict = {}
+        facilDB = shelve.open('Facilities')
+        try:    
+            if 'Facilites' in facilDB:
+                facilDict = facilDB['Facilities']
+            else:
+                facilDB['Facilites'] = facilDict
+        except:
+            print('Error in retrieving facilites.')
+
+        facilityIDList = []
+        facilitySlotsList = []
+        for facil in facilDict:
+            facils = facilDict.get(facil)
+            facilAvailability = facils.get_fac_status()
+            if facilAvailability == 'Available':             
+                facilityID = facils.get_fac_id()
+                facilityIDList.append(facilityID)
+                
+                facilitySlots = facils.get_fac_slots()
+                facilitySlotsList.append(facilitySlots)
+                
+        eventVenueChosen = self.eventVenue.data
+        eventVacancyChosen = self.eventVacancy.data
+        if eventVenueChosen in facilityIDList:
+            index = facilityIDList.index(eventVenueChosen)
+            if eventVacancyChosen > facilitySlotsList[index]:
+                raise ValidationError(f'Max Event Vacancies is {facilitySlotsList[index]}!')
         
 class eventDeleteForm(FlaskForm):
     deleteEventID = IntegerField('Event ID to delete : ', 
