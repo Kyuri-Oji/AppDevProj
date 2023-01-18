@@ -29,12 +29,13 @@ for facil in facilDict:
         facilityUIDList.append(facilityUID)
         facilityID = facils.get_fac_id()
         facilityIDList.append(facilityID)
-            
+
+
 class bookingForm(FlaskForm):
     bookingFacilityLocation = SelectField('Facility Location: ',
                                          validators=[DataRequired()],
-                                         choices=[('', 'Select'), ('56', 'Ang Mo Kio'), ('53', 'Hougang'), ('37', 'Macpherson'), ('35', 'Braddell'), ('79', 'Seletar'), ('19', 'Golden Mile')])  
-    bookingFacilityID = SelectField('Facility ID: ',  
+                                         choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Bradell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])  
+    bookingFacilityID = SelectField('Facility: ',  
                                  validators=[DataRequired()],
                                  choices=[(facilityIDList[i], f"{facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))])
     bookingDate = DateField('Booking Date: ',
@@ -59,4 +60,4 @@ class paymentForm(FlaskForm):
     
 # Use data from facilitiesdb for choices
 # Set restrictions using data from facilitiesdb
-# When editting, use data from booking as placeholder
+# When editing, use data from booking as placeholder

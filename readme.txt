@@ -15,6 +15,8 @@ Used to keep track of work progress, updates, and TO-DO List
 5. Change ID of Facilities ✔️ (13/1/23)
 6. Event Venue max vacancies and form error checking for vacancies (Vacancies cannot be larger than venue size) ✔️ (14/1/23)
 7. Event Start date cannot be behind end date
+8. Edit Facility to change facil type into location.
+9. Edit and Deletion affects sign up
 
 
 
@@ -30,6 +32,7 @@ Used to keep track of work progress, updates, and TO-DO List
 17/1/23 - Changed edit for Booking, made previous data enter edit form immediately, albeit partially (Location)
         - Integrated Booking with Available Facilities
         - Changed small details of Facility display
+18/1/23 - Integrated Users with Booking
 
 
 

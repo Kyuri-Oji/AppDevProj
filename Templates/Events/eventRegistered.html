@@ -10,8 +10,8 @@
                     <input type='submit' value='Overview' class='border-0 | bg-light'> <br>
                 </form>
             {%endif%}
-            <a href='#' class='text-decoration-none | font-monospace text-dark | col-auto | mx-3'>Booking History</a>
-            <a href='#' class='text-decoration-none | font-monospace | col-auto | mx-3'>Event History</a>
+            <a href="{{url_for('bookingHistory')}}" class='text-decoration-none | font-monospace text-dark | col-auto | mx-3'>Booking History</a>
+            <a href="{{url_for('eventRegistered')}}" class='text-decoration-none | font-monospace | col-auto | mx-3'>Event History</a>
             <a href='#' class='text-decoration-none | font-monospace text-dark | col-auto | mx-3'>Payment Methods</a>
             <a href='#' class='text-decoration-none | font-monospace text-dark | col-auto | mx-3'>Settings</a>
             <a href='#' class='text-decoration-none | font-monospace text-dark | col-auto | ms-5'>Membership : <span class='text-info'>Administrator</span></a>
@@ -24,9 +24,9 @@
     </nav>
 
     <div class='mx-auto my-2 py-2 | bg-light' style='width:80%'>
-        <div class='p-3 | '>
-            <h3 class='text-secondary'>Registered Events</h3>
-            <table class='table'>
+        <div class='p-3'>
+            <h3 class='text-light text-center bg-dark bg-gradient py-3 rounded'>Registered Events</h3>
+            <table class='table table-striped'>
                 <thread class='row'>
                     <tr>
                         <th>
@@ -35,6 +35,8 @@
                         <th>
                             <p class='text-primary | font-monospace | fs-4 | mb-0' scope='col'>Event Name</p>
                         </th>
+                        <th>
+                            <p class='text-primary | font-monospace | fs-4 | mb-0' scope='col'>Event Type</p>
                     <tr>
                 </thread>
                 <tbody>
@@ -47,6 +49,11 @@
                         <td>
                             {%for name in registeredEventName%}
                                 <p class='fs-4 | font-monospace | mb-0'>{{name}}</p>
+                            {%endfor%}
+                        </td>
+                        <td>
+                            {%for type in registeredEventType%}
+                                <p class='fs-4 | font-monospace | mb-0'>{{type}}</p>
                             {%endfor%}
                         </td>
                     </tr>
