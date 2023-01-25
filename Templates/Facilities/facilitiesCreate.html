@@ -3,20 +3,31 @@
 
 <h1 class="text-center | py-3">Create Facility</h1>
 <div class='container | py-3 | bg-light border-dark border-2 border rounded-3 | my-3 '>
-    <form action="" method="post" class='container-sm'>
+    <form action="" method="post" class='container-sm' novalidate>
         <div class="form-group">
             {{formsFacil.hidden_tag()}}
 
             {{formsFacil.facility_location.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsFacil.facility_location.errors%}
+            <div>
+                {{formsFacil.facility_location(class='form-control | border-danger')}}
+            </div>
+            {%for error in formsFacil.facility_location.errors%}
+            <span class="text-danger | float-end">
+                {{errors}}
+            </span>
+            {%endfor%}
+            {%else%}
             <div>
                 {{formsFacil.facility_location(class='form-control')}}
             </div>
+            {%endif%}
             
             <br>
 
-            {{formsFacil.facility_amount.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {{formsFacil.facility_type.label(class='text-dark | fs-4 | float-start | ms-2')}}
             <div>
-                {{formsFacil.facility_amount(class='form-control')}}
+                {{formsFacil.facility_type(class='form-control')}}
             </div>
             
             <br>
@@ -45,7 +56,7 @@
                 {{formsFacil.facility_status(class='form-control | border-danger')}}
             </div>
             {%for error in formsFacil.facility_status.errors%}
-            <span>
+            <span class="text-danger | float-end">
                 {{error}}
             </span>
             {%endfor%}
@@ -57,9 +68,38 @@
 
             <br>
             {{formsFacil.facility_slots.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsFacil.facility_slots.errors%}
+            <div>
+                {{formsFacil.facility_slots(class='form-control | border-danger')}}
+            </div>
+            {%for error in formsFacil.facility_slots.errors%}
+            <span class="text-danger | float-end">
+                {{error}}
+            </span>
+            {%endfor%}
+            {%else%}
             <div>
                 {{formsFacil.facility_slots(class='form-control')}}
             </div>
+            {%endif%}
+
+            <br>
+            {{formsFacil.facility_rates.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsFacil.facility_rates.errors%}
+            <div>
+                {{formsFacil.facility_rates(class='form-control | border-danger')}}
+            </div>
+            {%for error in formsFacil.facility_rates.errors%}
+            <span class="text-danger | float-end">
+                {{error}}
+            </span>
+            {%endfor%}
+            {%else%}
+            <div>
+                {{formsFacil.facility_rates(class='form-control')}}
+            </div>
+            {%endif%}
+
             <br>
             <div class="text-center | my-4 mx-auto | " style='width:50%'>
                 {{formsFacil.submit(class='btn btn-primary')}}

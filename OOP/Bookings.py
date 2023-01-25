@@ -2,9 +2,9 @@ import random
 from datetime import datetime
      
 class FacilityBooking:
-     def __init__(self, facilityLocation, facility, date, timeslot):
+     def __init__(self, facility, date, timeslot):
           self.__booking_id=""
-          self.__facilityLocation = facilityLocation
+          self.__facilityLocation=""
           self.__facility=facility
           self.__date=date
           self.__timeslot=timeslot

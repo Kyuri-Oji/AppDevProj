@@ -3,43 +3,119 @@
 
 <h1 class="text-center | py-3">Edit Facility</h1>
 <div class='container | py-3 | bg-light border-dark border-2 border rounded-3 | my-3 '>
-    <form action="" method="post" class='container-sm'>
+    <form action="" method="post" class='container-sm' novalidate>
         <div class="form-group">
             {{formsFacil.hidden_tag()}}
             
             {{formsFacil.edit_facility_id.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsFacil.edit_facility_id.errors%}
+            <div>
+                {{formsFacil.edit_facility_id(class='form-control | border-danger')}}
+            </div>
+            {%for error in formsFacil.edit_facility_id.errors%}
+            <span class="text-danger | float-end">
+                {{error}}
+            </span>
+            {%endfor%}
+            {%else%}
             <div>
                 {{formsFacil.edit_facility_id(class='form-control')}}
             </div>
+            {%endif%}
 
             <br>
             
             {{formsFacil.edit_facility_location.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsFacil.edit_facility_location.errors%}
+            <div>
+                {{formsFacil.edit_facility_location(class='form-control | border-danger')}}
+            </div>
+            {%for error in formsFacil.edit_facility_location.errors%}
+            <span class="text-danger | float-end">
+                {{error}}
+            </span>
+            {%endfor%}
+            {%else%}
             <div>
                 {{formsFacil.edit_facility_location(class='form-control')}}
-            </div> 
+            </div>
+            {%endif%}
+
 
             <br>
 
-            {{formsFacil.edit_facility_amount.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {{formsFacil.edit_facility_type.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsFacil.edit_facility_type.errors%}
             <div>
-                {{formsFacil.edit_facility_amount(class='form-control')}}   
+                {{formsFacil.edit_facility_type(class='form-control | border-danger')}}   
             </div>
+            {%for error in formsFacil.edit_facility_type.errors%}
+            <span class="text-danger | float-end">
+                {{error}}
+            </span>
+            {%endfor%}
+            {%else%}
+            <div>
+                {{formsFacil.edit_facility_type(class='form-control')}}
+            </div>
+            {%endif%}
 
             <br>
 
             {{formsFacil.edit_facility_status.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsFacil.edit_facility_status.errors%}
+            <div>
+                {{formsFacil.edit_facility_status(class='form-control | border-danger')}}
+            </div>
+            {%for error in formsFacil.edit_facility_status.errors%}
+            <span class="text-danger | float-end">
+                {{error}}
+            </span>
+            {%endfor%}
+            {%else%}
             <div>
                 {{formsFacil.edit_facility_status(class='form-control')}}
             </div>
+            {%endif%}
 
             <br>
 
             {{formsFacil.edit_facility_slots.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsFacil.edit_facility_slots.errors%}
+            <div>
+                {{formsFacil.edit_facility_slots(class='form-control | border-danger')}}
+            </div>
+            {%for error in formsFacil.edit_facility_slots.errors%}
+            <span class="text-danger | float-end">
+                {{error}}
+            </span>
+            {%endfor%}
+            {%else%}
             <div>
                 {{formsFacil.edit_facility_slots(class='form-control')}}
             </div>
+            {%endif%}
+            
             <br>
+
+            {{formsFacil.edit_facility_rates.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsFacil.edit_facility_rates.errors%}
+            <div>
+                {{formsFacil.edit_facility_rates(class='form-control | border-danger')}}
+            </div>
+            {%for error in formsFacil.edit_facility_rates.errors%}
+            <span class="text-danger | float-end">
+                {{error}}
+            </span>
+            {%endfor%}
+            {%else%}
+            <div>
+                {{formsFacil.edit_facility_rates(class='form-control')}}
+            </div>
+            {%endif%}
+
+            <br>
+                
             <div class="text-center | my-4 mx-auto | " style='width:50%'>
                 {{formsFacil.submit(class='btn btn-primary')}}
             </div>

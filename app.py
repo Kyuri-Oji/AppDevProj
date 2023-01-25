@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, request, session
 import shelve
-from datetime import datetime
+from datetime import datetime, date
 import secrets
 import random
 
@@ -535,6 +535,14 @@ def eventsPage():
     for event in eventsDict:
         events = eventsDict.get(event)
         eventsList.append(events)
+    print(eventsList)
+        
+    eventAscend = []
+    for events in eventsList:
+        eventID = str(events)[-4:]
+        eventAscend.append(int(eventID))
+    eventAscend.sort()
+    print(f"{eventAscend} is here")
     
     # Please do not touch this, I really have no clue how to solve this if broken.
     eventSports = []
@@ -844,13 +852,13 @@ def bookingPage():
             except:
                 print('Error in retrieving bookings.')
 
-            bookFacilLoc = formsBooking.bookingFacilityLocation.data
+            #bookFacilLoc = formsBooking.bookingFacilityLocation.data
             bookFacil = formsBooking.bookingFacilityID.data
             bookDate = formsBooking.bookingDate.data
             bookTime = formsBooking.bookingTimeSlot.data
             #bookFacil = bookFacilLoc+bookFacilType
 
-            fb = FacilityBooking(bookFacilLoc, bookFacil, bookDate, bookTime)
+            fb = FacilityBooking(bookFacil, bookDate, bookTime)
             fb.set_booking_id()
             bookingUID = fb.get_booking_id()
             print(bookingUID)
@@ -861,7 +869,7 @@ def bookingPage():
             bookingDB.close()
             print(bookingsDict.keys())
             
-            userBookingInfo = [userID, bookFacilLoc, bookFacil, bookDate, bookTime]
+            userBookingInfo = [userID, bookFacil, bookDate, bookTime]
             bookingFacilDict[bookingUID[-4:]] = userBookingInfo
             print(bookingFacilDict)
             bookingFacilDB['BookingFacil'] = bookingFacilDict
@@ -871,7 +879,7 @@ def bookingPage():
         return render_template('Booking/bookingMain.html', formsBooking = formsBooking)
     
     else:
-        return render_template('login.html')
+        return redirect(url_for('login'))
 
 
 @app.route('/booking/bookingPayment', methods=['GET', 'POST'])
@@ -881,6 +889,7 @@ def bookingPayment():
         payMethod = formsPayment.paymentMethod.data
         cardNum = formsPayment.cardNumber.data
         expireDate = formsPayment.expirationDate.data
+        securePIN = formsPayment.securityPIN.data
 
         return redirect(url_for('bookingCurrent'))
 
@@ -897,6 +906,7 @@ def bookingCurrent():
         bookingsList=[]
         for booking in bookingsDict:
             bookings = bookingsDict.get(booking)
+            print(bookings.get_date())
             bookingsList.append(bookings)
 
         return render_template('Booking/bookingCurrent.html', bookingsList = bookingsList)
@@ -946,7 +956,7 @@ def editBookings(id):
             print('Error in retrieving bookings.')
             
         booking = bookingsDict.get(id)
-        formsBooking.bookingFacilityLocation.data = booking.get_facility()
+        #formsBooking.bookingFacilityLocation.data = booking.get_facility()
         formsBooking.bookingFacilityID.data = booking.get_booking_id()
         formsBooking.bookingDate.data = booking.get_date()
         formsBooking.bookingTimeSlot.data = booking.get_timeslot()
@@ -1034,21 +1044,22 @@ def createFacilities():
                 facilDB['Facilites'] = facilDict
         except:
             print('Error in retrieving facilites.')
-        
+        # oy alan who lives in a pineapple under the sea
         facilLocation = formsFacil.facility_location.data
         location = facilLocation
         
         facilType = formsFacil.facility_type.data
         type = facilType
-        
+
         facilID = (str(location) + type + str(formsFacil.facility_id.data)) # Hougang Stadium - 53, Sengkang Stadium - 54BD01 - 06
         facilStatus = formsFacil.facility_status.data
         facilSlots = formsFacil.facility_slots.data
-        
+        facilRates = ("%.2f" % int(formsFacil.facility_rates.data))
+
         uniqueID = len(facilDict)
         uniqueID += 1
         
-        facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilType, uniqueID)
+        facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilRates ,facilType, uniqueID)
         facilDict[facil.get_uniqueID()] = facil # get id
         facilDB['Facilities'] = facilDict
         
@@ -1080,14 +1091,15 @@ def editFacilities():
         facilSlots = formsFacil.edit_facility_slots.data
         facilLocation = formsFacil.edit_facility_location.data
         facilType = formsFacil.edit_facility_type.data
-        
+        facilRates = ("%.2f" % float(formsFacil.facility_rates.data))
+
         facilityID = str(facilLocation + facilType + facilID)
         
         if facilityID not in facilDict.keys():
             print('Error.')
             flash('Facility ID not found in Facilities Database.')
         else:
-            facil = Facilities(facilityID, facilStatus, facilSlots, facilLocation, facilType, id)
+            facil = Facilities(facilityID, facilStatus, facilSlots, facilLocation, facilRates, facilType, id)
             facilDict[facil.get_uniqueID()] = facil
             facilDB['Facilities'] = facilDict
     
@@ -1121,9 +1133,9 @@ def editFacilities2(id):
         facilID = str(formsFacil.edit_facility_id.data) # Hougang Stadium - 53, Sengkang Stadium - 54BD01 - 06
         facilStatus = formsFacil.edit_facility_status.data
         facilSlots = formsFacil.edit_facility_slots.data
-
+        facilRates = ("%.2f" % float(formsFacil.edit_facility_rates.data))
         
-        facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilLocation, id)
+        facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilRates, facilType, id)
         facilDict[id] = facil  
         facilDB['Facilities'] = facilDict
         
@@ -1150,6 +1162,7 @@ def editFacilities2(id):
             formsFacil.edit_facility_slots.data = facility.get_fac_slots()
             formsFacil.edit_facility_status.data = facility.get_fac_status()
             formsFacil.edit_facility_type.data = facility.get_fac_amt()
+            formsFacil.edit_facility_rates.data = facility.get_fac_rate()
             
         else:
             print('An Error Is Here')
@@ -1191,3 +1204,4 @@ if __name__ == '__main__':
     app.run(debug=True)
 # 723rd line :D
 # 17Jan2023 - No longer is this the 723rd line, we have gone too far off. (1089th line)
+# 25/1/2023 - It's only been 8 days..., we gone further (1207th line)

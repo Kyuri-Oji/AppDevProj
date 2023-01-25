@@ -1,26 +1,12 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<h1 class='text-center | mt-15 | mb-10 | p-4'>Edit Booking</h1>
+<h1 class='text-center | mt-25 | mb-10 | p-4'>Edit Booking</h1>
 
-<div class='container py-3 | bg-light | rounded-3 border-dark border-2 border | my-3'>
+<div class='container py-3 | bg-light | rounded-3 border-dark border-2 border | mt-3 | mb-5'>
     <section>
         <form action="" method="post" class='container-sm'>
             {{formsBooking.hidden_tag()}}
-
-            {{formsBooking.bookingFacilityLocation.label(class='text-dark | fs-4 | float-start | ms-2 | form-check-label')}}
-            {%if formsBooking.bookingFacilityLocation.errors%}
-            <div>
-                {{formsBooking.bookingFacilityLocation(class='form-control | my-2 | border-danger')}}
-            </div>
-            {%for errors in formsBooking.bookingFacilityLocation.errors%}
-                <span class='text-danger | float-end'>{{errors}}</span>
-            {%endfor%}
-            {%else%}
-            <div>
-                {{formsBooking.bookingFacilityLocation(class='form-control | my-2')}}
-            </div>
-            {%endif%}
 
             {{formsBooking.bookingFacilityID.label(class='text-dark | fs-4 | float-start | ms-2 | form-check-label')}}
             {%if formsBooking.bookingFacilityID.errors%}
@@ -37,16 +23,25 @@
             {%endif%}
 
             {{formsBooking.bookingDate.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsBooking.bookingDate.errors%}
+            <div>
+                {{formsBooking.bookingDate(class='form-control | my-2 | border-danger')}}
+            </div>
+            {%for errors in formsBooking.bookingDate.errors%}
+                <span class='text-danger | float-end'>{{errors}}</span>
+            {%endfor%}
+            {%else%}
             <div>
                 {{formsBooking.bookingDate(class='form-control | my-2')}}
             </div>
+            {%endif%}
 
             {{formsBooking.bookingTimeSlot.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            {%if formsBooking.bookingDate.errors%}
+            {%if formsBooking.bookingTimeSlot.errors%}
             <div>
                 {{formsBooking.bookingTimeSlot(class='form-control | my-2 | border-danger')}}
             </div>
-            {%for errors in formsBooking.bookingDate.errors%}
+            {%for errors in formsBooking.bookingTimeSlot.errors%}
                 <span class='text-danger | float-end'>{{errors}}</span>
             {%endfor%}
             {%else%}

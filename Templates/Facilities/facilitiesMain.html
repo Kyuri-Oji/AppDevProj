@@ -25,18 +25,18 @@
     <div class='mx-auto row' style='width:80%'>
         {%for facils in facilList%}
             <div class='mx-auto my-4 col-4'>
-                <div class="card" style="" id='cardExpand'>
+                <div class="card" id='cardExpand'>
                     <div class="card-body">
                     <img src="https://images.unsplash.com/photo-1587960184060-aa880aabdd04?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1632&q=80" class="card-img-top" alt="..." style='height:5vw'>
                     <h3 class="card-title | text-primary | pt-2">{{facils.get_uniqueID()}} - <span class="h4 text-info">{{facils.get_fac_id()}}<span></h5>
-                    <p class="card-text">Facility Type : <span class='text-primary'>{{facils.get_fac_amt()}}</span></p>
+                    <p class="card-text">Facility Type : <span class='text-primary'>{{facils.get_fac_amt()}}</span><br>Facility Location : <span class='text-primary'>{{facils.get_fac_loc()}}</span></p>
                     <div class='p-2 | bg-light border-secondary border-2 border rounded'>
                         {%if facils.get_fac_status() == 'Available'%}
                             <p class='mb-0'>Facility Status : <span class='text-success'>{{facils.get_fac_status()}}</span></p>
                         {%else%}
                         <p class='mb-0'>Facility Status : <span class='text-danger'>{{facils.get_fac_status()}}</span></p>
                         {%endif%}
-                        <p class='mb-0'>Facility Slots : <span>{{facils.get_fac_slots()}}</span></p>
+                        <p class='mb-0'>Facility Slots : <span>{{facils.get_fac_slots()}}</span><br>Facility Rates : $<span>{{facils.get_fac_rate()}}</span>/hour</p>
                     </div>
                     <hr>
                     <nav class='row align-items-start'>
@@ -48,18 +48,36 @@
                         <form action="{{url_for('editFacilities2', id = facils.get_uniqueID())}}" method='POST'class='col-auto'>
                             <input type='submit' value='Edit' class='btn btn-success'>
                         </form>
-                        <form action="{{url_for('deleteFacilitiesDirect', id = facils.get_uniqueID())}}" method='POST'class='col-auto'>
-                            <input type='submit' value='Delete' class='btn btn-danger'>
-                        </form>
+                        
+                        <a href="#" class='text-decoration-none btn btn-danger | mx-2' data-bs-toggle='modal' data-bs-target='#deleteModal_{{facils.get_uniqueID()}}' style="width:25%">Delete</a>
+
                         {%endif%}
                         {%endif%}
                     </nav>
                 </div>
             </div>
+        </div>    
         </div>
-        {% endfor %}
-</div>
-
+        <div class='modal fade' id='deleteModal_{{facils.get_uniqueID()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+            <div class='modal-dialog'>
+                <div class='modal-content'>
+                    <div class="modal-body">
+                        <div class='card-body'>
+                            <h3 class='card-title'>Facility Deletion</h3>
+                            <h5 class='card-text'>Are you sure you want to delete?</h5>
+                            <small class='font-monospace | text-muted'>Facilities once deleted cannot be recovered.</small>
+                            <h5 class='font-monospace'>Facility ID : <span class='text-primary'>{{facils.get_uniqueID()}}</span></h5>
+                            <h5 class='font-monospace'>Facility Type : <span class='text-primary'>{{facils.get_fac_amt()}}</span></h5>
+                            <h5 class='font-monospace'>Facility Location : <span class='text-primary'>{{facils.get_fac_loc()}}</span></h5>
+                            <form action="{{url_for('deleteFacilitiesDirect', id=facils.get_uniqueID())}}" method='POST' class='mt-3'>
+                                <input type='submit' value='Delete' class='btn btn-danger'>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endfor %}
 
 <style>
     body {

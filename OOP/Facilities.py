@@ -1,11 +1,12 @@
 class Facilities:
     
-    def __init__(self, fac_id, fac_status, fac_slots, fac_loc, fac_amt, id):
+    def __init__(self, fac_id, fac_status, fac_slots, fac_loc, fac_rate, fac_amt, id):
         self.__uniqueID = id    
         self.__fac_id = fac_id
         self.__fac_status = fac_status
         self.__fac_slots = fac_slots
         self.__fac_loc = fac_loc
+        self.__fac_rate = fac_rate
         self.__fac_amt = fac_amt
 
     def set_uniqueID(self, id):
@@ -37,3 +38,8 @@ class Facilities:
         self.__fac_amt = fac_amt
     def get_fac_amt(self):
         return self.__fac_amt
+
+    def set_fac_rate(self,fac_rate):
+        self.__fac_rate = fac_rate
+    def get_fac_rate(self):
+        return self.__fac_rate

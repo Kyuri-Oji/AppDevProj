@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, DateTimeField, TextAreaField, PasswordField, SubmitField, BooleanField, RadioField, SelectField, DateField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange, ValidationError
 from datetime import datetime
 import time
 import shelve
@@ -46,7 +46,7 @@ class eventCreateForm(FlaskForm):
                               format='%d-%m-%y %H:%M:%S', default=datetime.now, #datetime formatting, dafault to current date
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
     eventID = IntegerField('Event ID : ',
-                           validators=[DataRequired()],
+                           validators=[DataRequired(message="This field is required."), NumberRange(min=1000, max=9999)],
                            render_kw={'placeholder' : '001'})
     eventType = RadioField('Event Type : ',
                            validators=[DataRequired()],
@@ -119,7 +119,22 @@ class eventCreateForm(FlaskForm):
                 raise ValidationError(f'Max Event Vacancies is {facilitySlotsList[index]}!')
             
         print(facilityIDList)
-    
+        
+    def validate_eventDate(self, eventDate): # Dont touch this.
+        dateFormat = "%d%m%y%H%M%S"
+        
+        startDate = (self.eventStartDate.data)
+        startDateData = startDate.strftime(dateFormat)
+        print(f'Start Date : {startDate}')
+        
+        endDate = (self.eventDate.data)
+        endDateData = endDate.strftime(dateFormat)
+        print(f'End Date : {endDate}')
+        
+        if int(endDateData) < int(startDateData):
+            print('Please work man')
+            raise ValidationError('End Date cannot be before Start Date')
+            
 class eventEditForm(FlaskForm):
     editEventID = IntegerField('Enter Event ID to Edit : ',
                                validators=[DataRequired()])
@@ -156,20 +171,20 @@ class eventEditForm(FlaskForm):
 
 class eventEditForm2(FlaskForm):
     editEventName = StringField('Edit Event Name : ',
-                                validators=[],
+                                validators=[DataRequired()],
                                 render_kw={'placeholder' : 'Leave empty if no change.'})
     editEventDesc = TextAreaField('Edit Event Descriptrion : ',
-                                  validators=[],
+                                  validators=[DataRequired()],
                                   render_kw={'placeholder' : 'Leave empty if no change.'})
     editEventVacancy = IntegerField('Edit Event Vacancy : ',
-                               validators=[],
+                               validators=[DataRequired()],
                                render_kw={'placeholder' : 'Leave empty if no change.'})
     editEventDate = DateTimeField('Event End Date : ',
-                              validators=[],
+                              validators=[DataRequired()],
                               format='%d-%m-%y %H:%M:%S',#datetime formatting, dafault to current date
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
     editEventStartDate = DateTimeField('Event Start Date : ',
-                              validators=[],
+                              validators=[DataRequired()],
                               format='%d-%m-%y %H:%M:%S',#datetime formatting, dafault to current date
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
     editEventType = RadioField('Edit Event Type : ',

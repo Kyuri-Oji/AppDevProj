@@ -64,5 +64,5 @@ class createEvents:
         return self.eventStatus
     
     def __str__(self) -> str:
-        s = f'ID:{self.get_eventID()} - {self.get_eventName()} | {self.get_eventID()}'
+        s = f'{self.get_eventID()}'
         return s

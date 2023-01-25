@@ -9,23 +9,6 @@
         <div class="my-5 py-5 | bg-light">
             <form action="" method="post" class='container-sm'>
             {{ form.hidden_tag() }}
-            {{form.username.label(class='text-dark | fs-4 | float-start')}}
-            {%if form.username.errors%}
-                <div class='input-group | my-2'>
-                    <span class="input-group-text |" id="">@</span>
-                    {{form.username(class='form-control | border-danger')}}
-                </div>
-                {%for errors in form.username.errors%}
-                    <span class='text-danger | float-end'>
-                        {{errors}}
-                    </span>
-                {%endfor%}
-            {%else%}
-                <div class='input-group | my-2'>
-                    <span class="input-group-text |" id="">@</span>
-                    {{form.username(class='form-control')}}
-                </div>
-            {%endif%}
 
             {{form.email.label(class='text-dark | fs-4 | float-start')}}
             {%if form.email.errors%}

@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<h1 class='text-center | mt-15 | mb-10 | p-4'>Booking Payment</h1>
+<h1 class='text-center | mt-15 | mb-10 | p-4'>Facility Booking</h1>
 
 <div class='container py-3 | bg-light | rounded-3 border-dark border-2 border | my-3'>
     <section>
@@ -9,17 +9,61 @@
             {{formsPayment.hidden_tag()}}
 
             {{formsPayment.paymentMethod.label(class='text-dark | fs-4 | float-start | ms-2 | form-check-label')}}
+            {%if formsPayment.paymentMethod.errors%}
+            <div>
+                {{formsPayment.paymentMethod(class='form-control | my-2 | border-danger')}}
+            </div>
+            {%for errors in formsPayment.paymentMethod.errors%}
+                <span class='text-danger | float-end'>{{errors}}</span>
+            {%endfor%}
+            {%else%}
             <div>
                 {{formsPayment.paymentMethod(class='form-control | my-2')}}
             </div>
+            {%endif%}
+
             {{formsPayment.cardNumber.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsPayment.cardNumber.errors%}
+            <div>
+                {{formsPayment.cardNumber(class='form-control | my-2 | border-danger')}}
+            </div>
+            {%for errors in formsPayment.cardNumber.errors%}
+                <span class='text-danger | float-end'>{{errors}}</span>
+            {%endfor%}
+            {%else%}
             <div>
                 {{formsPayment.cardNumber(class='form-control | my-2')}}
             </div>
+            {%endif%}
+
             {{formsPayment.expirationDate.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsPayment.expirationDate.errors%}
+            <div>
+                {{formsPayment.expirationDate(class='form-control | my-2 | border-danger')}}
+            </div>
+            {%for errors in formsPayment.expirationDate.errors%}
+                <span class='text-danger | float-end'>{{errors}}</span>
+            {%endfor%}
+            {%else%}
             <div>
                 {{formsPayment.expirationDate(class='form-control | my-2')}}
             </div>
+            {%endif%}
+
+            {{formsPayment.securityPIN.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsPayment.securityPIN.errors%}
+            <div>
+                {{formsPayment.securityPIN(class='form-control | my-2 | border-danger')}}
+            </div>
+            {%for errors in formsPayment.securityPIN.errors%}
+                <span class='text-danger | float-end'>{{errors}}</span>
+            {%endfor%}
+            {%else%}
+            <div>
+                {{formsPayment.securityPIN(class='form-control | my-2')}}
+            </div>
+            {%endif%}
+
             <div class="text-center | my-4 mx-auto | " style='width:50%'>
                 {{formsPayment.submit(class='btn btn-primary')}}
             </div>

@@ -10,7 +10,7 @@
         <div class="">
             <section class="mx-auto">
                 <div class='container | bg-light'>
-                    <form action="" method="post" class='container-sm | py-2'>
+                    <form action="" method="post" class='container-sm | py-2' novalidate>
                         {{ form.hidden_tag() }}
             
                         {{form.username.label(class='text-dark | fs-4 | float-start')}}
@@ -32,7 +32,7 @@
                         {%endif%}
             
                         {{form.firstName.label(class='text-dark | fs-4 | float-start')}}
-                        {%if form.firstName.error%}
+                        {%if form.firstName.errors%}
                             <div>
                                 {{form.firstName(class='form-control | border-danger')}}
                             </div>
@@ -64,22 +64,35 @@
                         {%endif%}
             
                         {{form.email.label(class='text-dark | fs-4 | float-start')}}
-                        {%if form.email.errors%}
-                            <div class='input-group | my-2'>
-                                {{form.email(class='form-control | border-danger')}}
-                                <span class="input-group-text | border-danger" id="">@example.com</span>
-                            </div>
-                        {%for errors in form.email.errors%}
+                        {%with messages = get_flashed_messages('', 'userAlreadyExistError')%}
+                            {%if form.email.errors or messages%}
+
+                                {%if messages or form.email.errors%}
+                                <div>
+                                    {{form.email(class='form-control | border-danger')}}
+                                </div>
+                                {%for message in messages%}
+                                    <span class='float-end | text-danger'>{{message}}</span>
+                                {%endfor%}
+                                {%else%}
+                                    <div>
+                                        {{form.email(class='form-control')}}
+                                    </div>
+                                {%endif%}
+                            
+                            {%for errors in form.email.errors%}
                             <span class='text-danger | float-end'>
                                 {{errors}}
                             </span>
-                        {%endfor%}
-                        {%else%}
-                            <div class='input-group | my-2'>
+                            {%endfor%}
+
+                            {%else%}
+                            <div>
                                 {{form.email(class='form-control')}}
-                                <span class="input-group-text" id="">@example.com</span>
                             </div>
-                        {%endif%}
+                            {%endif%}
+                        {%endwith%}
+
             
                         {{form.password.label(class='text-dark | fs-4 | float-start')}}
                         {%if form.password.errors%}
