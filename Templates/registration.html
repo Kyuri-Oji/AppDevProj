@@ -63,37 +63,38 @@
                             </div>
                         {%endif%}
             
-                        {{form.email.label(class='text-dark | fs-4 | float-start')}}
-                        {%with messages = get_flashed_messages('', 'userAlreadyExistError')%}
-                            {%if form.email.errors or messages%}
-
-                                {%if messages or form.email.errors%}
+                        {{form.email.label(class='text-dark | fs-4 | float-start')}}                   
+                            {%if form.email.errors%}
                                 <div>
                                     {{form.email(class='form-control | border-danger')}}
-                                </div>
-                                {%for message in messages%}
-                                    <span class='float-end | text-danger'>{{message}}</span>
-                                {%endfor%}
-                                {%else%}
-                                    <div>
-                                        {{form.email(class='form-control')}}
-                                    </div>
-                                {%endif%}
-                            
+                                </div>                           
                             {%for errors in form.email.errors%}
+                                <span class='text-danger | float-end'>
+                                    {{errors}}
+                                </span>
+                            {%endfor%}
+                            {%else%}
+                                <div>
+                                    {{form.email(class='form-control')}}
+                                </div>
+                            {%endif%}
+                        
+                        {{form.phoneNo.label(class='text-dark | fs-4 | float-start')}}
+                        {%if form.phoneNo.errors%}
+                            <div class='input-group | my-2'>
+                                {{form.phoneNo(class='form-control | border-danger')}}
+                            </div>
+                        {%for errors in form.phoneNo.errors%}
                             <span class='text-danger | float-end'>
                                 {{errors}}
                             </span>
-                            {%endfor%}
-
-                            {%else%}
-                            <div>
-                                {{form.email(class='form-control')}}
+                        {%endfor%}
+                        {%else%}
+                            <div class='input-group | my-2'>
+                                {{form.phoneNo(class='form-control')}}
                             </div>
-                            {%endif%}
-                        {%endwith%}
+                        {%endif%}
 
-            
                         {{form.password.label(class='text-dark | fs-4 | float-start')}}
                         {%if form.password.errors%}
                             <div class='input-group | my-2'>

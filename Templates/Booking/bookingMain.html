@@ -23,6 +23,20 @@
             </div>
             {%endif%}
 
+            {{formsBooking.bookingFacilityLocation.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formsBooking.bookingFacilityLocation.errors%}
+            <div>
+                {{formsBooking.bookingFacilityLocation(class='form-control | my-2 | border-danger')}}
+            </div>
+            {%for errors in formsBooking.bookingFacilityLocation.errors%}
+                <span class='text-danger | float-end'>{{errors}}</span>
+            {%endfor%}
+            {%else%}
+            <div>
+                {{formsBooking.bookingFacilityLocation(class='form-control | my-2')}}
+            </div>
+            {%endif%}
+
             {{formsBooking.bookingDate.label(class='text-dark | fs-4 | float-start | ms-2')}}
             {%if formsBooking.bookingDate.errors%}
             <div>

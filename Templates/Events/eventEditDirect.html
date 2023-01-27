@@ -6,13 +6,22 @@
 </h1>
 <div class='container | py-3 | bg-light border-dark border-2 border rounded-3 | my-3 '>
     <section>
-        <form action="" method="post" class='container-sm'>
+        <form action="" method="post" class='container-sm' novalidate>
             {{formEvents.hidden_tag()}}
 
             {{formEvents.editEventName.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            {%if formEvents.editEventName.errors%}
             <div>
                 {{formEvents.editEventName(class='form-control | my-2')}}
             </div>
+            {%for errors in formEvents.editEventName.errors%}
+                <span class='text-danger | float-end'>{{errors}}</span>
+            {%endfor%}
+            {%else%}
+            <div>
+                {{formEvents.editEventName(class='form-control | my-2')}}
+            </div>
+            {%endif%}
 
             {{formEvents.editEventDesc.label(class='text-dark | fs-4 | float-start | ms-2')}}
             <div>

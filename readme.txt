@@ -33,6 +33,11 @@ Used to keep track of work progress, updates, and TO-DO List
         - Integrated Booking with Available Facilities
         - Changed small details of Facility display
 18/1/23 - Integrated Users with Booking
+27/1/23 - Updated User to include phone no and date joined
+        - Can log in using Phone number or email
+        - Changed facility location to reflect name instead of postal code
+        - Updated dynamic options for facilities in regard to events and booking
+        - Added location to booking (Temp until i find a new solution)
 
 
 

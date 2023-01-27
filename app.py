@@ -84,22 +84,28 @@ def register():
         userFirstName = form.firstName.data
         userLastName =  form.lastName.data
         userEmail = form.email.data
-        userID = str(User.get_random_UID(User)) #DO NOT TOUCH, I REPEAT, DO NOT EVER TOUCH, IT WILL CAUSE A NUCLEAR MELTDOWN
+        userID = str(User.get_random_UID(User))
+        userPhoneNo = form.phoneNo.data
+        userDateJoined = (User.get_userJoinDate(User)).strftime("%d/%m/%y")
         userPass = form.password.data
         
         userEmailList = []
+        userPhoneNoList = []
         for i in dictUsers:
             userInfo = dictUsers.get(i)
+            
             userInfoEmail = userInfo.get_email()
             userEmailList.append(userInfoEmail)
+            
+            userInfoPhoneNo = userInfo.get_phoneNo()
+            userPhoneNoList.append(userInfoPhoneNo)
         
-        if form.email.data not in userEmailList:
-            user = User(userName, userFirstName, userLastName, userEmail, userID, userPass)
+        if form.email.data not in userEmailList and form.phoneNo.data not in userPhoneNoList:
+            user = User(userName, userFirstName, userLastName, userEmail, userID, userPhoneNo, userDateJoined, userPass)
             dictUsers[user.get_uid()] = user
             db['Users'] = dictUsers
             return redirect(url_for('home'))
-        else:
-            flash('User Already Exist, Please Use a Different Email!', 'userAlreadyExistError')
+
     return render_template('registration.html', title = 'Register', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -111,13 +117,15 @@ def login():
     try:
         dictsUser = db['Users']
     except:
-        print('Error in User.db')
+        print('Error in User.db test')
 
     userList = []
     userNameList = []
     userEmailList = []
     userFirstList = []
     userLastList = []
+    userPhoneNoList = []
+    userDateJoinedList = []
     user48afe0ac895d0a6229298679 = [] # For safety reasons, this isnt called userPassList
     
     for users in dictsUser:
@@ -137,14 +145,26 @@ def login():
         userLast = user.get_lastName()
         userLastList.append(userLast)
         
+        userPhoneNo = user.get_phoneNo()
+        userPhoneNoList.append(userPhoneNo)
+        
+        userDateJoined = user.get_dateJoined()
+        userDateJoinedList.append(userDateJoined)
+        
         userPass = user.get_password()
         user48afe0ac895d0a6229298679.append(userPass)
-        
-    print(userList)
-    print(userEmailList)
+    
+    try:
+        loginPhoneNo = int(form.loginField.data)
+        loginEmail = None
+    except ValueError:
+        loginEmail = form.loginField.data
+        loginPhoneNo = None
+    except:
+        print('Error in logging in.')
             
     if form.validate_on_submit():
-        if form.email.data == 'admin@activeplay.sg' and form.password.data == 'password':
+        if form.loginField.data == 'admin@activeplay.sg' and form.password.data == 'password':
             flash('You have been logged in as an administrator.', 'login')
             userName = "Administrator"
             userID = '0000000'
@@ -154,21 +174,52 @@ def login():
             session['User'] = [userName, userID, userEmail, userFirst, userLast]
             return redirect(url_for('home'))
         
-        elif form.email.data in userEmailList:
-            index = userEmailList.index(form.email.data)
+        elif loginEmail in userEmailList:
+            try:
+                index = userEmailList.index(form.loginField.data)
+            except:
+                flash('Login Unsuccessful. Please check Email/Phone Number and Password.', 'danger')
+                return redirect(url_for('login'))
+            
             if form.password.data == user48afe0ac895d0a6229298679[index]:
-                userName = userNameList[index]
-                userID = userList[index]
-                userEmail = userEmailList[index]
-                userFirst = userFirstList[index]
-                userLast = userLastList[index]
-                session['User'] = [userName, userID, userEmail, userFirst, userLast]
+                userName = userNameList[index] # Item 0
+                userID = userList[index] # Item 1
+                userEmail = userEmailList[index] # Item 2
+                userFirst = userFirstList[index] # Item 3
+                userLast = userLastList[index] # Item 4
+                userPhoneNo = userPhoneNoList[index] # Item 5
+                userDateJoined = userDateJoinedList[index] # Item 6
+                session['User'] = [userName, userID, userEmail, userFirst, userLast, userPhoneNo, userDateJoined]
                 return redirect(url_for('home'))
             else:
-                flash('Login Unsuccessful. Please check username and password.', 'danger')
+                flash('Login Unsuccessful. Please check Email/Phone Number and Password.', 'danger')
+                return redirect(url_for('login'))
+                
+        elif loginPhoneNo in userPhoneNoList:
+            try:
+                index = userPhoneNoList.index(int(form.loginField.data))
+            except: 
+                flash('Login Unsuccessful. Please check Email/Phone Number and Password.', 'danger')
+                return redirect(url_for('login'))
             
+            if form.password.data == user48afe0ac895d0a6229298679[index]:
+                userName = userNameList[index] # Item 0
+                userID = userList[index] # Item 1
+                userEmail = userEmailList[index] # Item 2
+                userFirst = userFirstList[index] # Item 3
+                userLast = userLastList[index] # Item 4
+                userPhoneNo = userPhoneNoList[index] # Item 5
+                userDateJoined = userDateJoinedList[index] # Item 6
+                session['User'] = [userName, userID, userEmail, userFirst, userLast, userPhoneNo, userDateJoined]
+                return redirect(url_for('home'))
+            else:
+                flash('Login Unsuccessful. Please check Email/Phone Number and Password.', 'danger')
+                return redirect(url_for('login'))
+                
         else:
-            flash('Login Unsuccessful. Please check username and password.', 'danger')
+            flash('Login Unsuccessful. Please check Email/Phone Number and Password.', 'danger')
+            return redirect(url_for('login'))
+        
     return render_template('login.html', title = 'Login', form=form)
 
 @app.route('/users')
@@ -207,15 +258,19 @@ def editUser(id):
         currentUser = dictsUser.get(userID)
         currentUserPass = currentUser.get_password()
         
+        currentDateJoined = currentUser.get_dateJoined()
+        
         userName = editForm.editUsername.data
         userFirst = editForm.editFirstName.data
         userLast = editForm.editLastName.data
         userEmail = editForm.editEmail.data
         userPass = currentUserPass
+        userPhoneNo = editForm.editPhoneNo.data
+        userDateJoined = currentDateJoined
         print(userID)
         
         
-        user = User(userName, userFirst, userLast, userEmail, userID, userPass)
+        user = User(userName, userFirst, userLast, userEmail, userID, userPhoneNo, userDateJoined, userPass)
         dictsUser[user.get_uid()] = user
         db['Users'] = dictsUser
 
@@ -238,6 +293,8 @@ def editUser(id):
         editForm.editFirstName.data = users.get_firstName()
         editForm.editLastName.data = users.get_lastName()
         editForm.editEmail.data = users.get_email()
+        editForm.editPhoneNo.data = users.get_phoneNo()
+        
         
     if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
         return render_template('Users/userEdit.html', editForm = editForm)
@@ -266,8 +323,8 @@ def deleteUser(id):
         return render_template('404.html')
 
 # DO NOT TOUCH, NO CLUE WHY IT WORKS, IT JUST DOES - WE DON'T KNOW HOW EITHER - CONSULT BUDDHA @ 404
-@app.route('/<user>', methods=['GET', 'POST'])
-def account(user):
+@app.route('/account', methods=['GET', 'POST'])
+def account():
     form = LoginForm()
     if request.method == 'POST':
         return render_template('Users/userAccount.html', user = session['User'][0]) # TODO: Change how the url looks
@@ -804,7 +861,7 @@ def eventRegistered():
         return redirect(url_for('login'))
 
 # Booking functions
-@app.route('/booking', methods=['GET', 'POST'])
+@app.route('/bookFacilities', methods=['GET', 'POST'])
 def bookingPage():
     formsBooking = bookingForm()
     
@@ -852,13 +909,13 @@ def bookingPage():
             except:
                 print('Error in retrieving bookings.')
 
-            #bookFacilLoc = formsBooking.bookingFacilityLocation.data
+            bookFacilLoc = formsBooking.bookingFacilityLocation.data
             bookFacil = formsBooking.bookingFacilityID.data
             bookDate = formsBooking.bookingDate.data
             bookTime = formsBooking.bookingTimeSlot.data
             #bookFacil = bookFacilLoc+bookFacilType
 
-            fb = FacilityBooking(bookFacil, bookDate, bookTime)
+            fb = FacilityBooking(bookFacilLoc, bookFacil, bookDate, bookTime)
             fb.set_booking_id()
             bookingUID = fb.get_booking_id()
             print(bookingUID)
@@ -869,7 +926,7 @@ def bookingPage():
             bookingDB.close()
             print(bookingsDict.keys())
             
-            userBookingInfo = [userID, bookFacil, bookDate, bookTime]
+            userBookingInfo = [userID, bookFacilLoc, bookFacil, bookDate, bookTime]
             bookingFacilDict[bookingUID[-4:]] = userBookingInfo
             print(bookingFacilDict)
             bookingFacilDB['BookingFacil'] = bookingFacilDict
@@ -1051,13 +1108,20 @@ def createFacilities():
         facilType = formsFacil.facility_type.data
         type = facilType
 
-        facilID = (str(location) + type + str(formsFacil.facility_id.data)) # Hougang Stadium - 53, Sengkang Stadium - 54BD01 - 06
+        facilID = (str(formsFacil.facility_id.data) + " - " + str(type)) # Hougang Stadium - 53, Sengkang Stadium - 54BD01 - 06
         facilStatus = formsFacil.facility_status.data
         facilSlots = formsFacil.facility_slots.data
-        facilRates = ("%.2f" % int(formsFacil.facility_rates.data))
+        facilRates = ("%.2f" % float(formsFacil.facility_rates.data))
 
         uniqueID = len(facilDict)
         uniqueID += 1
+        uniqueIDCheckList = []
+        for i in facilDict:
+            uniqueIDCheck = facilDict.get(i)
+            uniqueIDCheckList.append(uniqueIDCheck)
+            
+        if uniqueID in uniqueIDCheckList:
+            uniqueID += 1
         
         facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilRates ,facilType, uniqueID)
         facilDict[facil.get_uniqueID()] = facil # get id
@@ -1205,3 +1269,4 @@ if __name__ == '__main__':
 # 723rd line :D
 # 17Jan2023 - No longer is this the 723rd line, we have gone too far off. (1089th line)
 # 25/1/2023 - It's only been 8 days..., we gone further (1207th line)
+# 27Jan2023 - It's only getting longer. When will our suffering end? (1265th Line)

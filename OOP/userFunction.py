@@ -1,5 +1,6 @@
 import shelve
 import random
+import datetime
 
 dictUsers = {}
 db = shelve.open('users', 'c')
@@ -10,12 +11,14 @@ except:
     print('Error in retrieving users from user.db.')
 
 class User:
-    def __init__(self, username, firstName, lastName, email, uid, password):
+    def __init__(self, username, firstName, lastName, email, uid, phoneNo, dateJoined, password):
+        self.username = username
         self.firstName = firstName
         self.lastName = lastName
-        self.username = username
-        self.uid = uid
         self.email = email
+        self.uid = uid
+        self.phoneNo = phoneNo
+        self.dateJoined = dateJoined
         self.password = password
         
     def set_firstName(self, firstName):
@@ -43,6 +46,16 @@ class User:
     def get_email(self):
         return self.email
 
+    def set_phoneNo(self, phoneNo):
+        self.phoneNo = phoneNo
+    def get_phoneNo(self):
+        return self.phoneNo
+    
+    def set_dateJoined(self, dateJoined):
+        self.dateJoined = dateJoined
+    def get_dateJoined(self):
+        return self.dateJoined
+        
     def set_password(self, password):
         self.password = password
     def get_password(self):
@@ -67,3 +80,7 @@ class User:
                 if str(tempList) not in db:
                     return "".join(tempList)
                 break
+
+    def get_userJoinDate(self):
+        userDateJoined = datetime.date.today()
+        return userDateJoined

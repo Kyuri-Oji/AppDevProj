@@ -37,9 +37,15 @@
             <p class='fs-4'>First Name : <span class='text-primary | font-monospace | ms-2 me-4'>{{session.User[3]}}</span> 
                             Last Name : <span class='text-primary | font-monospace | ms-2 me-4'>{{session.User[4]}}</span>
             </p>
+            <p class='fs-4'>Date Joined : <span class='text-primary | font-monospace | ms-2 me-4'>{{session.User[6]}}</span> 
+                            <!--In case of adding more information, use this line first-->
+            </p>
             <h3 class='text-secondary'>Account Contact Details</h3>
             <p class='fs-4'>
                 Email : <span class='text-primary | font-monospace | ms-2 me-4'>{{session.User[2]}}</span>
+            </p>
+            <p class='fs-4'>
+                Phone Number : <span class='text-primary | font-monospace | ms-2 me-4'>{{session.User[5]}}</span>
             </p>
             {%endif%}
         </div>

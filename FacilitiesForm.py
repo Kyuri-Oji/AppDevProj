@@ -1,51 +1,64 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, DateTimeField, TextAreaField, PasswordField, SubmitField, BooleanField, RadioField, SelectField
+from wtforms import StringField, IntegerField, DateTimeField, TextAreaField, PasswordField, SubmitField, BooleanField, RadioField, SelectField, FloatField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 import shelve
 
 class CreateFacilityForm(FlaskForm):
-    facility_id = IntegerField('Facility ID : ', 
-                               validators=[DataRequired()], render_kw={'placeholder' : '001'})
+    facility_id = IntegerField('Facility Number : ', 
+                               validators=[DataRequired(message="Enter number for the facility.")], render_kw={'placeholder' : '001'})
     facility_status = SelectField('Facility Status : ', 
-                                  validators=[DataRequired()], 
+                                  validators=[DataRequired(message="Enter the number of slots.")], 
                                   choices=[('', 'Select'), ('Available', 'Available'), ('Unavailable', 'Unavailable')],
 default='')
     facility_slots = IntegerField('Facility Slots : ', 
-                                  validators=[DataRequired()], 
+                                  validators=[(DataRequired())], 
                                   render_kw={'placeholder' : '0'})
     facility_location = SelectField('Facility Location : ',
                                     validators=[DataRequired()],
-                                    choices=[('', 'Select'), ('56', 'Ang Mo Kio'), ('53', 'Hougang'), ('37', 'Macpherson'), ('35', 'Braddell'), ('79', 'Seletar'), ('19', 'Golden Mile')])
-    facility_amount = SelectField('Facility Type Amount : ',
+                                    choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Braddell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])
+    facility_type = SelectField('Facility Type : ',
                                   validators=[DataRequired()],
-                                  choices=[('', 'Select'), ('BD', 'Badminton'), ('BB', 'Basketball'), ('SQ', 'Squash'), ('FB', 'Football'), ('TN', 'Tennis'), ('TT', 'Table Tennis')])
+                                  choices=[('', 'Select'), ('Badminton', 'Badminton'), ('Basketball', 'Basketball'), ('Squash', 'Squash'), ('Football', 'Football'), ('Tennis', 'Tennis'), ('Table Tennis', 'Table Tennis')])
+    facility_rates = StringField('Facility Rates ($) : ',
+                                  validators=[DataRequired()], render_kw={'placeholder' : '0.00'})
     submit = SubmitField('Submit')
-    
-    def validate_facilID(self, facilID):
-        facilDict = {}
-        facilDB = shelve.open('Facilities')
-        try:
-            if 'Facilities' in facilDB:
-                facilDict = facilDB['Events']
-            else:
-                facilDB['Events'] = facilDict
-        except:
-            print('Error in retrieving events.')
-        
-        for keys in facilDict:
-            if self.facility_id.data == facilDict[keys].get_fac_id():
-                raise ValidationError('Facility ID already taken!')
 
+    def validate_facility_slots(self, facility_slots):
+        slots = int(self.facility_slots.data)
+        if slots < 0:
+            raise ValidationError("Slots can not be negative.")
+    
+    def validate_facility_rates(self, facility_rates):
+        rates = (self.facility_rates.data)
+        try:
+            float(rates)
+        except:
+            raise ValidationError("Rates must be in numerical values.")
+
+# ur def validates are not a validator in flask, u cant put them inside  the form, jus leave it it works on its own
 
 class EditFacilityForm(FlaskForm):
-    edit_facility_id = StringField('Facility ID to edit : ',
-                                     validators=[DataRequired()])
-    edit_facility_status = SelectField('Edit Facility Status (Leave empty if no changes) : ',
+    edit_facility_id = StringField('Facility Name to edit : ',
+                                    validators=[DataRequired()])
+    edit_facility_status = SelectField('Edit Facility Status : ',
                                      choices=[('', 'Select'), ('Available', 'Available'), ('Unavailable', 'Unavailable')], default='')
     edit_facility_slots = IntegerField('Edit Factility Slots: ',
-                                     render_kw={'placeholder' : '0 (Leave empty if no changes'})
-    edit_facility_location = SelectField('Facility Location : ',
-                                    choices=[('', 'Select'), ('56', 'Ang Mo Kio'), ('53', 'Hougang'), ('37', 'Macpherson'), ('35', 'Braddell'), ('79', 'Seletar'), ('19', 'Golden Mile')])
-    edit_facility_amount = SelectField('Facility Type: ',
-                                  choices=[('', 'Select'), ('BD', 'Badminton'), ('BB', 'Basketball'), ('SQ', 'Squash'), ('FB', 'Football'), ('TN', 'Tennis'), ('TT', 'Table Tennis')])
+                                     render_kw={'placeholder' : '0'})
+    edit_facility_location = SelectField('Edit Facility Location : ',
+                                    choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Braddell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])
+    edit_facility_type = SelectField('Edit Facility Type: ',
+                                  choices=[('', 'Select'), ('Badminton', 'Badminton'), ('Basketball', 'Basketball'), ('Squash', 'Squash'), ('Football', 'Football'), ('Tennis', 'Tennis'), ('Table Tennis', 'Table Tennis')])
+    edit_facility_rates = StringField('Edit Facility Rates ($) : ',
+                                  validators=[DataRequired()], render_kw={'placeholder' : '0.00'})
     submit = SubmitField('Submit') 
+
+    def validator_edit_facility_id(self, edit_faacility_id):
+        if len(self.edit_facility_id.data) < 0:
+            raise ValidationError('This field is required.')
+    
+    def validate_edit_facility_rates(self, edit_facility_rates):
+        rates = (self.edit_facility_rates.data)
+        try:
+            float(rates)
+        except:
+            raise ValidationError("Rates must be in numerical values.")

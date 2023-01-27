@@ -14,8 +14,8 @@
             <th scope='col' style="width:25%"></th>
         </tr>
     </thead>
+    {%for booking in bookingsList%}
     <tbody>
-        {%for booking in bookingsList%}
             <tr>
                 <td style="width:25%">{{booking.get_booking_id()}}</td>
                 <td scope='col' style="width:25%">{{booking.get_facility()}}</td>
@@ -50,9 +50,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        {%endfor%}
+            </div>        
     </tbody>
+    {%endfor%}
 </table>
 
 {% endblock %}

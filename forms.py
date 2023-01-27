@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange, ValidationError
 
 import shelve
                 
@@ -17,14 +17,17 @@ class RegistrationForm(FlaskForm):
     email = StringField('Email : ',
                         render_kw={'placeholder' : 'BenjaminFranklin@example.com'},
                         validators=[DataRequired(), Email()])
+    phoneNo = IntegerField('Phone Number : ',
+                           render_kw={'placeholder' : '98765432'},
+                           validators=[DataRequired(), NumberRange(min=80000000, max=99999999)])
     password = PasswordField('Password : ',
-                             validators=[DataRequired()])
+                             validators=[DataRequired(), Length(min = 8)])
     confirm_password = PasswordField('Confirm Password : ',
                                      validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
     
     
-    def checkUserInDatabase(self, userEmail):
+    def validate_email(self, userEmail):
         dictUsers = {}
         db = shelve.open('users')
         
@@ -35,11 +38,25 @@ class RegistrationForm(FlaskForm):
             
         for keys in dictUsers:
             if self.email.data == str(dictUsers[keys].get_email()):
-                raise ValidationError('User Already Created')
+                raise ValidationError('Email already registered.')
+            
+    def validate_phoneNo(self, userPhoneNo):
+        dictUsers = {}
+        db = shelve.open('users')
+        
+        try:
+            dictUsers = db['Users']
+        except:
+            print('Error in retrieving users from user.db.')
+            
+        for keys in dictUsers:
+            if self.phoneNo.data == (dictUsers[keys].get_phoneNo()):
+                raise ValidationError('Phone Number already registered.')
+
 
 class LoginForm(FlaskForm):
-    email = StringField('Email : ', #label
-                        validators=[DataRequired(), Email()])
+    loginField = StringField('Email or Phone Number : ', #label
+                        validators=[DataRequired()])
     password = PasswordField('Password : ',
                              validators=[DataRequired()])
     remember = BooleanField('Remember Me')
@@ -59,5 +76,8 @@ class EditForm(FlaskForm):
     editEmail = StringField('Email : ',
                         render_kw={'placeholder' : 'BenjaminFranklin@example.com'},
                         validators=[DataRequired(), Email()])
+    editPhoneNo = IntegerField('Phone Number : ',
+                               render_kw={'placeholder' : '98765432'},
+                               validators=[DataRequired()])
 
-    submit = SubmitField('Edit User')
+    submit = SubmitField('Update')

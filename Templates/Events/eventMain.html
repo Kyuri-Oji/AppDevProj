@@ -25,44 +25,46 @@
 <section class='mb-3'>
     <div class='mx-auto row' style='width:80%'>
     {%for event in eventsList%}
-        <div class='mx-auto my-4 col-4'>
-            <div class="card" style="" id='cardExpand'>
-                <div class="card-body">
-                    <h5 class="card-title | text-primary">{{event.get_eventName()}}</h5>
-                    <p class="card-text">{{event.get_eventDesc()}}</p>
-                    <div class='p-2 | bg-light border-secondary border-2 border rounded'>
-                        <p class='mb-0'>Event Start Date : <span class='text-primary'>{{event.get_eventStartDate()}}</span></p>
-                        <p class='mb-0'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></p>
-                        <p class='mb-0'>Event Location : <span>{{event.get_eventLocation()}}</span></p>
-                        <p class='mb-0'>Event Venue : <span>{{event.get_eventVenue()}}</span></p>
-                        <p class='mb-0'>Event Vacancy : <span>{{event.get_eventVacancy()}}</span></p>
-                        <p class='mb-0'>Event ID : <span>{{event.get_eventID()}}</span></p>
-                        <p class='mb-0'>Event Type : <span>{{event.get_eventType()}}</span></p>
+            <div class='mx-auto col-4'>
+                <div class="card my-4" style="" id='cardExpand'>
+                    <div class="card-body">
+                        <h5 class="card-title | text-primary">{{event.get_eventName()}}</h5>
+                        <p class="card-text">{{event.get_eventDesc()}}</p>
+                        <div class='p-2 | bg-light border-secondary border-2 border rounded'>
+                            <p class='mb-0'>Event Start Date : <span class='text-primary'>{{event.get_eventStartDate()}}</span></p>
+                            <p class='mb-0'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></p>
+                            <p class='mb-0'>Event Location : <span>{{event.get_eventLocation()}}</span></p>
+                            <p class='mb-0'>Event Venue : <span>{{event.get_eventVenue()}}</span></p>
+                            <p class='mb-0'>Event Vacancy : <span>{{event.get_eventVacancy()}}</span></p>
+                            <p class='mb-0'>Event ID : <span>{{event.get_eventID()}}</span></p>
+                            <p class='mb-0'>Event Type : <span>{{event.get_eventType()}}</span></p>
 
-                        {%if event.get_eventStatus() == 'Active'%}
-                        <p class='mb-0'>Event Status : <span class='font-weight-bold' style='color:#70E300'>{{event.get_eventStatus()}}</span></p>
-                        {%else%}
-                        <p class='mb-0'>Event Status : <span class='text-muted'>{{event.get_eventStatus()}}</span></p>
+                            {%if event.get_eventStatus() == 'Active'%}
+                            <p class='mb-0'>Event Status : <span class='font-weight-bold' style='color:#70E300'>{{event.get_eventStatus()}}</span></p>
+                            {%else%}
+                            <p class='mb-0'>Event Status : <span class='text-muted'>{{event.get_eventStatus()}}</span></p>
+                            {%endif%}
+
+                        </div>
+                        <hr>
+                    <nav class='row '> <!--change for loop-->
+                        <a href="#" class='text-decoration-none btn btn-primary | mx-2' data-bs-toggle='modal' data-bs-target='#signUpModal_{{event.get_eventID()}}' style="width:25%">Sign Up</a>
+
+                        {%if "User" in session%}
+                        {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
+                        <a href="#" class='text-decoration-none btn btn-danger | mx-2' data-bs-toggle='modal' data-bs-target='#deleteModal_{{event.get_eventID()}}' style="width:25%">
+                            Delete
+                        </a>
+
+                        <form action="{{url_for('editEventDirect', id=event.get_eventID())}}" method='POST' class='col-auto'>
+                            <input type='submit' value='Edit' class='btn btn-success'>
+                        </form>
                         {%endif%}
-
+                        {%endif%}
+                    </nav>
                     </div>
-                    <hr>
-                <nav class='row '> <!--change for loop-->
-                    <a href="#" class='text-decoration-none btn btn-primary | mx-2' data-bs-toggle='modal' data-bs-target='#signUpModal_{{event.get_eventID()}}' style="width:25%">Sign Up</a>
-
-                    {%if "User" in session%}
-                    {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
-                    <a href="#" class='text-decoration-none btn btn-danger | mx-2' data-bs-toggle='modal' data-bs-target='#deleteModal_{{event.get_eventID()}}' style="width:25%">Delete</a>
-
-                    <form action="{{url_for('editEventDirect', id=event.get_eventID())}}" method='POST'class='col-auto'>
-                        <input type='submit' value='Edit' class='btn btn-success'>
-                    </form>
-                    {%endif%}
-                    {%endif%}
-                </nav>
                 </div>
             </div>
-        </div>
         <!--Event Delete Modal-->
         <div class='modal fade' id='deleteModal_{{event.get_eventID()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
             <div class='modal-dialog'>

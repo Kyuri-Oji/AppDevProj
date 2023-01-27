@@ -30,6 +30,14 @@ for facil in facilDict:
 print(facilityUIDList)
 print(facilityIDList)
 
+class eventLocationCreateForm(FlaskForm):
+    eventLocation =  SelectField('Facility Location : ',
+                                validators=[DataRequired()],
+                                choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'),
+                                         ('Braddell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])
+    
+    submit = SubmitField('Next ')
+
 class eventCreateForm(FlaskForm):
     eventName = StringField('Event Name :', 
                             validators=[DataRequired(), Length(min = 2, max = 30)])

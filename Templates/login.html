@@ -10,19 +10,19 @@
             <form action="" method="post" class='container-sm'>
             {{ form.hidden_tag() }}
 
-            {{form.email.label(class='text-dark | fs-4 | float-start')}}
-            {%if form.email.errors%}
+            {{form.loginField.label(class='text-dark | fs-4 | float-start')}}
+            {%if form.loginField.errors%}
             <div class='input-group | my-2 | dropdown'>
-                {{form.email(class='form-control | border-danger')}}
+                {{form.loginField(class='form-control | border-danger')}}
             </div>
-            {%for errors in form.email.errors%}
+            {%for errors in form.loginField.errors%}
                 <span class='text-danger | float-end'>
                     {{errors}}
                 </span>
             {%endfor%}
             {%else%}
             <div class='input-group | my-2 | dropdown'>
-                {{form.email(class='form-control')}}
+                {{form.loginField(class='form-control')}}
             </div>
             {%endif%}
 

@@ -7,7 +7,7 @@
             <button class="btn btn-secondary | dropdown-toggle" type="button" id="dropdownLocation" data-bs-toggle="dropdown" aria-expanded="false">
                 Select Location
             </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownLocation" >
+            <ul class="dropdown-menu" aria-labelledby="dropdownLocation">
                 {%for facils in facilLoc%}
                     <li class="dropdown-item"><a href="#" class="text-decoration-none | text-dark">{{facils}}</a></li>
                 {%endfor%}
@@ -21,14 +21,13 @@
     </div>
 </nav>
 
-<div class=''>
-    <div class='mx-auto row' style='width:80%'>
-        {%for facils in facilList%}
-            <div class='mx-auto my-4 col-4'>
-                <div class="card" id='cardExpand'>
-                    <div class="card-body">
+<div class='mx-auto row' style='width:80%'>
+    {%for facils in facilList%}
+        <div class='mx-auto my-4 col-4'>
+            <div class="card" id='cardExpand'>
+                <div class="card-body">
                     <img src="https://images.unsplash.com/photo-1587960184060-aa880aabdd04?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1632&q=80" class="card-img-top" alt="..." style='height:5vw'>
-                    <h3 class="card-title | text-primary | pt-2">{{facils.get_uniqueID()}} - <span class="h4 text-info">{{facils.get_fac_id()}}<span></h5>
+                    <h3 class="card-title | text-primary | pt-2"><span class="h4 text-info">{{facils.get_fac_id()}}<span></h5>
                     <p class="card-text">Facility Type : <span class='text-primary'>{{facils.get_fac_amt()}}</span><br>Facility Location : <span class='text-primary'>{{facils.get_fac_loc()}}</span></p>
                     <div class='p-2 | bg-light border-secondary border-2 border rounded'>
                         {%if facils.get_fac_status() == 'Available'%}
@@ -44,20 +43,20 @@
                             <input type='submit' value='Book Now' class='btn btn-primary'>
                         </form>
                         {%if "User" in session%}
-                        {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
-                        <form action="{{url_for('editFacilities2', id = facils.get_uniqueID())}}" method='POST'class='col-auto'>
-                            <input type='submit' value='Edit' class='btn btn-success'>
-                        </form>
-                        
-                        <a href="#" class='text-decoration-none btn btn-danger | mx-2' data-bs-toggle='modal' data-bs-target='#deleteModal_{{facils.get_uniqueID()}}' style="width:25%">Delete</a>
+                            {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
+                            <form action="{{url_for('editFacilities2', id = facils.get_uniqueID())}}" method='POST'class='col-auto'>
+                                <input type='submit' value='Edit' class='btn btn-success'>
+                            </form>
+                            
+                            <a href="#" class='text-decoration-none btn btn-danger | mx-2' data-bs-toggle='modal' data-bs-target='#deleteModal_{{facils.get_uniqueID()}}' style="width:25%">Delete</a>
 
-                        {%endif%}
+                            {%endif%}
                         {%endif%}
                     </nav>
                 </div>
             </div>
-        </div>    
         </div>
+
         <div class='modal fade' id='deleteModal_{{facils.get_uniqueID()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
             <div class='modal-dialog'>
                 <div class='modal-content'>
@@ -77,7 +76,9 @@
                 </div>
             </div>
         </div>
-{% endfor %}
+    {% endfor %}
+</div>
+
 
 <style>
     body {
