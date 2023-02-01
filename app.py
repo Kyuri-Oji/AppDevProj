@@ -5,8 +5,8 @@ import secrets
 import random
 
 from wtforms.validators import ValidationError
-from forms import RegistrationForm, LoginForm, EditForm
-from eventForms import eventCreateForm, eventEditForm, eventDeleteForm, eventEditForm2, eventDeleteForm2
+from forms import RegistrationForm, LoginForm, EditForm, userSearchForm
+from eventForms import eventCreateForm, eventEditForm, eventDeleteForm, eventEditForm2, eventDeleteForm2, eventLocationCreateForm, eventSearchForm
 from bookingForms import bookingForm, paymentForm
 from FacilitiesForm import CreateFacilityForm, EditFacilityForm
 
@@ -14,6 +14,8 @@ from OOP.userFunction import *
 from OOP.eventFunction import *
 from OOP.Bookings import *
 from OOP.Facilities import *
+
+from modules.search import *
 
 
 app = Flask(__name__)
@@ -224,17 +226,40 @@ def login():
 
 @app.route('/users')
 def users():
+    formSearch = userSearchForm()
+
+    if formSearch.validate_on_submit() and request.method == 'POST':
+        userSearchData = formSearch.userSearchItem.data
+        
+        userSearchFunction(userSearchData)
+        userUIDList_searchPage = userSearchUIDList # lists from search.py
+        userUsernameList_searchPage = userSearchUsernameList
+        userFirstNameList_searchPage = userSearchFirstNameList
+        userLastNameList_searchPage = userSearchLastNameList
+        userEmailList_searchPage = userSearchEmailList
+        userPhoneNoList_searchPage = userSearchPhoneNoList
+        
+        print(userUIDList_searchPage, userUsernameList_searchPage, userFirstNameList_searchPage, userLastNameList_searchPage, userEmailList_searchPage, userPhoneNoList_searchPage)
+        
+        return redirect(url_for('Users/viewUsers.html', formSearch = formSearch,
+                               userUIDList_searchPage = userUIDList_searchPage,
+                               userUsernameList_searchPage = userUsernameList_searchPage,
+                               userFirstNameList_searchPage = userFirstNameList_searchPage,
+                               userLastNameList_searchPage = userLastNameList_searchPage,
+                               userEmailList_searchPage = userEmailList_searchPage,
+                               userPhoneNoList_searchPage = userPhoneNoList_searchPage))
+    
     dictsUser ={}
     db = shelve.open('users')
     dictsUser = db['Users']
-    
+        
     userList = []
     for users in dictsUser:
         user = dictsUser.get(users)
         userList.append(user)
         
     if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
-        return render_template('Users/viewUsers.html', userList = userList) 
+        return render_template('Users/viewUsers.html', userList = userList, formSearch = formSearch) 
     else:
         return render_template('404.html')
 
@@ -345,6 +370,30 @@ def adminWorkspace():
         return render_template('404.html')
 
 # Event Functions
+@app.route('/events/selectEventLocation', methods=['GET', 'POST'])
+def selectEventLocation():
+    formEvents = eventLocationCreateForm()
+    
+    eventLocationDict = {}
+    eventDB = shelve.open('tempEventLocation')
+    
+    try:
+        if 'eventLocation' in eventDB:
+            eventLocationDict = eventDB['eventLocation']
+        else:
+            eventDB['eventLocation'] = eventLocationDict
+    except:
+        print('An Error Has Occured.')
+    
+    if formEvents.validate_on_submit() and request.method == 'POST': 
+        eventLocation = formEvents.eventLocation.data
+        eventLocationDict['location'] = eventLocation
+        eventDB['eventLocation'] = eventLocationDict
+        
+        return redirect(url_for('createEvent'))
+    
+    return render_template('Events/eventLocationSelect.html', formEvents = formEvents)
+
 @app.route('/events/createEvents', methods=['GET', 'POST'])
 def createEvent():
     formEvents = eventCreateForm()
@@ -369,6 +418,26 @@ def createEvent():
             facilityUIDList.append(facilityUID)
             facilityID = facils.get_fac_id()
             facilityIDList.append(facilityID)
+            
+    eventLocationDict = {}
+    eventLocationDB = shelve.open('tempEventLocation')
+    try:
+        if 'location' in eventLocationDB:
+            eventLocationDict = eventLocationDB['location']
+        else:
+            eventLocationDB['location'] = eventLocationDict
+    except:
+        print('Location not found.')
+        
+    facilityLocationList = []
+    for events in eventLocationDict:
+        event = eventLocationDict.get(events)
+        eventLoc = event[0]
+        for facility in facilDict:
+            facilityLocation = facility.get_fac_loc()
+            if facilityLocation == eventLoc:
+                facilityLocationList.append(facility)
+    print(facilityLocationList)
             
     if formEvents.validate_on_submit() and request.method == 'POST':  
         eventsDict = {}
@@ -584,6 +653,26 @@ def deleteEventDirect(id):
 
 @app.route('/events', methods=['GET', 'POST'])
 def eventsPage():
+    formSearch = eventSearchForm()
+    
+    if formSearch.validate_on_submit() and request.method == 'POST':
+        eventSearchData = formSearch.eventSearchItem.data
+        
+        eventSearchFunction(eventSearchData)
+        
+        eventIDList_searchPage = eventSearchIDList # lists from search.py
+        eventNameList_searchPage = eventSearchNameList
+        eventLocationList_searchPage = eventSearchLocationList
+        eventVenueList_searchPage = eventSearchVenueList
+        
+        print(eventIDList_searchPage, eventNameList_searchPage, eventLocationList_searchPage, eventVenueList_searchPage)
+        
+        return render_template('Events/eventMain.html', formSearch = formSearch,
+                               eventIDList_searchPage = eventIDList_searchPage,
+                               eventNameList_searchPage = eventNameList_searchPage,
+                               eventLocationList_searchPage = eventLocationList_searchPage,
+                               eventVenueList_searchPage = eventVenueList_searchPage)
+        
     eventsDict = {}
     eventDB = shelve.open('Events')
     eventsDict = eventDB['Events']
@@ -638,7 +727,13 @@ def eventsPage():
     eventSignUp = eventSignUpDict
     print(eventSignUp)
             
-    return render_template('Events/eventMain.html', eventsList = eventsList, eventType = eventTypeList, eventSports = eventSports, eventLifestyle = eventLifestyle, eventOthers = eventOthers, eventTypeDict = eventTypeDict)
+    return render_template('Events/eventMain.html', eventsList = eventsList,
+                           eventType = eventTypeList,
+                           eventSports = eventSports,
+                           eventLifestyle = eventLifestyle,
+                           eventOthers = eventOthers,
+                           eventTypeDict = eventTypeDict,
+                           formSearch = formSearch)
 
 @app.route('/events/sports', methods=['GET', 'POST'])
 def eventsPageSports():
@@ -860,6 +955,39 @@ def eventRegistered():
     else:
         return redirect(url_for('login'))
 
+@app.route('/events/search', methods=['GET', 'POST'])
+def eventSearch():
+    formEvents = eventSearchForm()
+    eventIDList_searchPage = []
+    eventNameList_searchPage = []
+    eventLocationList_searchPage = []
+    eventVenueList_searchPage = []
+    
+    if formEvents.validate_on_submit() and request.method == 'POST':
+    
+        eventSearchData = formEvents.eventSearchItem.data
+        
+        eventSearchFunction(eventSearchData)
+        
+        eventIDList_searchPage = eventSearchIDList # lists from search.py
+        eventNameList_searchPage = eventSearchNameList
+        eventLocationList_searchPage = eventSearchLocationList
+        eventVenueList_searchPage = eventSearchVenueList
+        
+        print(eventIDList_searchPage, eventNameList_searchPage, eventLocationList_searchPage, eventVenueList_searchPage)
+        
+        return render_template('Events/eventSearch.html', formEvents = formEvents,
+                                eventIDList_searchPage = eventIDList_searchPage,
+                                eventNameList_searchPage = eventNameList_searchPage,
+                                eventLocationList_searchPage = eventLocationList_searchPage,
+                                eventVenueList_searchPage = eventVenueList_searchPage)
+    
+    return render_template('Events/eventSearch.html', formEvents = formEvents,
+                                eventIDList_searchPage = eventIDList_searchPage,
+                                eventNameList_searchPage = eventNameList_searchPage,
+                                eventLocationList_searchPage = eventLocationList_searchPage,
+                                eventVenueList_searchPage = eventVenueList_searchPage)
+
 # Booking functions
 @app.route('/bookFacilities', methods=['GET', 'POST'])
 def bookingPage():
@@ -937,7 +1065,6 @@ def bookingPage():
     
     else:
         return redirect(url_for('login'))
-
 
 @app.route('/booking/bookingPayment', methods=['GET', 'POST'])
 def bookingPayment():
@@ -1040,7 +1167,6 @@ def deleteBookings(id):
     print(bookingsDict.keys())
 
     return redirect(url_for('bookingCurrent'))
-
 
 @app.route('/booking/bookingHistory')
 def bookingHistory():
@@ -1270,3 +1396,4 @@ if __name__ == '__main__':
 # 17Jan2023 - No longer is this the 723rd line, we have gone too far off. (1089th line)
 # 25/1/2023 - It's only been 8 days..., we gone further (1207th line)
 # 27Jan2023 - It's only getting longer. When will our suffering end? (1265th Line)
+# 1Feb2023 - It's only geting loonger..... When can i retire? - Alan (1376th Line)

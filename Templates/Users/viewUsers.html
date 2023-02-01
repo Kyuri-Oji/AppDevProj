@@ -5,8 +5,11 @@
     <div class="container-fluid | py-2">
         <p class="font-monospace | my-auto | text-center | fs-3" style='width:100vw'><span class="text-primary">User</span> Database</p>
       <form class="d-flex | end-0 position-absolute | pe-2" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+        {{formSearch.hidden_tag()}}
+
+        {{formSearch.userSearchItem(class='form-control me-2')}}
+
+        {{formSearch.submit(class='btn btn-outline-success')}}
       </form>
     </div>
   </nav>
@@ -22,71 +25,465 @@
            <th scope="col">Date Joined</th>
         </thread>
         {%for user in userList%}
-        <tbody>
-            <tr>
-                <th scope="col" class='ps-5'>{{user.get_uid()}}</th>
-                <td scope="col" class='text-primary'><a class='no-text-decoration' href='#' data-bs-toggle='modal' data-bs-target='#userModal_{{user.get_uid()}}'>@{{user.get_username()}}</a></td>
-                <td scope="col">{{user.get_firstName()}}</td>
-                <td scope="col">{{user.get_lastName()}}</td>
-                <td scope="col">{{user.get_email()}}</td>
-                <td scope="col">{{user.get_phoneNo()}}</td>
-                <td scope="col">{{user.get_dateJoined()}}</td>
-                <td>
-                    <form action="{{url_for('editUser', id=user.get_uid())}}" method='POST' class='col-auto'>
-                        <input type='submit' value='Edit' class='btn btn-success'>
-                    </form>
-                    
-                </td>
-                <td>
-                    <a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal_{{user.get_uid()}}' style="width:80%">Delete</a>
-                </td>
-            </tr>
-        </tbody>
+            <tbody>
+                <tr>
+                    <th scope="col" class='ps-5'>{{user.get_uid()}}</th>
+                    <td scope="col" class='text-primary'><a class='no-text-decoration' href='#' data-bs-toggle='modal' data-bs-target='#userModal_{{user.get_uid()}}'>@{{user.get_username()}}</a></td>
+                    <td scope="col">{{user.get_firstName()}}</td>
+                    <td scope="col">{{user.get_lastName()}}</td>
+                    <td scope="col">{{user.get_email()}}</td>
+                    <td scope="col">{{user.get_phoneNo()}}</td>
+                    <td scope="col">{{user.get_dateJoined()}}</td>
+                    <td>
+                        <form action="{{url_for('editUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                            <input type='submit' value='Edit' class='btn btn-success'>
+                        </form>
+                        
+                    </td>
+                    <td>
+                        <a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal_{{user.get_uid()}}' style="width:80%">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
 
-        <div class='modal fade' id='userModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
-            <div class='modal-dialog'>
-                <div class='modal-content'>
-                    <div class="modal-body">
-                        <div class='card-body'>
-                            <h3 class='card-title'>{{user.get_username()}}</h3>
-                            <br>
-                            <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
-                            <h5 class='font-monospace'>F. Name : <span class='text-primary'>{{user.get_firstName()}}</span></h5>
-                            <h5 class='font-monospace'>L. Name : <span class='text-primary'>{{user.get_lastName()}}</span></h5>
-                            <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
-                            <br>
-                            <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
-                                <input type='submit' value='Delete' class='btn btn-danger'>
-                            </form>
+            <div class='modal fade' id='userModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                <div class='modal-dialog'>
+                    <div class='modal-content'>
+                        <div class="modal-body">
+                            <div class='card-body'>
+                                <h3 class='card-title'>{{user.get_username()}}</h3>
+                                <br>
+                                <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                <h5 class='font-monospace'>F. Name : <span class='text-primary'>{{user.get_firstName()}}</span></h5>
+                                <h5 class='font-monospace'>L. Name : <span class='text-primary'>{{user.get_lastName()}}</span></h5>
+                                <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                <br>
+                                <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                    <input type='submit' value='Delete' class='btn btn-danger'>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class='modal fade' id='deleteModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
-            <div class='modal-dialog'>
-                <div class='modal-content'>
-                    <div class="modal-body">
-                        <div class='card-body'>
-                            <h3 class='card-title'>User Deletion</h3>
-                            <h5 class='card-text'>Are you sure you want to delete?<br></h5>
-                            <small class='font-monospace | text-muted'>Users once deleted cannot be recovered.</small>
-                            <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
-                            <h5 class='font-monospace'>Username : <span class='text-primary'>@{{user.get_username()}}</span></h5>
-                            <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
-                            <br>
-                            <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
-                                <input type='submit' value='Delete' class='btn btn-danger'>
-                            </form>
+            
+            <div class='modal fade' id='deleteModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                <div class='modal-dialog'>
+                    <div class='modal-content'>
+                        <div class="modal-body">
+                            <div class='card-body'>
+                                <h3 class='card-title | text-danger'>Are you sure you want to delete?<br></h3>
+                                <small class='font-monospace | text-muted'>Users once deleted cannot be recovered.</small>
+                                <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                <h5 class='font-monospace'>Username : <span class='text-primary'>@{{user.get_username()}}</span></h5>
+                                <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                <br>
+                                <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                    <input type='submit' value='Yes, I do' class='btn btn-danger'>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         
         {%endfor%}
         
+        {%if userUIDList_searchPage%}
+            {%for user in userUIDList_searchPage%}
+                <tbody>
+                    <tr>
+                        <th scope="col" class='ps-5'>{{user.get_uid()}}</th>
+                        <td scope="col" class='text-primary'><a class='no-text-decoration' href='#' data-bs-toggle='modal' data-bs-target='#userModal_{{user.get_uid()}}'>@{{user.get_username()}}</a></td>
+                        <td scope="col">{{user.get_firstName()}}</td>
+                        <td scope="col">{{user.get_lastName()}}</td>
+                        <td scope="col">{{user.get_email()}}</td>
+                        <td scope="col">{{user.get_phoneNo()}}</td>
+                        <td scope="col">{{user.get_dateJoined()}}</td>
+                        <td>
+                            <form action="{{url_for('editUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                <input type='submit' value='Edit' class='btn btn-success'>
+                            </form>
+                            
+                        </td>
+                        <td>
+                            <a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal_{{user.get_uid()}}' style="width:80%">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <div class='modal fade' id='userModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>{{user.get_username()}}</h3>
+                                    <br>
+                                    <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                    <h5 class='font-monospace'>F. Name : <span class='text-primary'>{{user.get_firstName()}}</span></h5>
+                                    <h5 class='font-monospace'>L. Name : <span class='text-primary'>{{user.get_lastName()}}</span></h5>
+                                    <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                    <br>
+                                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                        <input type='submit' value='Delete' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class='modal fade' id='deleteModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title | text-danger'>Are you sure you want to delete?<br></h3>
+                                    <small class='font-monospace | text-muted'>Users once deleted cannot be recovered.</small>
+                                    <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                    <h5 class='font-monospace'>Username : <span class='text-primary'>@{{user.get_username()}}</span></h5>
+                                    <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                    <br>
+                                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                        <input type='submit' value='Yes, I do' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%endfor%}
+        {%endif%}
+
+        {%if userUsernameList_searchPage%}
+            {%for user in userUsernameList_searchPage%}
+                <tbody>
+                    <tr>
+                        <th scope="col" class='ps-5'>{{user.get_uid()}}</th>
+                        <td scope="col" class='text-primary'><a class='no-text-decoration' href='#' data-bs-toggle='modal' data-bs-target='#userModal_{{user.get_uid()}}'>@{{user.get_username()}}</a></td>
+                        <td scope="col">{{user.get_firstName()}}</td>
+                        <td scope="col">{{user.get_lastName()}}</td>
+                        <td scope="col">{{user.get_email()}}</td>
+                        <td scope="col">{{user.get_phoneNo()}}</td>
+                        <td scope="col">{{user.get_dateJoined()}}</td>
+                        <td>
+                            <form action="{{url_for('editUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                <input type='submit' value='Edit' class='btn btn-success'>
+                            </form>
+                            
+                        </td>
+                        <td>
+                            <a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal_{{user.get_uid()}}' style="width:80%">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <div class='modal fade' id='userModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>{{user.get_username()}}</h3>
+                                    <br>
+                                    <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                    <h5 class='font-monospace'>F. Name : <span class='text-primary'>{{user.get_firstName()}}</span></h5>
+                                    <h5 class='font-monospace'>L. Name : <span class='text-primary'>{{user.get_lastName()}}</span></h5>
+                                    <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                    <br>
+                                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                        <input type='submit' value='Delete' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class='modal fade' id='deleteModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title | text-danger'>Are you sure you want to delete?<br></h3>
+                                    <small class='font-monospace | text-muted'>Users once deleted cannot be recovered.</small>
+                                    <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                    <h5 class='font-monospace'>Username : <span class='text-primary'>@{{user.get_username()}}</span></h5>
+                                    <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                    <br>
+                                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                        <input type='submit' value='Yes, I do' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%endfor%}
+        {%endif%}
+
+        {%if userFirstNameList_searchPage%}
+            {%for user in userFirstNameList_searchPage%}
+                <tbody>
+                    <tr>
+                        <th scope="col" class='ps-5'>{{user.get_uid()}}</th>
+                        <td scope="col" class='text-primary'><a class='no-text-decoration' href='#' data-bs-toggle='modal' data-bs-target='#userModal_{{user.get_uid()}}'>@{{user.get_username()}}</a></td>
+                        <td scope="col">{{user.get_firstName()}}</td>
+                        <td scope="col">{{user.get_lastName()}}</td>
+                        <td scope="col">{{user.get_email()}}</td>
+                        <td scope="col">{{user.get_phoneNo()}}</td>
+                        <td scope="col">{{user.get_dateJoined()}}</td>
+                        <td>
+                            <form action="{{url_for('editUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                <input type='submit' value='Edit' class='btn btn-success'>
+                            </form>
+                            
+                        </td>
+                        <td>
+                            <a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal_{{user.get_uid()}}' style="width:80%">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <div class='modal fade' id='userModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>{{user.get_username()}}</h3>
+                                    <br>
+                                    <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                    <h5 class='font-monospace'>F. Name : <span class='text-primary'>{{user.get_firstName()}}</span></h5>
+                                    <h5 class='font-monospace'>L. Name : <span class='text-primary'>{{user.get_lastName()}}</span></h5>
+                                    <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                    <br>
+                                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                        <input type='submit' value='Delete' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class='modal fade' id='deleteModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title | text-danger'>Are you sure you want to delete?<br></h3>
+                                    <small class='font-monospace | text-muted'>Users once deleted cannot be recovered.</small>
+                                    <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                    <h5 class='font-monospace'>Username : <span class='text-primary'>@{{user.get_username()}}</span></h5>
+                                    <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                    <br>
+                                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                        <input type='submit' value='Yes, I do' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%endfor%}
+        {%endif%}
+
+        {%if userLastNameList_searchPage%}
+            {%for user in userLastNameList_searchPage%}
+                <tbody>
+                    <tr>
+                        <th scope="col" class='ps-5'>{{user.get_uid()}}</th>
+                        <td scope="col" class='text-primary'><a class='no-text-decoration' href='#' data-bs-toggle='modal' data-bs-target='#userModal_{{user.get_uid()}}'>@{{user.get_username()}}</a></td>
+                        <td scope="col">{{user.get_firstName()}}</td>
+                        <td scope="col">{{user.get_lastName()}}</td>
+                        <td scope="col">{{user.get_email()}}</td>
+                        <td scope="col">{{user.get_phoneNo()}}</td>
+                        <td scope="col">{{user.get_dateJoined()}}</td>
+                        <td>
+                            <form action="{{url_for('editUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                <input type='submit' value='Edit' class='btn btn-success'>
+                            </form>
+                            
+                        </td>
+                        <td>
+                            <a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal_{{user.get_uid()}}' style="width:80%">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <div class='modal fade' id='userModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>{{user.get_username()}}</h3>
+                                    <br>
+                                    <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                    <h5 class='font-monospace'>F. Name : <span class='text-primary'>{{user.get_firstName()}}</span></h5>
+                                    <h5 class='font-monospace'>L. Name : <span class='text-primary'>{{user.get_lastName()}}</span></h5>
+                                    <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                    <br>
+                                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                        <input type='submit' value='Delete' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class='modal fade' id='deleteModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title | text-danger'>Are you sure you want to delete?<br></h3>
+                                    <small class='font-monospace | text-muted'>Users once deleted cannot be recovered.</small>
+                                    <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                    <h5 class='font-monospace'>Username : <span class='text-primary'>@{{user.get_username()}}</span></h5>
+                                    <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                    <br>
+                                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                        <input type='submit' value='Yes, I do' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%endfor%}
+        {%endif%}
+
+        {%if userEmailList_searchPage%}
+            {%for user in userEmailList_searchPage%}
+                <tbody>
+                    <tr>
+                        <th scope="col" class='ps-5'>{{user.get_uid()}}</th>
+                        <td scope="col" class='text-primary'><a class='no-text-decoration' href='#' data-bs-toggle='modal' data-bs-target='#userModal_{{user.get_uid()}}'>@{{user.get_username()}}</a></td>
+                        <td scope="col">{{user.get_firstName()}}</td>
+                        <td scope="col">{{user.get_lastName()}}</td>
+                        <td scope="col">{{user.get_email()}}</td>
+                        <td scope="col">{{user.get_phoneNo()}}</td>
+                        <td scope="col">{{user.get_dateJoined()}}</td>
+                        <td>
+                            <form action="{{url_for('editUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                <input type='submit' value='Edit' class='btn btn-success'>
+                            </form>
+                            
+                        </td>
+                        <td>
+                            <a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal_{{user.get_uid()}}' style="width:80%">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <div class='modal fade' id='userModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>{{user.get_username()}}</h3>
+                                    <br>
+                                    <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                    <h5 class='font-monospace'>F. Name : <span class='text-primary'>{{user.get_firstName()}}</span></h5>
+                                    <h5 class='font-monospace'>L. Name : <span class='text-primary'>{{user.get_lastName()}}</span></h5>
+                                    <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                    <br>
+                                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                        <input type='submit' value='Delete' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class='modal fade' id='deleteModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title | text-danger'>Are you sure you want to delete?<br></h3>
+                                    <small class='font-monospace | text-muted'>Users once deleted cannot be recovered.</small>
+                                    <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                    <h5 class='font-monospace'>Username : <span class='text-primary'>@{{user.get_username()}}</span></h5>
+                                    <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                    <br>
+                                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                        <input type='submit' value='Yes, I do' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%endfor%}
+        {%endif%}
+
+        {%if userPhoneNoList_searchPage%}
+            {%for user in userPhoneNoList_searchPage%}
+                <tbody>
+                    <tr>
+                        <th scope="col" class='ps-5'>{{user.get_uid()}}</th>
+                        <td scope="col" class='text-primary'><a class='no-text-decoration' href='#' data-bs-toggle='modal' data-bs-target='#userModal_{{user.get_uid()}}'>@{{user.get_username()}}</a></td>
+                        <td scope="col">{{user.get_firstName()}}</td>
+                        <td scope="col">{{user.get_lastName()}}</td>
+                        <td scope="col">{{user.get_email()}}</td>
+                        <td scope="col">{{user.get_phoneNo()}}</td>
+                        <td scope="col">{{user.get_dateJoined()}}</td>
+                        <td>
+                            <form action="{{url_for('editUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                <input type='submit' value='Edit' class='btn btn-success'>
+                            </form>
+                            
+                        </td>
+                        <td>
+                            <a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal_{{user.get_uid()}}' style="width:80%">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <div class='modal fade' id='userModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>{{user.get_username()}}</h3>
+                                    <br>
+                                    <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                    <h5 class='font-monospace'>F. Name : <span class='text-primary'>{{user.get_firstName()}}</span></h5>
+                                    <h5 class='font-monospace'>L. Name : <span class='text-primary'>{{user.get_lastName()}}</span></h5>
+                                    <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                    <br>
+                                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                        <input type='submit' value='Delete' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class='modal fade' id='deleteModal_{{user.get_uid()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title | text-danger'>Are you sure you want to delete?<br></h3>
+                                    <small class='font-monospace | text-muted'>Users once deleted cannot be recovered.</small>
+                                    <h5 class='font-monospace'>UID : <span class='text-primary'>{{user.get_uid()}}</span></h5>
+                                    <h5 class='font-monospace'>Username : <span class='text-primary'>@{{user.get_username()}}</span></h5>
+                                    <h5 class='font-monospace'>Email : <span class='text-primary'>{{user.get_email()}}</span></h5>
+                                    <br>
+                                    <form action="{{url_for('deleteUser', id=user.get_uid())}}" method='POST' class='col-auto'>
+                                        <input type='submit' value='Yes, I do' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%endfor%}
+        {%endif%}
     </table>
 
 </div>

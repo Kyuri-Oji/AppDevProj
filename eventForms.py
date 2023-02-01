@@ -265,3 +265,7 @@ class eventSignup(FlaskForm):
                            validators=[DataRequired()])
     submit = SubmitField('Sign Up')
         
+class eventSearchForm(FlaskForm):
+    eventSearchItem = StringField('Search : ',
+                                  validators=[DataRequired(message='Search input cannot be empty')])
+    submit = SubmitField('Search')

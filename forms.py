@@ -81,3 +81,8 @@ class EditForm(FlaskForm):
                                validators=[DataRequired()])
 
     submit = SubmitField('Update')
+
+class userSearchForm(FlaskForm):
+    userSearchItem = StringField('Search : ',
+                                  validators=[DataRequired(message='Search input cannot be empty')])
+    submit = SubmitField('Search')

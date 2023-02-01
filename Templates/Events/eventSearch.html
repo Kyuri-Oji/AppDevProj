@@ -1,0 +1,401 @@
+{%extends 'layout.html'%}
+{%block content%}
+
+<div class='pt-3 pb-2 mb-3 | bg-light'>
+    <section>
+        <form action="" method="post" class='container-sm' novalidate>
+            {{formEvents.hidden_tag()}}
+
+            {{formEvents.eventSearchItem.label(class='text-dark | fs-4 | float-start | ms-2')}}
+            <div>
+                {{formEvents.eventSearchItem(class='form-control | my-2')}}
+            </div>
+
+
+            <div class="text-center | my-4 mx-auto | " style='width:50%'>
+                {{formEvents.submit(class='btn btn-primary')}}
+            </div>
+        </form>
+    </section>
+</div>
+<section class='mx-auto row' style='width:80%'>
+    {%if none in eventIDList_searchPage and none in eventNameList_searchPage and none in eventLocationList_searchPage and none in eventVenueList_searchPage%}
+        <div class='text-white'>
+            Nothing Found
+        </div>
+    {%else%}
+        {%if eventIDList_searchPage%}
+            {%for event in eventIDList_searchPage%}
+                <div class='mx-auto col-4'>
+                    <div class="card my-4" style="" id='cardExpand'>
+                        <div class="card-body">
+                            <h5 class="card-title | text-primary">{{event.get_eventName()}}</h5>
+                            <p class="card-text">{{event.get_eventDesc()}}</p>
+                            <div class='p-2 | bg-light border-secondary border-2 border rounded'>
+                                <p class='mb-0'>Event Start Date : <span class='text-primary'>{{event.get_eventStartDate()}}</span></p>
+                                <p class='mb-0'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></p>
+                                <p class='mb-0'>Event Location : <span>{{event.get_eventLocation()}}</span></p>
+                                <p class='mb-0'>Event Venue : <span>{{event.get_eventVenue()}}</span></p>
+                                <p class='mb-0'>Event Vacancy : <span>{{event.get_eventVacancy()}}</span></p>
+                                <p class='mb-0'>Event ID : <span>{{event.get_eventID()}}</span></p>
+                                <p class='mb-0'>Event Type : <span>{{event.get_eventType()}}</span></p>
+
+                                {%if event.get_eventStatus() == 'Active'%}
+                                <p class='mb-0'>Event Status : <span class='font-weight-bold' style='color:#70E300'>{{event.get_eventStatus()}}</span></p>
+                                {%else%}
+                                <p class='mb-0'>Event Status : <span class='text-muted'>{{event.get_eventStatus()}}</span></p>
+                                {%endif%}
+
+                            </div>
+                            <hr>
+                        <nav class='row '> <!--change for loop-->
+                            <a href="#" class='text-decoration-none btn btn-primary | mx-2' data-bs-toggle='modal' data-bs-target='#signUpModal_{{event.get_eventID()}}' style="width:25%">Sign Up</a>
+
+                            {%if "User" in session%}
+                            {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
+                            <a href="#" class='text-decoration-none btn btn-danger | mx-2' data-bs-toggle='modal' data-bs-target='#deleteModal_{{event.get_eventID()}}' style="width:25%">
+                                Delete
+                            </a>
+
+                            <form action="{{url_for('editEventDirect', id=event.get_eventID())}}" method='POST' class='col-auto'>
+                                <input type='submit' value='Edit' class='btn btn-success'>
+                            </form>
+                            {%endif%}
+                            {%endif%}
+                        </nav>
+                        </div>
+                    </div>
+                </div>
+                <!--Event Delete Modal-->
+                <div class='modal fade' id='deleteModal_{{event.get_eventID()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>Event Deletion</h3>
+                                    <h5 class='card-text'>Are you sure you want to delete?</h5>
+                                    <small class='font-monospace | text-muted'>Events once deleted cannot be recovered.</small>
+                                    <h5 class='font-monospace'>Event ID : <span class='text-primary'>{{event.get_eventID()}}</span></h5>
+                                    <h5 class='font-monospace'>Event Type : <span class='text-primary'>{{event.get_eventType()}}</span></h5>
+                                    <h5 class='font-monospace'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></h5>
+                                    <form action="{{url_for('deleteEventDirect', id=event.get_eventID())}}" method='POST' class='mt-3'>
+                                        <input type='submit' value='Delete' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <!--Event Sign Up Modal-->
+                <div class='modal fade' id='signUpModal_{{event.get_eventID()}}' tabindex='-1' aria-labelledby='signUpModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>Event Sign Up</h3>
+                                    <h5 class='card-text'>Are you sure you want to sign up?</h5>
+                                    <small class='font-monospace | text-muted'>You can always withdraw your application for an event.</small>
+                                    <h5 class='font-monospace'>Event ID : <span class='text-primary'>{{event.get_eventID()}}</span></h5>
+                                    <h5 class='font-monospace'>Event Type : <span class='text-primary'>{{event.get_eventType()}}</span></h5>
+                                    <h5 class='font-monospace'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></h5>
+                                    <form action="{{url_for('eventSignup', id=event.get_eventID())}}" method='POST'class='col-auto'>
+                                        <input type='submit' value='Sign Up' class='btn btn-primary'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%endfor%}
+        {%endif%}
+        
+        {%if eventNameList_searchPage%}
+            {%for event in eventNameList_searchPage%}
+                <div class='mx-auto col-4'>
+                    <div class="card my-4" style="" id='cardExpand'>
+                        <div class="card-body">
+                            <h5 class="card-title | text-primary">{{event.get_eventName()}}</h5>
+                            <p class="card-text">{{event.get_eventDesc()}}</p>
+                            <div class='p-2 | bg-light border-secondary border-2 border rounded'>
+                                <p class='mb-0'>Event Start Date : <span class='text-primary'>{{event.get_eventStartDate()}}</span></p>
+                                <p class='mb-0'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></p>
+                                <p class='mb-0'>Event Location : <span>{{event.get_eventLocation()}}</span></p>
+                                <p class='mb-0'>Event Venue : <span>{{event.get_eventVenue()}}</span></p>
+                                <p class='mb-0'>Event Vacancy : <span>{{event.get_eventVacancy()}}</span></p>
+                                <p class='mb-0'>Event ID : <span>{{event.get_eventID()}}</span></p>
+                                <p class='mb-0'>Event Type : <span>{{event.get_eventType()}}</span></p>
+
+                                {%if event.get_eventStatus() == 'Active'%}
+                                <p class='mb-0'>Event Status : <span class='font-weight-bold' style='color:#70E300'>{{event.get_eventStatus()}}</span></p>
+                                {%else%}
+                                <p class='mb-0'>Event Status : <span class='text-muted'>{{event.get_eventStatus()}}</span></p>
+                                {%endif%}
+
+                            </div>
+                            <hr>
+                        <nav class='row '> <!--change for loop-->
+                            <a href="#" class='text-decoration-none btn btn-primary | mx-2' data-bs-toggle='modal' data-bs-target='#signUpModal_{{event.get_eventID()}}' style="width:25%">Sign Up</a>
+
+                            {%if "User" in session%}
+                            {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
+                            <a href="#" class='text-decoration-none btn btn-danger | mx-2' data-bs-toggle='modal' data-bs-target='#deleteModal_{{event.get_eventID()}}' style="width:25%">
+                                Delete
+                            </a>
+
+                            <form action="{{url_for('editEventDirect', id=event.get_eventID())}}" method='POST' class='col-auto'>
+                                <input type='submit' value='Edit' class='btn btn-success'>
+                            </form>
+                            {%endif%}
+                            {%endif%}
+                        </nav>
+                        </div>
+                    </div>
+                </div>
+                <!--Event Delete Modal-->
+                <div class='modal fade' id='deleteModal_{{event.get_eventID()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>Event Deletion</h3>
+                                    <h5 class='card-text'>Are you sure you want to delete?</h5>
+                                    <small class='font-monospace | text-muted'>Events once deleted cannot be recovered.</small>
+                                    <h5 class='font-monospace'>Event ID : <span class='text-primary'>{{event.get_eventID()}}</span></h5>
+                                    <h5 class='font-monospace'>Event Type : <span class='text-primary'>{{event.get_eventType()}}</span></h5>
+                                    <h5 class='font-monospace'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></h5>
+                                    <form action="{{url_for('deleteEventDirect', id=event.get_eventID())}}" method='POST' class='mt-3'>
+                                        <input type='submit' value='Delete' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Event Sign Up Modal-->
+                <div class='modal fade' id='signUpModal_{{event.get_eventID()}}' tabindex='-1' aria-labelledby='signUpModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>Event Sign Up</h3>
+                                    <h5 class='card-text'>Are you sure you want to sign up?</h5>
+                                    <small class='font-monospace | text-muted'>You can always withdraw your application for an event.</small>
+                                    <h5 class='font-monospace'>Event ID : <span class='text-primary'>{{event.get_eventID()}}</span></h5>
+                                    <h5 class='font-monospace'>Event Type : <span class='text-primary'>{{event.get_eventType()}}</span></h5>
+                                    <h5 class='font-monospace'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></h5>
+                                    <form action="{{url_for('eventSignup', id=event.get_eventID())}}" method='POST'class='col-auto'>
+                                        <input type='submit' value='Sign Up' class='btn btn-primary'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%endfor%}
+        {%endif%}
+
+        {%if eventLocationList_searchPage%}
+            {%for event in eventLocationList_searchPage%}
+                <div class='mx-auto col-4'>
+                    <div class="card my-4" style="" id='cardExpand'>
+                        <div class="card-body">
+                            <h5 class="card-title | text-primary">{{event.get_eventName()}}</h5>
+                            <p class="card-text">{{event.get_eventDesc()}}</p>
+                            <div class='p-2 | bg-light border-secondary border-2 border rounded'>
+                                <p class='mb-0'>Event Start Date : <span class='text-primary'>{{event.get_eventStartDate()}}</span></p>
+                                <p class='mb-0'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></p>
+                                <p class='mb-0'>Event Location : <span>{{event.get_eventLocation()}}</span></p>
+                                <p class='mb-0'>Event Venue : <span>{{event.get_eventVenue()}}</span></p>
+                                <p class='mb-0'>Event Vacancy : <span>{{event.get_eventVacancy()}}</span></p>
+                                <p class='mb-0'>Event ID : <span>{{event.get_eventID()}}</span></p>
+                                <p class='mb-0'>Event Type : <span>{{event.get_eventType()}}</span></p>
+
+                                {%if event.get_eventStatus() == 'Active'%}
+                                <p class='mb-0'>Event Status : <span class='font-weight-bold' style='color:#70E300'>{{event.get_eventStatus()}}</span></p>
+                                {%else%}
+                                <p class='mb-0'>Event Status : <span class='text-muted'>{{event.get_eventStatus()}}</span></p>
+                                {%endif%}
+
+                            </div>
+                            <hr>
+                        <nav class='row '> <!--change for loop-->
+                            <a href="#" class='text-decoration-none btn btn-primary | mx-2' data-bs-toggle='modal' data-bs-target='#signUpModal_{{event.get_eventID()}}' style="width:25%">Sign Up</a>
+
+                            {%if "User" in session%}
+                            {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
+                            <a href="#" class='text-decoration-none btn btn-danger | mx-2' data-bs-toggle='modal' data-bs-target='#deleteModal_{{event.get_eventID()}}' style="width:25%">
+                                Delete
+                            </a>
+
+                            <form action="{{url_for('editEventDirect', id=event.get_eventID())}}" method='POST' class='col-auto'>
+                                <input type='submit' value='Edit' class='btn btn-success'>
+                            </form>
+                            {%endif%}
+                            {%endif%}
+                        </nav>
+                        </div>
+                    </div>
+                </div>
+                <!--Event Delete Modal-->
+                <div class='modal fade' id='deleteModal_{{event.get_eventID()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>Event Deletion</h3>
+                                    <h5 class='card-text'>Are you sure you want to delete?</h5>
+                                    <small class='font-monospace | text-muted'>Events once deleted cannot be recovered.</small>
+                                    <h5 class='font-monospace'>Event ID : <span class='text-primary'>{{event.get_eventID()}}</span></h5>
+                                    <h5 class='font-monospace'>Event Type : <span class='text-primary'>{{event.get_eventType()}}</span></h5>
+                                    <h5 class='font-monospace'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></h5>
+                                    <form action="{{url_for('deleteEventDirect', id=event.get_eventID())}}" method='POST' class='mt-3'>
+                                        <input type='submit' value='Delete' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Event Sign Up Modal-->
+                <div class='modal fade' id='signUpModal_{{event.get_eventID()}}' tabindex='-1' aria-labelledby='signUpModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>Event Sign Up</h3>
+                                    <h5 class='card-text'>Are you sure you want to sign up?</h5>
+                                    <small class='font-monospace | text-muted'>You can always withdraw your application for an event.</small>
+                                    <h5 class='font-monospace'>Event ID : <span class='text-primary'>{{event.get_eventID()}}</span></h5>
+                                    <h5 class='font-monospace'>Event Type : <span class='text-primary'>{{event.get_eventType()}}</span></h5>
+                                    <h5 class='font-monospace'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></h5>
+                                    <form action="{{url_for('eventSignup', id=event.get_eventID())}}" method='POST'class='col-auto'>
+                                        <input type='submit' value='Sign Up' class='btn btn-primary'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%endfor%}
+        {%endif%}
+
+        {%if eventVenueList_searchPage%}
+            {%for event in eventVenueList_searchPage%}
+                <div class='mx-auto col-4'>
+                    <div class="card my-4" style="" id='cardExpand'>
+                        <div class="card-body">
+                            <h5 class="card-title | text-primary">{{event.get_eventName()}}</h5>
+                            <p class="card-text">{{event.get_eventDesc()}}</p>
+                            <div class='p-2 | bg-light border-secondary border-2 border rounded'>
+                                <p class='mb-0'>Event Start Date : <span class='text-primary'>{{event.get_eventStartDate()}}</span></p>
+                                <p class='mb-0'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></p>
+                                <p class='mb-0'>Event Location : <span>{{event.get_eventLocation()}}</span></p>
+                                <p class='mb-0'>Event Venue : <span>{{event.get_eventVenue()}}</span></p>
+                                <p class='mb-0'>Event Vacancy : <span>{{event.get_eventVacancy()}}</span></p>
+                                <p class='mb-0'>Event ID : <span>{{event.get_eventID()}}</span></p>
+                                <p class='mb-0'>Event Type : <span>{{event.get_eventType()}}</span></p>
+
+                                {%if event.get_eventStatus() == 'Active'%}
+                                <p class='mb-0'>Event Status : <span class='font-weight-bold' style='color:#70E300'>{{event.get_eventStatus()}}</span></p>
+                                {%else%}
+                                <p class='mb-0'>Event Status : <span class='text-muted'>{{event.get_eventStatus()}}</span></p>
+                                {%endif%}
+
+                            </div>
+                            <hr>
+                        <nav class='row '> <!--change for loop-->
+                            <a href="#" class='text-decoration-none btn btn-primary | mx-2' data-bs-toggle='modal' data-bs-target='#signUpModal_{{event.get_eventID()}}' style="width:25%">Sign Up</a>
+
+                            {%if "User" in session%}
+                            {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
+                            <a href="#" class='text-decoration-none btn btn-danger | mx-2' data-bs-toggle='modal' data-bs-target='#deleteModal_{{event.get_eventID()}}' style="width:25%">
+                                Delete
+                            </a>
+
+                            <form action="{{url_for('editEventDirect', id=event.get_eventID())}}" method='POST' class='col-auto'>
+                                <input type='submit' value='Edit' class='btn btn-success'>
+                            </form>
+                            {%endif%}
+                            {%endif%}
+                        </nav>
+                        </div>
+                    </div>
+                </div>
+                <!--Event Delete Modal-->
+                <div class='modal fade' id='deleteModal_{{event.get_eventID()}}' tabindex='-1' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>Event Deletion</h3>
+                                    <h5 class='card-text'>Are you sure you want to delete?</h5>
+                                    <small class='font-monospace | text-muted'>Events once deleted cannot be recovered.</small>
+                                    <h5 class='font-monospace'>Event ID : <span class='text-primary'>{{event.get_eventID()}}</span></h5>
+                                    <h5 class='font-monospace'>Event Type : <span class='text-primary'>{{event.get_eventType()}}</span></h5>
+                                    <h5 class='font-monospace'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></h5>
+                                    <form action="{{url_for('deleteEventDirect', id=event.get_eventID())}}" method='POST' class='mt-3'>
+                                        <input type='submit' value='Delete' class='btn btn-danger'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Event Sign Up Modal-->
+                <div class='modal fade' id='signUpModal_{{event.get_eventID()}}' tabindex='-1' aria-labelledby='signUpModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class="modal-body">
+                                <div class='card-body'>
+                                    <h3 class='card-title'>Event Sign Up</h3>
+                                    <h5 class='card-text'>Are you sure you want to sign up?</h5>
+                                    <small class='font-monospace | text-muted'>You can always withdraw your application for an event.</small>
+                                    <h5 class='font-monospace'>Event ID : <span class='text-primary'>{{event.get_eventID()}}</span></h5>
+                                    <h5 class='font-monospace'>Event Type : <span class='text-primary'>{{event.get_eventType()}}</span></h5>
+                                    <h5 class='font-monospace'>Event End Date : <span class='text-primary'>{{event.get_eventDate()}}</span></h5>
+                                    <form action="{{url_for('eventSignup', id=event.get_eventID())}}" method='POST'class='col-auto'>
+                                        <input type='submit' value='Sign Up' class='btn btn-primary'>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%endfor%}
+        {%endif%}
+    {%endif%}
+</section>
+<style>
+    div#cardExpand {
+        transition: all 0.3s;
+    }
+    
+    div#cardExpand:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    body {
+        background: url('https://images.unsplash.com/photo-1626721105368-a69248e93b32?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+        -o-background-size: cover;
+      }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    body::-webkit-scrollbar {
+    display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    }
+</style>
+{%endblock%}

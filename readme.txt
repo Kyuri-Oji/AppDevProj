@@ -17,7 +17,11 @@ Used to keep track of work progress, updates, and TO-DO List
 7. Event Start date cannot be behind end date
 8. Edit Facility to change facil type into location.
 9. Edit and Deletion affects sign up
-
+10. Data required for datetime for events (Start and End Datea)
+11. Fix date for events
+12. Event type, location, venue, status validation message.
+13. Search Function - Events✔️ (1/2/23)
+14. Fix user search function
 
 
 // Updates
@@ -38,6 +42,8 @@ Used to keep track of work progress, updates, and TO-DO List
         - Changed facility location to reflect name instead of postal code
         - Updated dynamic options for facilities in regard to events and booking
         - Added location to booking (Temp until i find a new solution)
+30/1/23 - Added validation for faciility rate
+1/2/23 - Added Search Function - Alan
 
 
 
