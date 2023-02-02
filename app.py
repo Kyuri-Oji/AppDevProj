@@ -224,7 +224,7 @@ def login():
         
     return render_template('login.html', title = 'Login', form=form)
 
-@app.route('/users')
+@app.route('/users', methods=['GET', 'POST'])
 def users():
     formSearch = userSearchForm()
 
@@ -241,13 +241,13 @@ def users():
         
         print(userUIDList_searchPage, userUsernameList_searchPage, userFirstNameList_searchPage, userLastNameList_searchPage, userEmailList_searchPage, userPhoneNoList_searchPage)
         
-        return redirect(url_for('Users/viewUsers.html', formSearch = formSearch,
+        return render_template('Users/viewUsers.html', formSearch = formSearch,
                                userUIDList_searchPage = userUIDList_searchPage,
                                userUsernameList_searchPage = userUsernameList_searchPage,
                                userFirstNameList_searchPage = userFirstNameList_searchPage,
                                userLastNameList_searchPage = userLastNameList_searchPage,
                                userEmailList_searchPage = userEmailList_searchPage,
-                               userPhoneNoList_searchPage = userPhoneNoList_searchPage))
+                               userPhoneNoList_searchPage = userPhoneNoList_searchPage)
     
     dictsUser ={}
     db = shelve.open('users')

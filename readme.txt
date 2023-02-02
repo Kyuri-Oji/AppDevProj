@@ -20,8 +20,8 @@ Used to keep track of work progress, updates, and TO-DO List
 10. Data required for datetime for events (Start and End Datea)
 11. Fix date for events
 12. Event type, location, venue, status validation message.
-13. Search Function - Events✔️ (1/2/23)
-14. Fix user search function
+13. Search Function - Events ✔️ (1/2/23)
+14. Fix user search function ✔️ (2/2/23)
 
 
 // Updates

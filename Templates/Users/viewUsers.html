@@ -3,8 +3,8 @@
 
 <nav class="navbar bg-light">
     <div class="container-fluid | py-2">
-        <p class="font-monospace | my-auto | text-center | fs-3" style='width:100vw'><span class="text-primary">User</span> Database</p>
-      <form class="d-flex | end-0 position-absolute | pe-2" role="search">
+        <p class="font-monospace | my-auto | text-center | fs-3" style='width:100vw'><a href="{{url_for('users')}}"><span class="text-primary">User</span> Database</a></p>
+      <form class="d-flex | end-0 position-absolute | pe-2" role="search" method='POST'>
         {{formSearch.hidden_tag()}}
 
         {{formSearch.userSearchItem(class='form-control me-2')}}
