@@ -1,11 +1,13 @@
 class createEvents:
     eventCount = 0
-    def __init__(self, eventName, eventDesc, eventVacancy, eventDate, eventStartDate, eventID, eventType, eventLocation, eventVenue, eventStatus):
+    def __init__(self, eventName, eventDesc, eventVacancy, eventDate, eventDateTime, eventStartDate, eventStartDateTime, eventID, eventType, eventLocation, eventVenue, eventStatus):
         self.eventName = eventName
         self.eventDesc = eventDesc
         self.eventVacancy = eventVacancy
         self.eventDate = eventDate
+        self.eventDateTime = eventDateTime
         self.eventStartDate = eventStartDate
+        self.eventStartDateTime = eventStartDateTime
         self.eventID = eventID
         self.eventType = eventType
         self.eventLocation = eventLocation
@@ -33,10 +35,20 @@ class createEvents:
     def get_eventDate(self):
         return self.eventDate
     
+    def set_eventDateTime(self, eventDateTime):
+        self.eventDateTime = eventDateTime
+    def get_eventDateTime(self):
+        return self.eventDateTime
+    
     def set_eventStartDate(self, eventStartDate):
         self.eventStartDate = eventStartDate
     def get_eventStartDate(self):
         return self.eventStartDate
+    
+    def set_eventStartDateTime(self, eventStartDateTime):
+        self.eventStartDateTime = eventStartDateTime
+    def get_eventStartDateTime(self):
+        return self.eventStartDateTime
     
     def set_eventID(self, eventID):
         self.eventID = eventID

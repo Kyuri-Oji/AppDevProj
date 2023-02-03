@@ -7,13 +7,13 @@ import shelve
 class RegistrationForm(FlaskForm):
     username = StringField('Username : ',
                            render_kw={'placeholder' : 'Username'},
-                           validators=[DataRequired(), Length(min = 2, max = 20)])
+                           validators=[DataRequired(), Length(min = 2, max = 15)])
     firstName = StringField('First Name : ',
                             render_kw={'placeholder' : 'Benjamin'},
-                            validators=[DataRequired(), Length(min = 2)])
+                            validators=[DataRequired(), Length(min = 2, max = 15)])
     lastName = StringField('Last Name : ',
                            render_kw={'placeholder' : 'Franklin'},
-                           validators=[DataRequired(), Length(min = 2)])
+                           validators=[DataRequired(), Length(min = 2, max = 15)])
     email = StringField('Email : ',
                         render_kw={'placeholder' : 'BenjaminFranklin@example.com'},
                         validators=[DataRequired(), Email()])
@@ -26,6 +26,32 @@ class RegistrationForm(FlaskForm):
                                      validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
     
+    def validate_username(self, username):
+        restrictedKWList = ['admin', 'activeplay']
+        
+        userName = self.username.data
+        if not all(letter.isalnum() or letter.isspace() for letter in userName):
+            raise ValidationError('No special characters allowed!')
+        if userName == 'admin@activeplay.sg' or (userName in restrictedKWList):
+            raise ValidationError('Keywords not allowed!')
+        
+    def validate_firstName(self, firstName):
+        restrictedKWList = ['admin', 'activeplay', '.sg']
+        
+        userFirstName = self.firstName.data
+        if not all(letter.isalpha() or letter.isspace() for letter in userFirstName):
+            raise ValidationError('No special characters allowed!')
+        if userFirstName == 'admin@activeplay.sg' or (userFirstName in restrictedKWList):
+            raise ValidationError('Keywords not allowed!')
+        
+    def validate_lastName(self, lastName):
+        restrictedKWList = ['admin', 'activeplay', '.sg']
+        
+        userLastName = self.lastName.data
+        if not all(letter.isalpha() or letter.isspace() for letter in userLastName):
+            raise ValidationError('No special characters allowed!')
+        if userLastName == 'admin@activeplay.sg' or (userLastName in restrictedKWList):
+            raise ValidationError('Keywords not allowed!')
     
     def validate_email(self, userEmail):
         dictUsers = {}
@@ -36,10 +62,11 @@ class RegistrationForm(FlaskForm):
         except:
             print('Error in retrieving users from user.db.')
             
+        userEmail = self.email.data   
         for keys in dictUsers:
             if self.email.data == str(dictUsers[keys].get_email()):
                 raise ValidationError('Email already registered.')
-            
+        
     def validate_phoneNo(self, userPhoneNo):
         dictUsers = {}
         db = shelve.open('users')

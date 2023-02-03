@@ -455,14 +455,16 @@ def createEvent():
         eventDesc = formEvents.eventDesc.data
         eventVacancy = formEvents.eventVacancy.data
         eventDate = formEvents.eventDate.data
+        eventDateTime = formEvents.eventDateTime.data
         eventStartDate = formEvents.eventStartDate.data
+        eventStartDateTime = formEvents.eventStartDateTime.data
         eventID = formEvents.eventID.data
         eventType = formEvents.eventType.data
         eventLocation = formEvents.eventLocation.data        
         eventVenue = formEvents.eventVenue.data
         eventStatus = formEvents.eventStatus.data    
             
-        ce = createEvents(eventName, eventDesc, eventVacancy, eventDate, eventStartDate, eventID, eventType, eventLocation, eventVenue, eventStatus)
+        ce = createEvents(eventName, eventDesc, eventVacancy, eventDate, eventDateTime, eventStartDate, eventStartDateTime, eventID, eventType, eventLocation, eventVenue, eventStatus)
         eventsDict[ce.get_eventID()] = ce
         eventDB['Events'] = eventsDict
         
@@ -555,7 +557,9 @@ def editEventDirect(id):
         eventDesc = formEvents.editEventDesc.data
         eventVacancy = formEvents.editEventVacancy.data
         eventDate = formEvents.editEventDate.data
+        eventDateTime = formEvents.editEventStartDateTime.data
         eventStartDate = formEvents.editEventStartDate.data
+        eventStartDateTime = formEvents.editEventStartDateTime.data
         eventID = id
         eventType = formEvents.editEventType.data
         eventLocation = formEvents.editEventLocation.data
@@ -566,7 +570,7 @@ def editEventDirect(id):
             print('Error.')
             flash('Event ID not found in Event Database.', 'error')
         else:
-            ce = createEvents(eventName, eventDesc, eventVacancy, eventDate, eventStartDate, eventID, eventType, eventLocation, eventVenue, eventStatus)
+            ce = createEvents(eventName, eventDesc, eventVacancy, eventDate, eventDateTime, eventStartDate, eventStartDateTime, eventID, eventType, eventLocation, eventVenue, eventStatus)
             eventsDict[ce.get_eventID()] = ce
             eventDB['Events'] = eventsDict
             
@@ -1037,13 +1041,13 @@ def bookingPage():
             except:
                 print('Error in retrieving bookings.')
 
-            bookFacilLoc = formsBooking.bookingFacilityLocation.data
+            #bookFacilLoc = formsBooking.bookingFacilityLocation.data
             bookFacil = formsBooking.bookingFacilityID.data
             bookDate = formsBooking.bookingDate.data
             bookTime = formsBooking.bookingTimeSlot.data
             #bookFacil = bookFacilLoc+bookFacilType
 
-            fb = FacilityBooking(bookFacilLoc, bookFacil, bookDate, bookTime)
+            fb = FacilityBooking(bookFacil, bookDate, bookTime)
             fb.set_booking_id()
             bookingUID = fb.get_booking_id()
             print(bookingUID)
@@ -1054,7 +1058,7 @@ def bookingPage():
             bookingDB.close()
             print(bookingsDict.keys())
             
-            userBookingInfo = [userID, bookFacilLoc, bookFacil, bookDate, bookTime]
+            userBookingInfo = [userID, bookFacil, bookDate, bookTime]
             bookingFacilDict[bookingUID[-4:]] = userBookingInfo
             print(bookingFacilDict)
             bookingFacilDB['BookingFacil'] = bookingFacilDict
@@ -1090,8 +1094,8 @@ def bookingCurrent():
         bookingsList=[]
         for booking in bookingsDict:
             bookings = bookingsDict.get(booking)
-            print(bookings.get_date())
-            bookingsList.append(bookings)
+            if bookings.get_date()<=date.today():
+                bookingsList.append(bookings)
 
         return render_template('Booking/bookingCurrent.html', bookingsList = bookingsList)
     else:

@@ -10,18 +10,9 @@
             {{formEvents.hidden_tag()}}
 
             {{formEvents.editEventName.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            {%if formEvents.editEventName.errors%}
-            <div>
-                {{formEvents.editEventName(class='form-control | my-2')}}
-            </div>
-            {%for errors in formEvents.editEventName.errors%}
-                <span class='text-danger | float-end'>{{errors}}</span>
-            {%endfor%}
-            {%else%}
-            <div>
-                {{formEvents.editEventName(class='form-control | my-2')}}
-            </div>
-            {%endif%}
+                <div>
+                    {{formEvents.editEventName(class='form-control | my-2')}}
+                </div>
 
             {{formEvents.editEventDesc.label(class='text-dark | fs-4 | float-start | ms-2')}}
             <div>
@@ -33,14 +24,72 @@
                 {{formEvents.editEventVacancy(class='form-control | my-2')}}
             </div>
 
-            {{formEvents.editEventStartDate.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            <div>
-                {{formEvents.editEventStartDate(class='form-control | my-2')}}
-            </div>
-            
-            {{formEvents.editEventDate.label(class='text-dark | fs-4 | float-start | ms-2')}}
-            <div>
-                {{formEvents.editEventDate(class='form-control | my-2')}}
+            <div class=''>
+                <div class='d-flex mt-3'>
+                    <div class='mx-auto' style='width:50%'>
+                        {{formEvents.editEventStartDate.label(class='text-dark | fs-4 | float-start | ms-2')}}
+                        {%if formEvents.editEventStartDate.errors%}
+                            <div>
+                                {{formEvents.editEventStartDate(class='form-control | my-2 | border-danger')}}
+                            </div>
+                        {%for errors in formEvents.editEventStartDate.errors%}
+                            <span class='text-danger | float-end'>{{errors}}</span>
+                        {%endfor%}
+                        {%else%}
+                            <div>
+                                {{formEvents.editEventStartDate(class='form-control | my-2')}}
+                            </div>
+                        {%endif%}
+                    </div>
+                    <div class='mx-auto' style='width:40%'>
+                        {{formEvents.editEventStartDateTime.label(class='text-dark | fs-4 | float-start | ms-2')}}
+                        {%if formEvents.editEventStartDateTime.errors%}
+                            <div>
+                                {{formEvents.editEventStartDateTime(class='form-control | my-2 | border-danger')}}
+                            </div>
+                        {%for errors in formEvents.editEventStartDateTime.errors%}
+                            <span class='text-danger | float-end'>{{errors}}</span>
+                        {%endfor%}
+                        {%else%}
+                            <div>
+                                {{formEvents.editEventStartDateTime(class='form-control | my-2')}}
+                            </div>
+                        {%endif%}
+                    </div>
+                </div>
+    
+                <div class='d-flex mb-2'>
+                    <div class='mx-auto' style='width:50%'>
+                        {{formEvents.editEventDate.label(class='text-dark | fs-4 | float-start | ms-2')}}
+                        {%if formEvents.editEventDate.errors%}
+                            <div>
+                                {{formEvents.editEventDate(class='form-control | my-2 | border-danger')}}
+                            </div>
+                        {%for errors in formEvents.editEventDate.errors%}
+                            <span class='text-danger | float-end'>{{errors}}</span>
+                        {%endfor%}
+                        {%else%}
+                            <div>
+                                {{formEvents.editEventDate(class='form-control | my-2')}}
+                            </div>
+                        {%endif%}
+                    </div>
+                    <div class='mx-auto' style='width:40%'>
+                        {{formEvents.editEventDateTime.label(class='text-dark | fs-4 | float-start | ms-2')}}
+                        {%if formEvents.editEventDateTime.errors%}
+                            <div>
+                                {{formEvents.editEventDateTime(class='form-control | my-2 | border-danger')}}
+                            </div>
+                        {%for errors in formEvents.editEventDateTime.errors%}
+                            <span class='text-danger | float-end'>{{errors}}</span>
+                        {%endfor%}
+                        {%else%}
+                            <div>
+                                {{formEvents.editEventDateTime(class='form-control | my-2')}}
+                            </div>
+                        {%endif%}
+                    </div>
+                </div>
             </div>
 
             {{formEvents.editEventType.label(class='text-dark | fs-4 | float-start | ms-2 | form-check-label')}}

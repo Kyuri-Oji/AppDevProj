@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, DateTimeField, TextAreaField, PasswordField, SubmitField, BooleanField, RadioField, SelectField, DateField
+from wtforms import StringField, IntegerField, DateTimeField, TextAreaField, PasswordField, SubmitField, BooleanField, RadioField, SelectField, DateField, TimeField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange, ValidationError
-from datetime import datetime
+from datetime import datetime, date
 import time
 import shelve
 
@@ -45,19 +45,30 @@ class eventCreateForm(FlaskForm):
                             validators=[DataRequired(), Length(min = 2)])
     eventVacancy = IntegerField('Event Vacancy : ',
                                 validators=[DataRequired()])
-    eventDate = DateTimeField('Event End Date : ',
+    
+    eventDate = DateField('Event End Date : ',
                               validators=[DataRequired()],
-                              format='%d-%m-%y %H:%M:%S', default=datetime.now, #datetime formatting, dafault to current date
+                              format='%Y-%m-%d', #datetime formatting, dafault to current date
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
-    eventStartDate = DateTimeField('Event Start Date : ',
+    eventDateTime = TimeField('Event End Time : ',
                               validators=[DataRequired()],
-                              format='%d-%m-%y %H:%M:%S', default=datetime.now, #datetime formatting, dafault to current date
+                              format='%H:%M',
+                              render_kw={'placeholder' : 'HH:MM:SS'})
+    
+    eventStartDate = DateField('Event Start Date : ',
+                              validators=[DataRequired()],
+                              format='%Y-%m-%d', #datetime formatting, dafault to current date
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
+    eventStartDateTime = TimeField('Event Start Time : ',
+                                   validators=[DataRequired()],
+                                   format='%H:%M',
+                                   render_kw={'placeholder' : 'HH:MM:SS'})
+    
     eventID = IntegerField('Event ID : ',
                            validators=[DataRequired(message="This field is required."), NumberRange(min=1000, max=9999)],
                            render_kw={'placeholder' : '001'})
     eventType = RadioField('Event Type : ',
-                           validators=[DataRequired()],
+                           validators=[DataRequired(message='An event type is required!')],
                            choices=[('Sports', 'Sports'), ('Lifestyle', 'Lifestyle'), ('Others', 'Others')])
     eventLocation =  SelectField('Facility Location : ',
                                 validators=[DataRequired()],
@@ -129,19 +140,31 @@ class eventCreateForm(FlaskForm):
         print(facilityIDList)
         
     def validate_eventDate(self, eventDate): # Dont touch this.
-        dateFormat = "%d%m%y%H%M%S"
+        pre_dateCheck = "%Y-%m-%d"
+        dateFormat = "%d%m%y"
+        timeFormat = "%H%M%S"
+        dateToday = date.today()
         
-        startDate = (self.eventStartDate.data)
-        startDateData = startDate.strftime(dateFormat)
+        startDate = ((self.eventStartDate.data).strftime(dateFormat) + (self.eventStartDateTime.data).strftime(timeFormat))
         print(f'Start Date : {startDate}')
         
-        endDate = (self.eventDate.data)
-        endDateData = endDate.strftime(dateFormat)
+        endDate = ((self.eventDate.data).strftime(dateFormat) + (self.eventDateTime.data).strftime(timeFormat))
         print(f'End Date : {endDate}')
         
-        if int(endDateData) < int(startDateData):
+        
+        if int((self.eventDate.data).strftime(dateFormat)) < int(dateToday.strftime(dateFormat)): # 300222 < 310122
+            raise ValidationError(f"End Date cannot be behind today. Today's Date {dateToday}")
+        
+        if int(endDate) < int(startDate): # 30122 < 31
             print('Please work man')
             raise ValidationError('End Date cannot be before Start Date')
+        
+    def validate_eventStartDate(self, eventStartDate):
+        dateFormat = "%d%m%y"
+        dateToday = date.today()
+                
+        if int((self.eventStartDate.data).strftime(dateFormat)) < int(dateToday.strftime(dateFormat)):
+            raise ValidationError(f"End Date cannot be behind today. Today's Date {dateToday}")
             
 class eventEditForm(FlaskForm):
     editEventID = IntegerField('Enter Event ID to Edit : ',
@@ -187,14 +210,25 @@ class eventEditForm2(FlaskForm):
     editEventVacancy = IntegerField('Edit Event Vacancy : ',
                                validators=[DataRequired()],
                                render_kw={'placeholder' : 'Leave empty if no change.'})
-    editEventDate = DateTimeField('Event End Date : ',
+    
+    editEventDate = DateField('Event End Date : ',
                               validators=[DataRequired()],
-                              format='%d-%m-%y %H:%M:%S',#datetime formatting, dafault to current date
+                              format='%Y-%m-%d',#datetime formatting, dafault to current date
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
-    editEventStartDate = DateTimeField('Event Start Date : ',
+    editEventDateTime = TimeField('Event End Time : ',
                               validators=[DataRequired()],
-                              format='%d-%m-%y %H:%M:%S',#datetime formatting, dafault to current date
+                              format='%H:%M',
+                              render_kw={'placeholder' : 'HH:MM:SS'})
+    
+    editEventStartDate = DateField('Event Start Date : ',
+                              validators=[DataRequired()],
+                              format='%Y-%m-%d',
                               render_kw={'placeholder' : 'DD-MM-YY'}) #adds a placeholder
+    editEventStartDateTime = TimeField('Event Start Time : ',
+                                   validators=[DataRequired()],
+                                   format='%H:%M',
+                                   render_kw={'placeholder' : 'HH:MM:SS'})
+    
     editEventType = RadioField('Edit Event Type : ',
                                validators=[DataRequired()],
                                choices=[('Sports', 'Sports'), ('Lifestyle', 'Lifestyle'), ('Others', 'Others')])
@@ -248,6 +282,33 @@ class eventEditForm2(FlaskForm):
             index = facilityIDList.index(eventVenueChosen)
             if eventVacancyChosen > facilitySlotsList[index]:
                 raise ValidationError(f'Max Event Vacancies is {facilitySlotsList[index]}!')
+    
+    def validate_editEventDate(self, eventDate): # Dont touch this.
+        pre_dateCheck = "%Y-%m-%d"
+        dateFormat = "%d%m%y"
+        timeFormat = "%H%M%S"
+        dateToday = date.today()
+        
+        startDate = ((self.editEventStartDate.data).strftime(dateFormat) + (self.editEventStartDateTime.data).strftime(timeFormat))
+        print(f'Start Date : {startDate}')
+        
+        endDate = ((self.editEventDate.data).strftime(dateFormat) + (self.editEventDateTime.data).strftime(timeFormat))
+        print(f'End Date : {endDate}')
+        
+        
+        if int((self.editEventDate.data).strftime(dateFormat)) < int(dateToday.strftime(dateFormat)): # 300222 < 310122
+            raise ValidationError(f"End Date cannot be behind today. Today's Date {dateToday}")
+        
+        if int(endDate) < int(startDate): # 30122 < 31
+            print('Please work man')
+            raise ValidationError('End Date cannot be before Start Date')
+        
+    def validate_editEventStartDate(self, eventStartDate):
+        dateFormat = "%d%m%y"
+        dateToday = date.today()
+                
+        if int((self.editEventStartDate.data).strftime(dateFormat)) < int(dateToday.strftime(dateFormat)):
+            raise ValidationError(f"End Date cannot be behind today. Today's Date {dateToday}")
         
 class eventDeleteForm(FlaskForm):
     deleteEventID = IntegerField('Event ID to delete : ', 

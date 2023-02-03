@@ -14,15 +14,20 @@ Used to keep track of work progress, updates, and TO-DO List
 4. Add Event Status (Active/Closed) ✔️ (14/1/23)
 5. Change ID of Facilities ✔️ (13/1/23)
 6. Event Venue max vacancies and form error checking for vacancies (Vacancies cannot be larger than venue size) ✔️ (14/1/23)
-7. Event Start date cannot be behind end date
+7. Event Start date cannot be behind end date - will need more testing  ✔️ (2/2/23) //TODO : Check this
 8. Edit Facility to change facil type into location.
 9. Edit and Deletion affects sign up
-10. Data required for datetime for events (Start and End Datea)
-11. Fix date for events
+10. Data required for datetime for events (Start and End Date)
+11. Fix date for events - cant replicate the issue shown ✔️ (2/2/23)
 12. Event type, location, venue, status validation message.
 13. Search Function - Events ✔️ (1/2/23)
 14. Fix user search function ✔️ (2/2/23)
-
+15. Make datetime for events show validation message for incorrect format (IMPT) / Check validation for event start < end (IMPT) ✔️ (4/2/23) man it jus turned 12 in the morn - Alan
+16. Restrict users from using admin@activeplay.sg being registered under any field ✔️ (3/2/23)
+17. Restrict users from using special symbols (except hyphen, underscore, and period) in username ✔️ (3/2/23)
+18. Fix issue where user database css breaks when user entry is too long ✔️ (3/2/23) - CSS does not mess up due to 15 letter limit (Alan)
+19. Remove "this field is required" message on user edit
+20. 
 
 // Updates
 11/1/23 - Updated edit functions
