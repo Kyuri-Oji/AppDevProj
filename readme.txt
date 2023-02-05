@@ -4,7 +4,7 @@ Used to keep track of work progress, updates, and TO-DO List
 // To-Do List
 1. Edit functions call original text from database  
     - User, Events, Facilities ✔️ (11/1/23)
-    - Booking - Partial Complete? (17/1/2023)
+    - Booking - ✔️ (1/2/2023)
 
 2. Add venue and location to Events
     - Location (No integration) ✔️ (14/1/23)
