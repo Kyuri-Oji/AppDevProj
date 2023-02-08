@@ -39,7 +39,7 @@ def eventSearchFunction(searchItem):
         
         if isinstance(searchData, int): # finally knew what isinstance is omg
             if searchData == events.get_eventID(): # TODO: search entry change to int
-                    eventSearchIDList.append(events)
+                eventSearchIDList.append(events)
         elif isinstance(searchData, str):
             if searchData == events.get_eventName() or searchData in str(events.get_eventName()).lower() :
                 eventSearchNameList.append(events)
@@ -108,3 +108,30 @@ def userSearchFunction(searchItem):
     print(userSearchFirstNameList)
     print(userSearchLastNameList)
     print(userSearchEmailList)
+
+# Facility Search Function
+facilitySearchIDList = []
+facilitySearchFac_IDLIst = []
+facilitySearchLocationList = []
+facilitySearchStatusList = []
+facilitySearchSlotsLIst = []
+facilitySearchRatesList = []
+
+def facilitySearchFunction(searchItem):
+    facilitySearchIDList.clear()
+    facilitySearchFac_IDLIst.clear()
+    facilitySearchLocationList.clear()
+    facilitySearchStatusList.clear()
+    facilitySearchSlotsLIst.clear()
+    facilitySearchRatesList.clear()
+
+    facilDict = {}
+    facilDB = shelve.open('Facilites')
+
+    try:
+        if 'Facilities' in facilDB:
+            facilDict = facilDB['Facilites']
+        else:
+            facilDB['Facilities'] = facilDict
+    except:
+        print('Error in handling database!')
