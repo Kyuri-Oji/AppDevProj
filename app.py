@@ -1047,7 +1047,7 @@ def bookingPage():
             bookTime = formsBooking.bookingTimeSlot.data
             #bookFacil = bookFacilLoc+bookFacilType
 
-            fb = FacilityBooking(bookFacil, bookDate, bookTime)
+            fb = bookingForm(bookFacil, bookDate, bookTime)
             fb.set_booking_id()
             bookingUID = fb.get_booking_id()
             print(bookingUID)
