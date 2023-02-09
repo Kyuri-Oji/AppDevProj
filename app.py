@@ -6,9 +6,9 @@ import random
 
 from wtforms.validators import ValidationError
 from forms import RegistrationForm, LoginForm, EditForm, userSearchForm
-from eventForms import eventCreateForm, eventEditForm, eventDeleteForm, eventEditForm2, eventDeleteForm2, eventLocationCreateForm, eventSearchForm
+from eventForms import *
 from bookingForms import bookingForm, paymentForm
-from FacilitiesForm import CreateFacilityForm, EditFacilityForm
+from FacilitiesForm import CreateFacilityForm, EditFacilityForm, SearchFacilityForm
 
 from OOP.userFunction import *
 from OOP.eventFunction import *
@@ -16,7 +16,7 @@ from OOP.Bookings import *
 from OOP.Facilities import *
 
 from modules.search import *
-
+from modules.sort import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8ecce6a32ba6703d10b72f3ccea07175'
@@ -597,7 +597,9 @@ def editEventDirect(id):
         formEvents.editEventDesc.data = event.get_eventDesc()
         formEvents.editEventVacancy.data = event.get_eventVacancy()
         formEvents.editEventDate.data = event.get_eventDate()
+        formEvents.editEventDateTime.data = event.get_eventDateTime()
         formEvents.editEventStartDate.data = event.get_eventStartDate()
+        formEvents.editEventStartDateTime.data = event.get_eventStartDateTime()
         formEvents.editEventType.data = event.get_eventType()
         formEvents.editEventLocation.data = event.get_eventLocation()
         formEvents.editEventVenue.data = event.get_eventVenue()
@@ -658,6 +660,8 @@ def deleteEventDirect(id):
 @app.route('/events', methods=['GET', 'POST'])
 def eventsPage():
     formSearch = eventSearchForm()
+    formSortEvents = eventSortForm()
+    formSortEventsDescending = eventSortFormDescending()
     
     if formSearch.validate_on_submit() and request.method == 'POST':
         eventSearchData = formSearch.eventSearchItem.data
@@ -675,7 +679,32 @@ def eventsPage():
                                eventIDList_searchPage = eventIDList_searchPage,
                                eventNameList_searchPage = eventNameList_searchPage,
                                eventLocationList_searchPage = eventLocationList_searchPage,
-                               eventVenueList_searchPage = eventVenueList_searchPage)
+                               eventVenueList_searchPage = eventVenueList_searchPage,
+                               formSortEvents = formSortEvents,
+                               title = eventSearchData)
+    
+    # Issue may be due to if statement being called True before being able to call the second function.
+    if formSortEvents.validate_on_submit() and request.method == 'POST':
+        eventSortByTimeAscending()
+        eventTimeList = eventListFinalSort
+        print('here') # Function is calling this for some reason, even on descending
+        
+        return render_template('Events/eventMain.html', formSortEvents = formSortEvents,
+                               formSortEventsDescending = formSortEventsDescending,
+                               formSearch=formSearch,
+                               eventTimeList=eventTimeList,
+                               title="Date (Ascending)")
+
+    if formSortEventsDescending.validate_on_submit() and request.method == 'POST': # function only calls the list that is on the top
+        eventSortByTimeDescending()
+        eventTimeListDescending = eventListFinalSortDescending
+        
+        return render_template('Events/eventMain.html', formSortEvents = formSortEvents,
+                            formSortEventsDescending = formSortEventsDescending,
+                            formSearch=formSearch,
+                            eventTimeListDescending=eventTimeListDescending,
+                            title="Date (Descending)")
+        
         
     eventsDict = {}
     eventDB = shelve.open('Events')
@@ -737,10 +766,45 @@ def eventsPage():
                            eventLifestyle = eventLifestyle,
                            eventOthers = eventOthers,
                            eventTypeDict = eventTypeDict,
+                           formSortEvents = formSortEvents,
+                           formSortEventsDescending = formSortEventsDescending,
                            formSearch = formSearch)
 
 @app.route('/events/sports', methods=['GET', 'POST'])
-def eventsPageSports():
+def eventsPageSports():  
+    formSearch = eventSearchForm()
+    formSortEvents = eventSortForm()
+    formSortEventsDescending = eventSortFormDescending()
+    
+    if formSearch.validate_on_submit() and request.method == 'POST':
+        eventSearchData = formSearch.eventSearchItem.data
+        
+        eventSearchFunction(eventSearchData)
+        
+        eventIDList_searchPage = eventSearchIDList # lists from search.py
+        eventNameList_searchPage = eventSearchNameList
+        eventLocationList_searchPage = eventSearchLocationList
+        eventVenueList_searchPage = eventSearchVenueList
+        
+        print(eventIDList_searchPage, eventNameList_searchPage, eventLocationList_searchPage, eventVenueList_searchPage)
+        
+        return render_template('Events/eventMain.html', formSearch = formSearch,
+                               eventIDList_searchPage = eventIDList_searchPage,
+                               eventNameList_searchPage = eventNameList_searchPage,
+                               eventLocationList_searchPage = eventLocationList_searchPage,
+                               eventVenueList_searchPage = eventVenueList_searchPage,
+                               formSortEvents = formSortEvents,
+                               title = eventSearchData)
+        
+    if formSortEvents.validate_on_submit() and request.method == 'POST':
+        eventSortByTimeAscending()
+        eventTimeList = eventListFinalSort
+        
+        return render_template('Events/eventMain.html', formSortEvents = formSortEvents,
+                               formSearch=formSearch,
+                               eventTimeList=eventTimeList,
+                               title="Date (Ascending)")
+        
     eventsDict = {}
     eventDB = shelve.open('Events')
     eventsDict = eventDB['Events']
@@ -777,11 +841,52 @@ def eventsPageSports():
     
     eventTypeDict = {'Sports' : eventSports, 'Lifestyle' : eventLifestyle, 'Others' : eventOthers}
   
-    return render_template('Events/eventSub/eventSports.html',
-                           eventsList = eventsList, eventType = eventTypeList, eventSports = eventSports, eventLifestyle = eventLifestyle, eventOthers = eventOthers, eventTypeDict = eventTypeDict)
+    return render_template('Events/eventSub/eventSports.html', formSortEvents = formSortEvents,
+                           formSortEventsDescending = formSortEventsDescending,
+                           formSearch = formSearch,
+                           eventsList = eventsList,
+                           eventType = eventTypeList,
+                           eventSports = eventSports,
+                           eventLifestyle = eventLifestyle,
+                           eventOthers = eventOthers,
+                           eventTypeDict = eventTypeDict)
 
 @app.route('/events/lifestyle', methods=['GET', 'POST'])
 def eventsPageLifestyle():
+    formSearch = eventSearchForm()
+    formSortEvents = eventSortForm()
+    formSortEventsDescending = eventSortFormDescending()
+    
+    if formSearch.validate_on_submit() and request.method == 'POST':
+        eventSearchData = formSearch.eventSearchItem.data
+        
+        eventSearchFunction(eventSearchData)
+        
+        eventIDList_searchPage = eventSearchIDList # lists from search.py
+        eventNameList_searchPage = eventSearchNameList
+        eventLocationList_searchPage = eventSearchLocationList
+        eventVenueList_searchPage = eventSearchVenueList
+        
+        print(eventIDList_searchPage, eventNameList_searchPage, eventLocationList_searchPage, eventVenueList_searchPage)
+        
+        return render_template('Events/eventMain.html', formSearch = formSearch,
+                               formSortEventsDescending = formSortEventsDescending,
+                               eventIDList_searchPage = eventIDList_searchPage,
+                               eventNameList_searchPage = eventNameList_searchPage,
+                               eventLocationList_searchPage = eventLocationList_searchPage,
+                               eventVenueList_searchPage = eventVenueList_searchPage,
+                               formSortEvents = formSortEvents,
+                               title = eventSearchData)
+        
+    if formSortEvents.validate_on_submit() and request.method == 'POST':
+        eventSortByTimeAscending()
+        eventTimeList = eventListFinalSort
+        
+        return render_template('Events/eventMain.html', formSortEvents = formSortEvents,
+                               formSearch=formSearch,
+                               eventTimeList=eventTimeList,
+                               title="Date (Ascending)")
+        
     eventsDict = {}
     eventDB = shelve.open('Events')
     eventsDict = eventDB['Events']
@@ -818,11 +923,52 @@ def eventsPageLifestyle():
     
     eventTypeDict = {'Sports' : eventSports, 'Lifestyle' : eventLifestyle, 'Others' : eventOthers}
   
-    return render_template('Events/eventSub/eventLifestyle.html',
-                           eventsList = eventsList, eventType = eventTypeList, eventSports = eventSports, eventLifestyle = eventLifestyle, eventOthers = eventOthers, eventTypeDict = eventTypeDict)
+    return render_template('Events/eventSub/eventLifestyle.html', formSortEvents = formSortEvents,
+                           formSortEventsDescending = formSortEventsDescending,
+                           formSearch = formSearch,
+                           eventsList = eventsList,
+                           eventType = eventTypeList,
+                           eventSports = eventSports,
+                           eventLifestyle = eventLifestyle,
+                           eventOthers = eventOthers,
+                           eventTypeDict = eventTypeDict)
 
 @app.route('/events/others', methods=['GET', 'POST'])
 def eventsPageOthers():
+    formSearch = eventSearchForm()
+    formSortEvents = eventSortForm()
+    formSortEventsDescending = eventSortFormDescending()
+    
+    if formSearch.validate_on_submit() and request.method == 'POST':
+        eventSearchData = formSearch.eventSearchItem.data
+        
+        eventSearchFunction(eventSearchData)
+        
+        eventIDList_searchPage = eventSearchIDList # lists from search.py
+        eventNameList_searchPage = eventSearchNameList
+        eventLocationList_searchPage = eventSearchLocationList
+        eventVenueList_searchPage = eventSearchVenueList
+        
+        print(eventIDList_searchPage, eventNameList_searchPage, eventLocationList_searchPage, eventVenueList_searchPage)
+        
+        return render_template('Events/eventMain.html', formSearch = formSearch,
+                               eventIDList_searchPage = eventIDList_searchPage,
+                               eventNameList_searchPage = eventNameList_searchPage,
+                               eventLocationList_searchPage = eventLocationList_searchPage,
+                               eventVenueList_searchPage = eventVenueList_searchPage,
+                               formSortEvents = formSortEvents,
+                               title = eventSearchData)
+        
+    if formSortEvents.validate_on_submit() and request.method == 'POST':
+        eventSortByTimeAscending()
+        eventTimeList = eventListFinalSort
+        
+        return render_template('Events/eventMain.html', formSortEvents = formSortEvents,
+                               formSortEventsDescending = formSortEventsDescending,
+                               formSearch=formSearch,
+                               eventTimeList=eventTimeList,
+                               title="Date (Ascending)")
+    
     eventsDict = {}
     eventDB = shelve.open('Events')
     eventsDict = eventDB['Events']
@@ -859,8 +1005,15 @@ def eventsPageOthers():
     
     eventTypeDict = {'Sports' : eventSports, 'Lifestyle' : eventLifestyle, 'Others' : eventOthers}
   
-    return render_template('Events/eventSub/eventOthers.html',
-                           eventsList = eventsList, eventType = eventTypeList, eventSports = eventSports, eventLifestyle = eventLifestyle, eventOthers = eventOthers, eventTypeDict = eventTypeDict)
+    return render_template('Events/eventSub/eventOthers.html', formSortEvents = formSortEvents,
+                           formSortEventsDescending = formSortEventsDescending,
+                           formSearch = formSearch,
+                           eventsList = eventsList,
+                           eventType = eventTypeList,
+                           eventSports = eventSports,
+                           eventLifestyle = eventLifestyle,
+                           eventOthers = eventOthers,
+                           eventTypeDict = eventTypeDict)
 
 @app.route('/events/signup/<int:id>', methods=['GET', 'POST'])
 def eventSignup(id):
@@ -962,6 +1115,7 @@ def eventRegistered():
 @app.route('/events/search', methods=['GET', 'POST'])
 def eventSearch():
     formEvents = eventSearchForm()
+    
     eventIDList_searchPage = []
     eventNameList_searchPage = []
     eventLocationList_searchPage = []
@@ -1016,8 +1170,18 @@ def bookingPage():
             facilityUID = facils.get_uniqueID()
             facilityUIDList.append(facilityUID)
             facilityID = facils.get_fac_id()
-            facilityIDList.append(facilityID)
-            
+            facilityIDList.append(facilityUID)
+
+    bookingFacilDict = {}
+    bookingFacilDB = shelve.open('BookingFacil')
+    try:
+        if 'BookingFacil' in bookingFacilDB:
+            bookingFacilDict = bookingFacilDB['BookingFacil']
+        else:
+            bookingFacilDB['BookingFacil'] = bookingFacilDict
+    except:
+        print('Error in retrieving bookings.')
+                
     if 'User' in session:
         userID = session['User'][1]
         if formsBooking.validate_on_submit() and request.method == 'POST':
@@ -1029,48 +1193,37 @@ def bookingPage():
                 else:
                     bookingDB['Bookings'] = bookingsDict
             except:
-                print('Error in retrieving bookings.')
+                print('Error in retrieving bookings')
                 
-            bookingFacilDict = {}
-            bookingFacilDB = shelve.open('BookingFacil')
-            try:
-                if 'BookingFacil' in bookingFacilDB:
-                    bookingFacilDict = bookingFacilDB['BookingFacil']
-                else:
-                    bookingFacilDB['BookingFacil'] = bookingFacilDict
-            except:
-                print('Error in retrieving bookings.')
-
-            #bookFacilLoc = formsBooking.bookingFacilityLocation.data
-            bookFacil = formsBooking.bookingFacilityID.data
-            bookDate = formsBooking.bookingDate.data
+            bookFacil = formsBooking.bookingFacilityID.data                    
+            bookDate = formsBooking.bookingDate.data                   
             bookTime = formsBooking.bookingTimeSlot.data
-            #bookFacil = bookFacilLoc+bookFacilType
+            conflict=False           
 
-            fb = bookingForm(bookFacil, bookDate, bookTime)
-            fb.set_booking_id()
-            bookingUID = fb.get_booking_id()
-            print(bookingUID)
-            print(bookingUID[-4:])
-            bookingsDict[(bookingUID)] = fb
-            bookingDB['Bookings'] = bookingsDict
-            
-            bookingDB.close()
-            print(bookingsDict.keys())
-            
-            userBookingInfo = [userID, bookFacil, bookDate, bookTime]
-            bookingFacilDict[bookingUID[-4:]] = userBookingInfo
-            print(bookingFacilDict)
-            bookingFacilDB['BookingFacil'] = bookingFacilDict
+            for i in range(bookingFacilDict(keys)):
+                ot
 
-            return redirect(url_for('bookingPayment'))
+            if conflict==False:
+                fb = FacilityBooking(bookFacil, bookDate, bookTime)
+                fb.set_booking_id()
+                bookingUID = fb.get_booking_id()
+                #bookingsDict[(bookingUID)] = fb
+                #bookingDB['Bookings'] = bookingsDict
+                #bookingDB.close()
+            
+   #u        userBookingInfo = [userID, bookFacil, bookDate, bookTime]
+   #         bookingFacilDict[bookingUID[-4:]] = userBookingInfo
+   #         print(bookingFacilDict)
+   #         bookingFacilDB['BookingFacil'] = bookingFacilDict
+
+                return redirect(url_for('bookingPayment'))
+
         
         return render_template('Booking/bookingMain.html', formsBooking = formsBooking)
-    
+       
     else:
         return redirect(url_for('login'))
 
-@app.route('/booking/bookingPayment', methods=['GET', 'POST'])
 def bookingPayment():
     formsPayment = paymentForm()
     if formsPayment.validate_on_submit() and request.method == 'POST':
@@ -1079,7 +1232,38 @@ def bookingPayment():
         expireDate = formsPayment.expirationDate.data
         securePIN = formsPayment.securityPIN.data
 
-        return redirect(url_for('bookingCurrent'))
+        bookingFacilDict = {}
+        bookingFacilDB = shelve.open('BookingFacil')
+        try:
+            if 'BookingFacil' in bookingFacilDB:
+                bookingFacilDict = bookingFacilDB['BookingFacil']
+            else:
+                bookingFacilDB['BookingFacil'] = bookingFacilDict
+        except:
+            print('Error in retrieving bookings.')
+            
+        bookingUID = fb.get_booking_id()
+        bookingFacilDict[(bookingUID)] = fb
+        bookingFacilDB['BookingFacil'] = bookingFacilDict
+        bookingFacilDB.close()
+
+        if 'User' in session:
+            userID = session['User'][1]
+            bookingsDict = {}
+            bookingDB = shelve.open('Bookings')
+            try:
+                if 'Bookings' in bookingDB:
+                    bookingsDict = bookingDB['Bookings']
+                else:
+                    bookingDB['Bookings'] = bookingsDict
+            except:
+                print('Error in retrieving bookings')
+            
+            bookingsDict[(bookingUID)] = fb
+            bookingDB['Bookings'] = bookingsDict
+            bookingDB.close()
+            
+            return redirect(url_for('bookingCurrent'))
 
     return render_template('Booking/bookingPayment.html', formsPayment = formsPayment)
 
@@ -1094,7 +1278,7 @@ def bookingCurrent():
         bookingsList=[]
         for booking in bookingsDict:
             bookings = bookingsDict.get(booking)
-            if bookings.get_date()<=date.today():
+            if bookings.get_date()>=date.today():
                 bookingsList.append(bookings)
 
         return render_template('Booking/bookingCurrent.html', bookingsList = bookingsList)
@@ -1176,33 +1360,36 @@ def deleteBookings(id):
 def bookingHistory():
     if 'User' in session:
         userID = session['User'][1]
-        bookingFacilDict = {}
-        bookingFacilDB = shelve.open('BookingFacil')
-        try:
-            if 'BookingFacil' in bookingFacilDB:
-                bookingFacilDict = bookingFacilDB['BookingFacil']
-            else:
-                bookingFacilDB['BookingFacil'] = bookingFacilDict
-        except:
-            print('Error in retrieving bookings.')
+        bookingsDict = {}
+        bookingDB = shelve.open('Bookings')
+        bookingsDict = bookingDB['Bookings']
+    
+        bookingsList=[]
+        for booking in bookingsDict:
+            bookings = bookingsDict.get(booking)
+            if bookings.get_date()>=date.today():
+                bookingsList.append(bookings)
 
-        print(bookingFacilDict)
-
-        bookingFacilList = []
-        for i in bookingFacilDict:
-            bookingID = bookingFacilDict.get(i)
-            print(bookingID[1])
-            if bookingID[0] == userID:
-                bookingFacilList.append(bookingID)
-        
-        print(bookingFacilList)
-
-        return render_template('Booking/bookingHistory.html', bookingsList=bookingFacilList)
+        return render_template('Booking/bookingHistory.html', bookingsList=bookingsList)
     else:
         return redirect(url_for('login'))
 
 @app.route('/facilities')
 def facilitiesPage():
+    FacilityFormSearch = SearchFacilityForm()
+
+    if FacilityFormSearch.validate_on_submit() and request.method == 'POST':
+        facilitySearchData = FacilityFormSearch.data
+
+        facilitySearchFunction(facilitySearchData)
+
+        facilityIDList_searchPage = facilitySearchID
+        facilityFac_IDList_searchPage = facilitySearchFac_IDList
+        facilityLocationList_searchPage = facilitySearchLocationList
+        facilityStatusList_searchPage = facilitySearchStatusList
+        facilitySlotsList_searchPage = facilitySearchSlotsLIst
+        facilityRatesList_searchPage = facilitySearchRatesListDList
+    
     facilDict = {}
     facilDB = shelve.open('Facilities')
     facilDict = facilDB['Facilities']
@@ -1314,7 +1501,7 @@ def editFacilities2(id):
             if 'Facilites' in facilDB:
                 facilDict = facilDB['Facilities']
             else:
-                facilDB['Facilites'] = facilDict
+                facilDB['Facilities'] = facilDict
         except:
             print('Error in retrieving facilites.')
         
@@ -1343,7 +1530,7 @@ def editFacilities2(id):
             if 'Facilites' in facilDB:
                 facilDict = facilDB['Facilities']
             else:
-                facilDB['Facilites'] = facilDict
+                facilDB['Facilities'] = facilDict
         except:
             print('Error in retrieving facilites.')
         
@@ -1385,6 +1572,7 @@ def deleteFacilitiesDirect(id):
         return redirect(url_for('facilitiesPage'))
     else:
         return render_template('404.html')
+
 
 @app.errorhandler(404)
 def page_not_found(e):
