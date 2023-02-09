@@ -39,6 +39,31 @@ class eventLocationCreateForm(FlaskForm):
     submit = SubmitField('Next ')
 
 class eventCreateForm(FlaskForm):
+    facilDict = {}
+    facilDB = shelve.open('Facilities')
+    try:    
+        if 'Facilites' in facilDB:
+            facilDict = facilDB['Facilities']
+        else:
+            facilDB['Facilites'] = facilDict
+    except:
+        print('Error in retrieving facilites.')
+
+    facilIDList = []
+    facilityIDList = []
+    facilityUIDList = []
+    for facil in facilDict:
+        facils = facilDict.get(facil)
+        facilAvailability = facils.get_fac_status()
+        if facilAvailability == 'Available':
+            facilityUID = facils.get_uniqueID()
+            facilityUIDList.append(facilityUID)
+            facilityID = facils.get_fac_id()
+            facilityIDList.append(facilityID)
+            
+    print(facilityUIDList)
+    print(facilityIDList)
+    
     eventName = StringField('Event Name :', 
                             validators=[DataRequired(), Length(min = 2, max = 30)])
     eventDesc = TextAreaField('Event Description : ',
@@ -330,3 +355,22 @@ class eventSearchForm(FlaskForm):
     eventSearchItem = StringField('Search : ',
                                   validators=[DataRequired(message='Search input cannot be empty')])
     submit = SubmitField('Search')
+    
+class eventSortForm(FlaskForm):
+    submit = SubmitField('Date (Ascending)')
+    
+class eventSortFormDescending(FlaskForm):
+    submit = SubmitField('Date (Descending)')
+    
+# Test code
+
+class eventSortMultipleForm(FlaskForm):
+    selectData = SelectField('Sort Events',
+                             choices=[('Sort Events', 'Sort Events'),
+                                      ('sportEvents', 'Sport Events'),
+                                      ('lifestyleEvents', 'Lifestyle Events'),
+                                      ('otherEvents', 'Other Events'),
+                                      ('dateAscending', 'Date (Ascending)'),
+                                      ('dateDescending', 'Date (Descending)')])
+    submit = SubmitField('Sort Now')
+        

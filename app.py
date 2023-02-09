@@ -660,8 +660,7 @@ def deleteEventDirect(id):
 @app.route('/events', methods=['GET', 'POST'])
 def eventsPage():
     formSearch = eventSearchForm()
-    formSortEvents = eventSortForm()
-    formSortEventsDescending = eventSortFormDescending()
+    formSort = eventSortMultipleForm()
     
     if formSearch.validate_on_submit() and request.method == 'POST':
         eventSearchData = formSearch.eventSearchItem.data
@@ -680,31 +679,56 @@ def eventsPage():
                                eventNameList_searchPage = eventNameList_searchPage,
                                eventLocationList_searchPage = eventLocationList_searchPage,
                                eventVenueList_searchPage = eventVenueList_searchPage,
-                               formSortEvents = formSortEvents,
+                               formSort = formSort,
                                title = eventSearchData)
     
-    # Issue may be due to if statement being called True before being able to call the second function.
-    if formSortEvents.validate_on_submit() and request.method == 'POST':
-        eventSortByTimeAscending()
-        eventTimeList = eventListFinalSort
-        print('here') # Function is calling this for some reason, even on descending
+    if formSort.validate_on_submit() and request.method == "POST":
+        formSortData = formSort.selectData.data
         
-        return render_template('Events/eventMain.html', formSortEvents = formSortEvents,
-                               formSortEventsDescending = formSortEventsDescending,
-                               formSearch=formSearch,
-                               eventTimeList=eventTimeList,
-                               title="Date (Ascending)")
-
-    if formSortEventsDescending.validate_on_submit() and request.method == 'POST': # function only calls the list that is on the top
-        eventSortByTimeDescending()
-        eventTimeListDescending = eventListFinalSortDescending
-        
-        return render_template('Events/eventMain.html', formSortEvents = formSortEvents,
-                            formSortEventsDescending = formSortEventsDescending,
-                            formSearch=formSearch,
-                            eventTimeListDescending=eventTimeListDescending,
-                            title="Date (Descending)")
-        
+        if formSortData == 'sportEvents':
+            eventSortBySport()
+            eventSportsList_App = eventSportsList
+            
+            return render_template('Events/eventMain.html', formSearch = formSearch,
+                                   formSort = formSort,
+                                   eventSportsListDisplay = eventSportsList_App,
+                                   title = "Sports")
+            
+        elif formSortData == 'lifestyleEvents':
+            eventSortByLifestyle()
+            eventLifestyleList_App = eventLifestyleList
+            
+            return render_template('Events/eventMain.html', formSearch = formSearch,
+                                   formSort = formSort,
+                                   eventLifestyleListDisplay = eventLifestyleList_App,
+                                   title = "Lifestyle")
+            
+        elif formSortData == 'otherEvents':
+            eventSortByOthers()
+            eventOthersList_App = eventOthersList
+            
+            return render_template('Events/eventMain.html', formSearch = formSearch,
+                                   formSort = formSort,
+                                   eventOthersListDisplay = eventOthersList_App,
+                                   title = "Others")
+            
+        elif formSortData == 'dateAscending':
+            eventSortByTimeAscending()
+            eventTimeList = eventListFinalSort
+            
+            return render_template('Events/eventMain.html', formSearch = formSearch,
+                                   formSort = formSort,
+                                   eventTimeList = eventTimeList,
+                                   title = "Date (Ascending)")
+            
+        elif formSortData == 'dateDescending':
+            eventSortByTimeDescending()
+            eventTimeListDescending = eventListFinalSortDescending
+            
+            return render_template('Events/eventMain.html', formSearch = formSearch,
+                                   formSort = formSort,
+                                   eventTimeListDescending = eventTimeListDescending,
+                                   title = "Date (Descending)")
         
     eventsDict = {}
     eventDB = shelve.open('Events')
@@ -716,36 +740,6 @@ def eventsPage():
         eventsList.append(events)
     print(eventsList)
         
-    eventAscend = []
-    for events in eventsList:
-        eventID = str(events)[-4:]
-        eventAscend.append(int(eventID))
-    eventAscend.sort()
-    print(f"{eventAscend} is here")
-    
-    # Please do not touch this, I really have no clue how to solve this if broken.
-    eventSports = []
-    for event in eventsDict:
-        events = (eventsDict.get(event))
-        if 'Sports' in events.get_eventType():
-            eventSports.append(events)
-    
-    eventLifestyle = []
-    for event in eventsDict:
-        events = (eventsDict.get(event))
-        if 'Lifestyle' in events.get_eventType():
-            eventLifestyle.append(events)
-        
-    eventOthers = []
-    for event in eventsDict:
-        events = (eventsDict.get(event))
-        if 'Others' in events.get_eventType():
-            eventOthers.append(events)
-    
-    eventTypeList = ['Sports', 'Lifestyle', 'Others']
-    eventTypeDict = {'Sports' : eventSports, 'Lifestyle' : eventLifestyle, 'Others' : eventOthers}
-    
-    
     eventSignUp = []
     eventSignUpDict = {}
     eventSignUpDB = shelve.open('eventSignUp')
@@ -761,15 +755,11 @@ def eventsPage():
     print(eventSignUp)
             
     return render_template('Events/eventMain.html', eventsList = eventsList,
-                           eventType = eventTypeList,
-                           eventSports = eventSports,
-                           eventLifestyle = eventLifestyle,
-                           eventOthers = eventOthers,
-                           eventTypeDict = eventTypeDict,
-                           formSortEvents = formSortEvents,
-                           formSortEventsDescending = formSortEventsDescending,
+                           formSort = formSort,
                            formSearch = formSearch)
 
+# _________________________________________________________________________________________________________________________________________________________________________________________
+# Might consider removing, leave here first
 @app.route('/events/sports', methods=['GET', 'POST'])
 def eventsPageSports():  
     formSearch = eventSearchForm()
@@ -1014,6 +1004,8 @@ def eventsPageOthers():
                            eventLifestyle = eventLifestyle,
                            eventOthers = eventOthers,
                            eventTypeDict = eventTypeDict)
+# Ignore this part
+# _________________________________________________________________________________________________________________________________________________________________________________________
 
 @app.route('/events/signup/<int:id>', methods=['GET', 'POST'])
 def eventSignup(id):
@@ -1589,3 +1581,4 @@ if __name__ == '__main__':
 # 25/1/2023 - It's only been 8 days..., we gone further (1207th line)
 # 27Jan2023 - It's only getting longer. When will our suffering end? (1265th Line)
 # 1Feb2023 - It's only geting loonger..... When can i retire? - Alan (1376th Line)
+# 10Feb2023 - THE SORT FUNCTION IS WORKING WHEEEEEEE - Alan (1584th Line)

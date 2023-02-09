@@ -1,10 +1,13 @@
 Read Me of App Dev Proj
 Used to keep track of work progress, updates, and TO-DO List
+// Important
+- Yee Kiat's part has to be fixed by this weekend. Clarify what is he doing and find a solution. (Fix this ASAP)
+
 
 // To-Do List
 1. Edit functions call original text from database  
     - User, Events, Facilities ✔️ (11/1/23)
-    - Booking - ✔️ (1/2/2023)
+    - Booking - Partial Complete? (17/1/2023)
 
 2. Add venue and location to Events
     - Location (No integration) ✔️ (14/1/23)
@@ -27,7 +30,10 @@ Used to keep track of work progress, updates, and TO-DO List
 17. Restrict users from using special symbols (except hyphen, underscore, and period) in username ✔️ (3/2/23)
 18. Fix issue where user database css breaks when user entry is too long ✔️ (3/2/23) - CSS does not mess up due to 15 letter limit (Alan)
 19. Remove "this field is required" message on user edit
-20. 
+20. Different checkout amount for different session ==> Need to add an hour section for booking
+21. Add error message for no search item found.
+22. Fix the issue of dynamic facilities for event creation
+
 
 // Updates
 11/1/23 - Updated edit functions
@@ -49,7 +55,8 @@ Used to keep track of work progress, updates, and TO-DO List
         - Added location to booking (Temp until i find a new solution)
 30/1/23 - Added validation for faciility rate
 1/2/23 - Added Search Function - Alan
-
+7/2/23 - Sort Function now works - Alan
+10/2/23 - Sort function is now optimised to use a SelectField instead of seperate forms - Alan
 
 
 // Work Progress
@@ -68,7 +75,6 @@ Used to keep track of work progress, updates, and TO-DO List
     - Find new prayers to add to 404 Buddha (Needs to be updated to 2023) ✔️
 
 
-
-
 // Ideas
 Facility availability in a list, allows selection based on list only. ✔️
+Search function works with the sort function. (Mein gawd ill die)
