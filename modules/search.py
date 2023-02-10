@@ -37,8 +37,8 @@ def eventSearchFunction(searchItem):
     for event in eventsDict:
         events = eventsDict.get(event)
         
-        if isinstance(searchData, int): # finally knew what isinstance is omg
-            if searchData == events.get_eventID(): # TODO: search entry change to int
+        if isinstance(searchData, int):
+            if searchData == events.get_eventID() or str(searchData) in str(events.get_eventID()):
                 eventSearchIDList.append(events)
         elif isinstance(searchData, str):
             if searchData == events.get_eventName() or searchData in str(events.get_eventName()).lower() :
@@ -111,27 +111,46 @@ def userSearchFunction(searchItem):
 
 # Facility Search Function
 facilitySearchIDList = []
-facilitySearchFac_IDLIst = []
+facilitySearchFac_IDList = []
 facilitySearchLocationList = []
-facilitySearchStatusList = []
-facilitySearchSlotsLIst = []
-facilitySearchRatesList = []
+facilitySearchSlotsList = []
 
 def facilitySearchFunction(searchItem):
     facilitySearchIDList.clear()
-    facilitySearchFac_IDLIst.clear()
+    facilitySearchFac_IDList.clear()
     facilitySearchLocationList.clear()
-    facilitySearchStatusList.clear()
-    facilitySearchSlotsLIst.clear()
-    facilitySearchRatesList.clear()
+    facilitySearchSlotsList.clear()
 
     facilDict = {}
-    facilDB = shelve.open('Facilites')
+    facilDB = shelve.open('Facilities') 
 
     try:
         if 'Facilities' in facilDB:
-            facilDict = facilDB['Facilites']
+            facilDict = facilDB['Facilities']
         else:
             facilDB['Facilities'] = facilDict
     except:
         print('Error in handling database!')
+
+    print(facilDict)
+    try: 
+        facilSearchData = int(searchItem)
+        print('searchItem is an integer')
+    except:
+        facilSearchData = str(searchItem).lower()
+        print('searchItem is a string')
+    
+    for facility in facilDict:
+        facilities = facilDict.get(facility)
+    
+        if isinstance(facilSearchData, int):
+            if facilSearchData == facilities.get_uniqueID() or str(facilSearchData) in str(facilities.get_uniqueID()):
+                facilitySearchIDList.append(facilities)
+            elif facilSearchData == facilities.get_fac_id() or str(facilSearchData) in str(facilities.get_fac_id()):
+                facilitySearchFac_IDList.append(facilities)
+            elif facilSearchData == facilities.get_fac_slots() or str(facilSearchData) in str(facilities.get_fac_slots()):
+                facilitySearchSlotsList.append(facilities)
+        elif isinstance(facilSearchData, str):
+            if facilSearchData == facilities.get_fac_loc() or facilSearchData in str(facilities.get_fac_loc()).lower():
+                facilitySearchLocationList.append(facilities)
+            

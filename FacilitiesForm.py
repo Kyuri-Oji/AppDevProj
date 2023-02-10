@@ -62,3 +62,8 @@ class EditFacilityForm(FlaskForm):
             float(rates)
         except:
             raise ValidationError("Rates must be in numerical values.")
+
+class SearchFacilityForm(FlaskForm):
+    facilitySearchItem = StringField('Search: ',
+                                    validators=[DataRequired(message='Search input cannot be empty')])
+    submit = SubmitField('Search')

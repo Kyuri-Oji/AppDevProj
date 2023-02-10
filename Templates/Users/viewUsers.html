@@ -12,6 +12,22 @@
         {{formSearch.submit(class='btn btn-outline-success')}}
       </form>
     </div>
+    <div>
+        <p class="font-monospace | my-auto | text-center" style='width:100vw'>
+            {%if title%}
+            Currently Viewing : <span class="text-primary">{{title}}</span>
+            {%else%}
+            Currently Viewing : <span class="text-primary">All</span>
+            {%endif%}
+        </p>
+    </div>
+    <div class='mx-auto | text-center | text-muted | font-monospace'>
+        {%if title%}
+        <div class=''>
+            <a href="{{url_for('users')}}">View All Users</a>
+        </div>
+        {%endif%}
+    </div>
   </nav>
 <div class='mx-auto' style="width:90%">
     <table class="table">

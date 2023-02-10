@@ -247,7 +247,8 @@ def users():
                                userFirstNameList_searchPage = userFirstNameList_searchPage,
                                userLastNameList_searchPage = userLastNameList_searchPage,
                                userEmailList_searchPage = userEmailList_searchPage,
-                               userPhoneNoList_searchPage = userPhoneNoList_searchPage)
+                               userPhoneNoList_searchPage = userPhoneNoList_searchPage, 
+                               title = userSearchData)
     
     dictsUser ={}
     db = shelve.open('users')
@@ -401,12 +402,12 @@ def createEvent():
     facilDict = {}
     facilDB = shelve.open('Facilities')
     try:    
-        if 'Facilites' in facilDB:
+        if 'Facilities' in facilDB:
             facilDict = facilDB['Facilities']
         else:
-            facilDB['Facilites'] = facilDict
+            facilDB['Facilities'] = facilDict
     except:
-        print('Error in retrieving facilites.')
+        print('Error in retrieving facilities.')
         
     facilityIDList = []
     facilityUIDList = []
@@ -524,12 +525,12 @@ def editEventDirect(id):
     facilDict = {}
     facilDB = shelve.open('Facilities')
     try:    
-        if 'Facilites' in facilDB:
+        if 'Facilities' in facilDB:
             facilDict = facilDB['Facilities']
         else:
-            facilDB['Facilites'] = facilDict
+            facilDB['Facilities'] = facilDict
     except:
-        print('Error in retrieving facilites.')
+        print('Error in retrieving Facilities.')
         
     facilityIDList = []
     facilityUIDList = []
@@ -1146,12 +1147,12 @@ def bookingPage():
     facilDict = {}
     facilDB = shelve.open('Facilities')
     try:    
-        if 'Facilites' in facilDB:
+        if 'Facilities' in facilDB:
             facilDict = facilDB['Facilities']
         else:
-            facilDB['Facilites'] = facilDict
+            facilDB['Facilities'] = facilDict
     except:
-        print('Error in retrieving facilites.')
+        print('Error in retrieving Facilities.')
         
     facilityIDList = []
     facilityUIDList = []
@@ -1366,22 +1367,32 @@ def bookingHistory():
     else:
         return redirect(url_for('login'))
 
-@app.route('/facilities')
-def facilitiesPage():
+@app.route('/facilities', methods=['GET', 'POST'])
+def facilitiesPage(): #didnt realize the tepmplete lmao
     FacilityFormSearch = SearchFacilityForm()
 
     if FacilityFormSearch.validate_on_submit() and request.method == 'POST':
-        facilitySearchData = FacilityFormSearch.data
+        facilitySearchData = FacilityFormSearch.facilitySearchItem.data
 
         facilitySearchFunction(facilitySearchData)
 
-        facilityIDList_searchPage = facilitySearchID
+        facilityIDList_searchPage = facilitySearchIDList
         facilityFac_IDList_searchPage = facilitySearchFac_IDList
         facilityLocationList_searchPage = facilitySearchLocationList
-        facilityStatusList_searchPage = facilitySearchStatusList
-        facilitySlotsList_searchPage = facilitySearchSlotsLIst
-        facilityRatesList_searchPage = facilitySearchRatesListDList
-    
+        facilitySlotsList_searchPage = facilitySearchSlotsList
+
+        print(facilityIDList_searchPage,
+              facilityFac_IDList_searchPage,
+              facilityLocationList_searchPage,
+              facilitySlotsList_searchPage)
+
+        return render_template('Facilities/facilitiesMain.html', facilSearchForm = FacilityFormSearch,
+                               facilIDList_searchPage = facilityIDList_searchPage,
+                               facilFacilityIDList_searchPage = facilityFac_IDList_searchPage,
+                               facilLocationList_searchPage = facilityLocationList_searchPage, 
+                               facilitySlotsList_searchPage = facilitySlotsList_searchPage,
+                               title = facilitySearchData) 
+
     facilDict = {}
     facilDB = shelve.open('Facilities')
     facilDict = facilDB['Facilities']
@@ -1395,7 +1406,7 @@ def facilitiesPage():
         
     facilLoc = ['Ang Mo Kio', 'Hougang', 'Macpherson', 'Braddell', 'Seletar', 'Golden Mile']
     
-    return render_template('Facilities/facilitiesMain.html', facilList = facilList, facilLoc = facilLoc)
+    return render_template('Facilities/facilitiesMain.html', facilSearchForm = FacilityFormSearch, facilList = facilList, facilLoc = facilLoc)
 
 @app.route('/facilities/facilitiesCreate', methods=['GET', 'POST'])
 def createFacilities():
@@ -1404,12 +1415,12 @@ def createFacilities():
     facilDB = shelve.open('Facilities')
     if formsFacil.validate_on_submit() and request.method == 'POST':   
         try:    
-            if 'Facilites' in facilDB:
+            if 'Facilities' in facilDB:
                 facilDict = facilDB['Facilities']
             else:
-                facilDB['Facilites'] = facilDict
+                facilDB['Facilities'] = facilDict
         except:
-            print('Error in retrieving facilites.')
+            print('Error in retrieving facilities.')
         # oy alan who lives in a pineapple under the sea
         facilLocation = formsFacil.facility_location.data
         location = facilLocation
@@ -1452,12 +1463,12 @@ def editFacilities():
     facilDB = shelve.open('Facilities')
     if formsFacil.validate_on_submit() and request.method == 'POST':  
         try:    
-            if 'Facilites' in facilDB:
+            if 'Facilities' in facilDB:
                 facilDict = facilDB['Facilities']
             else:
-                facilDB['Facilites'] = facilDict
+                facilDB['Facilities'] = facilDict
         except:
-            print('Error in retrieving facilites.')
+            print('Error in retrieving facilities.')
         
         facilID = formsFacil.edit_facility_id.data
         facilStatus = formsFacil.edit_facility_status.data
@@ -1490,12 +1501,12 @@ def editFacilities2(id):
     facilDB = shelve.open('Facilities')
     if formsFacil.validate_on_submit() and request.method == 'POST':  
         try:    
-            if 'Facilites' in facilDB:
+            if 'Facilities' in facilDB:
                 facilDict = facilDB['Facilities']
             else:
                 facilDB['Facilities'] = facilDict
         except:
-            print('Error in retrieving facilites.')
+            print('Error in retrieving Facilities.')
         
         facilLocation = formsFacil.edit_facility_location.data
         location = facilLocation
@@ -1519,12 +1530,12 @@ def editFacilities2(id):
         facilDict = {}
         facilDB = shelve.open('Facilities')
         try:    
-            if 'Facilites' in facilDB:
+            if 'Facilities' in facilDB:
                 facilDict = facilDB['Facilities']
             else:
                 facilDB['Facilities'] = facilDict
         except:
-            print('Error in retrieving facilites.')
+            print('Error in retrieving Facilities.')
         
         id = int(id)
         if id in facilDict:
@@ -1564,6 +1575,8 @@ def deleteFacilitiesDirect(id):
         return redirect(url_for('facilitiesPage'))
     else:
         return render_template('404.html')
+
+
 
 
 @app.errorhandler(404)
