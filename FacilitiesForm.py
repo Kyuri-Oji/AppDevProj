@@ -67,3 +67,14 @@ class SearchFacilityForm(FlaskForm):
     facilitySearchItem = StringField('Search: ',
                                     validators=[DataRequired(message='Search input cannot be empty')])
     submit = SubmitField('Search')
+    
+class SortFacilityForm(FlaskForm):
+    facilitySortItem = SelectField('Select Location',
+                                      choices=[('Select Location', 'Select Location'),
+                                      ('angMoKio', 'Ang Mo Kio'),
+                                      ('hougang', 'Hougang'),
+                                      ('macpherson', 'Macpherson'),
+                                      ('braddell', 'Braddell'),
+                                      ('seletar', 'Seletar'),
+                                      ('goldenMile', 'Golden Mile')])
+    submit = SubmitField('Select')

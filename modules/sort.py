@@ -152,3 +152,130 @@ def eventSortByOthers():
         events = (eventsDict.get(event))
         if 'Others' in events.get_eventType():
             eventOthersList.append(events)
+            
+# Facility Sort Function
+facilityAMKList = []
+
+def facilitySortAMK():
+    facilityAMKList.clear()
+    
+    facilDict = {}
+    facilDB = shelve.open('Facilities')
+    
+    try:
+        if 'Facilities' in facilDB:
+            facilDict = facilDB['Facilities']
+        else:
+            facilDB['Facilities'] = facilDict
+    except:
+        print('Error in handling Facility Database')
+        
+    for facil in facilDict:
+        facility = facilDict.get(facil)
+        if facility.get_fac_loc() == 'Ang Mo Kio':
+            facilityAMKList.append(facility)
+            
+facilityHGList = []
+
+def facilitySortHG():
+    facilityHGList.clear()
+    
+    facilDict = {}
+    facilDB = shelve.open('Facilities')
+    
+    try:
+        if 'Facilities' in facilDB:
+            facilDict = facilDB['Facilities']
+        else:
+            facilDB['Facilities'] = facilDict
+    except:
+        print('Error in handling Facility Database')
+        
+    for facil in facilDict:
+        facility = facilDict.get(facil)
+        if facility.get_fac_loc() == 'Hougang':
+            facilityHGList.append(facility)
+            
+facilityMPList = []
+
+def facilitySortMP():
+    facilityMPList.clear()
+    
+    facilDict = {}
+    facilDB = shelve.open('Facilities')
+    
+    try:
+        if 'Facilities' in facilDB:
+            facilDict = facilDB['Facilities']
+        else:
+            facilDB['Facilities'] = facilDict
+    except:
+        print('Error in handling Facility Database')
+        
+    for facil in facilDict:
+        facility = facilDict.get(facil)
+        if facility.get_fac_loc() == 'Macpherson':
+            facilityMPList.append(facility)
+            
+facilityBDList = []
+
+def facilitySortBD():
+    facilityBDList.clear()
+    
+    facilDict = {}
+    facilDB = shelve.open('Facilities')
+    
+    try:
+        if 'Facilities' in facilDB:
+            facilDict = facilDB['Facilities']
+        else:
+            facilDB['Facilities'] = facilDict
+    except:
+        print('Error in handling Facility Database')
+        
+    for facil in facilDict:
+        facility = facilDict.get(facil)
+        if facility.get_fac_loc() == 'Braddell':
+            facilityBDList.append(facility)
+            
+facilitySLList = []
+
+def facilitySortSL():
+    facilitySLList.clear()
+    
+    facilDict = {}
+    facilDB = shelve.open('Facilities')
+    
+    try:
+        if 'Facilities' in facilDB:
+            facilDict = facilDB['Facilities']
+        else:
+            facilDB['Facilities'] = facilDict
+    except:
+        print('Error in handling Facility Database')
+        
+    for facil in facilDict:
+        facility = facilDict.get(facil)
+        if facility.get_fac_loc() == 'Seletar':
+            facilitySLList.append(facility)
+            
+facilityGMList = []
+
+def facilitySortGM():
+    facilityGMList.clear()
+    
+    facilDict = {}
+    facilDB = shelve.open('Facilities')
+    
+    try:
+        if 'Facilities' in facilDB:
+            facilDict = facilDB['Facilities']
+        else:
+            facilDB['Facilities'] = facilDict
+    except:
+        print('Error in handling Facility Database')
+        
+    for facil in facilDict:
+        facility = facilDict.get(facil)
+        if facility.get_fac_loc() == 'Golden Mile':
+            facilityGMList.append(facility)

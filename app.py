@@ -8,7 +8,7 @@ from wtforms.validators import ValidationError
 from forms import RegistrationForm, LoginForm, EditForm, userSearchForm
 from eventForms import *
 from bookingForms import bookingForm, paymentForm
-from FacilitiesForm import CreateFacilityForm, EditFacilityForm, SearchFacilityForm
+from FacilitiesForm import CreateFacilityForm, EditFacilityForm, SearchFacilityForm, SortFacilityForm
 
 from OOP.userFunction import *
 from OOP.eventFunction import *
@@ -1365,6 +1365,7 @@ def bookingHistory():
 @app.route('/facilities', methods=['GET', 'POST'])
 def facilitiesPage(): #didnt realize the tepmplete lmao
     FacilityFormSearch = SearchFacilityForm()
+    facilityFormSort = SortFacilityForm()
 
     if FacilityFormSearch.validate_on_submit() and request.method == 'POST':
         facilitySearchData = FacilityFormSearch.facilitySearchItem.data
@@ -1388,6 +1389,63 @@ def facilitiesPage(): #didnt realize the tepmplete lmao
                                facilitySlotsList_searchPage = facilitySlotsList_searchPage,
                                title = facilitySearchData) 
 
+    if facilityFormSort.validate_on_submit() and request.method == "POST":
+        sortData = facilityFormSort.facilitySortItem.data
+        
+        if sortData == 'angMoKio':
+            facilitySortAMK()
+            facilityListAMK_App = facilityAMKList
+            
+            return render_template('Facilities/facilitiesMain.html', facilSearchForm = FacilityFormSearch,
+                                   facilityFormSort = facilityFormSort,
+                                   facilityListAMKDisplay = facilityListAMK_App,
+                                   title = "Ang Mo Kio")
+            
+        elif sortData == 'hougang':
+            facilitySortHG()
+            facilityListHG_App = facilityHGList
+            
+            return render_template('Facilities/facilitiesMain.html', facilSearchForm = FacilityFormSearch,
+                                    facilityFormSort = facilityFormSort,
+                                    facilityListHGDisplay = facilityListHG_App,
+                                    title = 'Hougang')
+            
+        elif sortData == 'macpherson':
+            facilitySortMP()
+            facilityListMP_App = facilityMPList
+            
+            return render_template('Facilities/facilitiesMain.html', facilSearchForm = FacilityFormSearch,
+                                    facilityFormSort = facilityFormSort,
+                                    facilityListMPDisplay = facilityListMP_App,
+                                    title = "Macpherson")
+        
+        elif sortData == 'braddell':
+            facilitySortBD()
+            facilityListBD_App = facilityBDList
+            
+            return render_template('Facilities/facilitiesMain.html', facilSearchForm = FacilityFormSearch,
+                                    facilityFormSort = facilityFormSort,
+                                    facilityListBDDisplay = facilityListBD_App,
+                                    title = "Braddell")
+            
+        elif sortData == 'seletar':
+            facilitySortSL()
+            facilityListSL_App = facilitySLList
+            
+            return render_template('Facilities/facilitiesMain.html', facilSearchForm = FacilityFormSearch,
+                                    facilityFormSort = facilityFormSort,
+                                    facilityListSLDisplay = facilityListSL_App,
+                                    title = "Seletar")
+
+        elif sortData == 'goldenMile':
+            facilitySortGM()
+            facilityListGM_App = facilityGMList
+            
+            return render_template('Facilities/facilitiesMain.html', facilSearchForm = FacilityFormSearch,  
+                                    facilityFormSort = facilityFormSort,
+                                    facilityListGMDisplay = facilityListGM_App,
+                                    title = "Golden Mile")
+           
     facilDict = {}
     facilDB = shelve.open('Facilities')
     facilDict = facilDB['Facilities']
@@ -1401,7 +1459,7 @@ def facilitiesPage(): #didnt realize the tepmplete lmao
         
     facilLoc = ['Ang Mo Kio', 'Hougang', 'Macpherson', 'Braddell', 'Seletar', 'Golden Mile']
     
-    return render_template('Facilities/facilitiesMain.html', facilSearchForm = FacilityFormSearch, facilList = facilList, facilLoc = facilLoc)
+    return render_template('Facilities/facilitiesMain.html', facilSearchForm = FacilityFormSearch, facilityFormSort = facilityFormSort, facilList = facilList, facilLoc = facilLoc)
 
 @app.route('/facilities/facilitiesCreate', methods=['GET', 'POST'])
 def createFacilities():
