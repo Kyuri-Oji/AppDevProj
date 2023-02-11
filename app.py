@@ -1026,7 +1026,7 @@ def eventSignup(id):
         if eventID in eventSignUpDict.keys():
             eventList = []
             
-            for events in eventSignUpDict[eventID]:
+            for events in eventSignUpDict[eventID]: # list = [1, 2, 3, 4, 5, 6]
                 eventList.append(events)
                 
             if userID not in eventList:
@@ -1188,31 +1188,24 @@ def bookingPage():
             bookTime = formsBooking.bookingTimeSlot.data
             conflict=False           
 
-            for i in range(bookingFacilDict(keys)):
-                ot
+            for i in bookingFacilDict:
+                other_booking=bookingFacilDict[i]
+                if other_booking.get_facility()==bookFacil and other_booking.get_date()==bookDate and other_booking.get_time()==bookTime:
+                    conflict=True
 
             if conflict==False:
                 fb = FacilityBooking(bookFacil, bookDate, bookTime)
                 fb.set_booking_id()
-                bookingUID = fb.get_booking_id()
-                #bookingsDict[(bookingUID)] = fb
-                #bookingDB['Bookings'] = bookingsDict
-                #bookingDB.close()
-            
-   #u        userBookingInfo = [userID, bookFacil, bookDate, bookTime]
-   #         bookingFacilDict[bookingUID[-4:]] = userBookingInfo
-   #         print(bookingFacilDict)
-   #         bookingFacilDB['BookingFacil'] = bookingFacilDict
-
-                return redirect(url_for('bookingPayment'))
-
+                return render_template('bookingPayment', fb = fb)
+            #else:
+                #return render_template('Booking/bookingConflict.html')
         
-        return render_template('Booking/bookingMain.html', formsBooking = formsBooking)
+        return redirect(url_for('Booking/bookingMain.html'), formsBooking = formsBooking)
        
     else:
         return redirect(url_for('login'))
 
-def bookingPayment():
+def bookingPayment(fb):
     formsPayment = paymentForm()
     if formsPayment.validate_on_submit() and request.method == 'POST':
         payMethod = formsPayment.paymentMethod.data
@@ -1626,10 +1619,7 @@ def deleteFacilitiesDirect(id):
         facilDB['Facilities'] = facilDict  
         return redirect(url_for('facilitiesPage'))
     else:
-        return render_template('404.html')
-
-
-
+        return render_template('404.html')\
 
 @app.errorhandler(404)
 def page_not_found(e):

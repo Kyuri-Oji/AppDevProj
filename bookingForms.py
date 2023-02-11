@@ -9,16 +9,20 @@ def all_numbers(form,field):
     if field.data.isdigit()==False:
         raise ValidationError("Field must be all numbers")
 
+def is_future(form,field):
+    if field.data<=date.today():
+        raise ValidationError("Cannot select date")
+
 facilDict = {}
 facilDB = shelve.open('Facilities')
 try:    
-    if 'Facilites' in facilDB:
+    if 'Facilities' in facilDB:
         facilDict = facilDB['Facilities']
     else:
-        facilDB['Facilites'] = facilDict
+        facilDB['Facilities'] = facilDict
 except:
-    print('Error in retrieving facilites.')
-    
+    print('Error in retrieving Facilities.')
+
 facilityIDList = []
 facilityUIDList = []
 facilityLocationList = []
@@ -38,15 +42,15 @@ for facil in facilDict:
 
 
 class bookingForm(FlaskForm):
-    bookingFacilityLocation = SelectField('Facility Location: ',
-                                         validators=[DataRequired()],
-                                         choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Bradell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])  
+    #bookingFacilityLocation = SelectField('Facility Location: ',
+                                         #validators=[DataRequired()],
+                                         #choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Bradell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])  
     bookingFacilityID = SelectField('Facility: ',  
                                  validators=[DataRequired()],
-                                 choices=[(facilityIDList[i], f"{facilityLocationList[i]}: {facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))])
+                                 choices=[(facilityIDList[i], f"{facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))])
     bookingDate = DateField('Booking Date: ',
-                                validators=[InputRequired()],
-                                # format='%d/%m/%y',
+                                validators=[InputRequired(), is_future],
+                                default=date.today(),
                                 render_kw={'placeholder' : 'DD-MM-YY'})
     bookingTimeSlot = SelectField('Booking Timeslot: ',
                                     validators=[DataRequired()],
@@ -66,6 +70,4 @@ class paymentForm(FlaskForm):
                             validators=[DataRequired(), all_numbers, Length(min = 3, max = 3)])
     submit = SubmitField('Book Facility')
     
-# Use data from facilitiesdb for choices
 # Set restrictions using data from facilitiesdb
-# When editing, use data from booking as placeholder
