@@ -40,14 +40,20 @@ for facil in facilDict:
         facilityLocation = facils.get_fac_loc()
         facilityLocationList.append(facilityLocation)
 
+bookingFacilDict = {}
+bookingFacilDB = shelve.open('BookingFacil')
+try:
+    if 'BookingFacil' in bookingFacilDB:
+        bookingFacilDict = bookingFacilDB['BookingFacil']
+    else:
+        bookingFacilDB['BookingFacil'] = bookingFacilDict
+except:
+    print('Error in retrieving bookings.')
 
 class bookingForm(FlaskForm):
-    #bookingFacilityLocation = SelectField('Facility Location: ',
-                                         #validators=[DataRequired()],
-                                         #choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Bradell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])  
     bookingFacilityID = SelectField('Facility: ',  
                                  validators=[DataRequired()],
-                                 choices=[(facilityIDList[i], f"{facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))])
+                                 choices=[(facilityIDList[i], f"{facilityIDList[i]}") for i in range(len(facilityUIDList))])
     bookingDate = DateField('Booking Date: ',
                                 validators=[InputRequired(), is_future],
                                 default=date.today(),
@@ -64,7 +70,8 @@ class paymentForm(FlaskForm):
     cardNumber = StringField('Card Number: ',
                             validators=[DataRequired(), all_numbers, Length(min = 12, max = 12)])
     expirationDate = DateField('Expiration Date: ',
-                                validators=[DataRequired()],
+                                validators=[DataRequired(), is_future],
+                                default=date.today(),
                                 render_kw={'placeholder' : 'MM-YY'}) #adds a placeholder
     securityPIN = StringField('Security PIN: ',
                             validators=[DataRequired(), all_numbers, Length(min = 3, max = 3)])

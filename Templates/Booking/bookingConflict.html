@@ -50,10 +50,12 @@
                 {{formsBooking.bookingTimeSlot(class='form-control | my-2', type='date')}}
             </div>
             {%endif%}
-
+            
             <div class="text-center | my-4 mx-auto | " style='width:50%'>
                 {{formsBooking.submit(class='btn btn-primary')}}
             </div>
+
+            <h5 class="text-danger | text-center">Timeslot has been taken, please choose another</h5>
         </form>
     </section>
 </div>

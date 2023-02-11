@@ -29,34 +29,34 @@
             <table class='table table-striped'>
                 <thread class='row'>
                     <tr>
-                        <th>
-                            <p class='text-primary | font-monospace | fs-4 | mb-0' scope='col'>Booking Location</p>
+                        <th style="width:20%">
+                            <p class='text-primary | font-monospace | fs-4 | mb-0'>Booking ID</p>
                         </th>
-                        <th>
-                            <p class='text-primary | font-monospace | fs-4 | mb-0' scope='col'>Booked Facility</p>
+                        <th style="width:20%">
+                            <p class='text-primary | font-monospace | fs-4 | mb-0'>Booked Facility</p>
                         </th>
-                        <th>
-                            <p class='text-primary | font-monospace | fs-4 | mb-0' scope='col'>Booked Date</p>
+                        <th style="width:20%">
+                            <p class='text-primary | font-monospace | fs-4 | mb-0'>Booked Date</p>
                         </th>
-                        <th>
-                            <p class='text-primary | font-monospace | fs-4 | mb-0' scope='col'>Booked Timeslot</p>
+                        <th style="width:20%">
+                            <p class='text-primary | font-monospace | fs-4 | mb-0'>Booked Timeslot</p>
                         </th>
                     <tr>
                 </thread>
                 <tbody>
                     {%for booking in bookingsList%}
                     <tr>
-                        <td scope='col'>
-                            <p class='fs-4 | font-monospace | mb-0'>{{booking[1]}}</p>
+                        <td style="width:20%">
+                            <p class='fs-4 | font-monospace | mb-0'>{{booking.get_booking_id()}}</p>
                         </td>
-                        <td>
-                            <p class='fs-4 | font-monospace | mb-0'>{{booking[2]}}</p>
+                        <td style="width:20%">
+                            <p class='fs-4 | font-monospace | mb-0'>{{booking,get_facility()}}</p>
                         </td>
-                        <td>
-                            <p class='fs-4 | font-monospace | mb-0'>{{booking[3]}}</p>
+                        <td style="width:20%">
+                            <p class='fs-4 | font-monospace | mb-0'>{{booking.get_date()}}</p>
                         </td>
-                        <td>
-                            <p class='fs-4 | font-monospace | mb-0'>{{booking[4]}}</p>
+                        <td style="width:20%">
+                            <p class='fs-4 | font-monospace | mb-0'>{{booking.get_timeslot()}}</p>
                         </td>
                     </tr>
                     {%endfor%}

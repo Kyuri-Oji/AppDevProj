@@ -1135,7 +1135,7 @@ def eventSearch():
                                 eventVenueList_searchPage = eventVenueList_searchPage)
 
 # Booking functions
-@app.route('/bookFacilities', methods=['GET', 'POST'])
+@app.route('/booking', methods=['GET', 'POST'])
 def bookingPage():
     formsBooking = bookingForm()
     
@@ -1173,16 +1173,6 @@ def bookingPage():
     if 'User' in session:
         userID = session['User'][1]
         if formsBooking.validate_on_submit() and request.method == 'POST':
-            bookingsDict = {}
-            bookingDB = shelve.open('Bookings')
-            try:
-                if 'Bookings' in bookingDB:
-                    bookingsDict = bookingDB['Bookings']
-                else:
-                    bookingDB['Bookings'] = bookingsDict
-            except:
-                print('Error in retrieving bookings')
-                
             bookFacil = formsBooking.bookingFacilityID.data                    
             bookDate = formsBooking.bookingDate.data                   
             bookTime = formsBooking.bookingTimeSlot.data
@@ -1190,22 +1180,25 @@ def bookingPage():
 
             for i in bookingFacilDict:
                 other_booking=bookingFacilDict[i]
-                if other_booking.get_facility()==bookFacil and other_booking.get_date()==bookDate and other_booking.get_time()==bookTime:
+                if other_booking.get_facility()==bookFacil and other_booking.get_date()==bookDate and other_booking.get_timeslot()==bookTime:
                     conflict=True
 
             if conflict==False:
-                fb = FacilityBooking(bookFacil, bookDate, bookTime)
-                fb.set_booking_id()
-                return render_template('bookingPayment', fb = fb)
-            #else:
-                #return render_template('Booking/bookingConflict.html')
+                for facil in facilDict:
+                    if facilDict[facil].get_fac_id()==bookFacil:
+                        cost = facilDict[facil].get_fac_rate()
+                return redirect(url_for('bookingPayment', bookFacil = bookFacil, bookDate = bookDate, bookTime = bookTime, cost = cost))
+
+            else:
+                return render_template('Booking/bookingConflict.html', formsBooking = formsBooking)
         
-        return redirect(url_for('Booking/bookingMain.html'), formsBooking = formsBooking)
+        return render_template('Booking/bookingMain.html', formsBooking = formsBooking)
        
     else:
         return redirect(url_for('login'))
 
-def bookingPayment(fb):
+@app.route('/booking/bookingPayment/<bookFacil>/<bookDate>/<bookTime>/<cost>', methods=['GET', 'POST'])
+def bookingPayment(bookFacil, bookDate, bookTime, cost):
     formsPayment = paymentForm()
     if formsPayment.validate_on_submit() and request.method == 'POST':
         payMethod = formsPayment.paymentMethod.data
@@ -1222,7 +1215,11 @@ def bookingPayment(fb):
                 bookingFacilDB['BookingFacil'] = bookingFacilDict
         except:
             print('Error in retrieving bookings.')
-            
+        
+        bookDate = bookDate.replace("-","/")
+        bookDate = datetime.datetime.strptime(bookDate, '%Y/%m/%d').date()
+        fb = FacilityBooking(bookFacil, bookDate, bookTime)
+        fb.set_booking_id()
         bookingUID = fb.get_booking_id()
         bookingFacilDict[(bookingUID)] = fb
         bookingFacilDB['BookingFacil'] = bookingFacilDict
@@ -1246,9 +1243,9 @@ def bookingPayment(fb):
             
             return redirect(url_for('bookingCurrent'))
 
-    return render_template('Booking/bookingPayment.html', formsPayment = formsPayment)
+    return render_template('Booking/bookingPayment.html', formsPayment = formsPayment, cost = cost)
 
-@app.route('/booking/bookingCurrent', methods=['GET', 'POST'])
+@app.route('/booking/bookingCurrent')
 def bookingCurrent():
     if 'User' in session:
         userID = session['User'][1]
@@ -1258,7 +1255,7 @@ def bookingCurrent():
     
         bookingsList=[]
         for booking in bookingsDict:
-            bookings = bookingsDict.get(booking)
+            bookings = bookingsDict[booking]
             if bookings.get_date()>=date.today():
                 bookingsList.append(bookings)
 
@@ -1280,11 +1277,19 @@ def editBookings(id):
         except:
             print('Error in retrieving bookings.')
 
-        #bookFacilLoc = formsBooking.bookingFacilityLocation.data
+        bookingFacilDict = {}
+        bookingFacilDB = shelve.open('BookingFacil')
+        try:
+            if 'BookingFacil' in bookingFacilDB:
+                bookingFacilDict = bookingFacilDB['BookingFacil']
+            else:
+                bookingFacilDB['BookingFacil'] = bookingFacilDict
+        except:
+            print('Error in retrieving bookings.')
+
         bookFacil = formsBooking.bookingFacilityID.data
         bookDate = formsBooking.bookingDate.data
         bookTime = formsBooking.bookingTimeSlot.data
-        #bookFacil = bookFacilLoc+bookFacilType
 
         fb = bookingsDict[id]
         fb.set_facility(bookFacil)
@@ -1292,9 +1297,11 @@ def editBookings(id):
         fb.set_timeslot(bookTime)
         bookingsDict[fb.get_booking_id()] = fb
         bookingDB['Bookings'] = bookingsDict
-        
+        bookingFacilDict[fb.get_booking_id()] = fb
+        bookingFacilDB['BookingFacil'] = bookingsDict
+
         bookingDB.close()
-        print(bookingsDict.keys())
+        bookingFacilDB.close()
         
         return redirect(url_for('bookingCurrent'))
     else:
@@ -1309,8 +1316,7 @@ def editBookings(id):
             print('Error in retrieving bookings.')
             
         booking = bookingsDict.get(id)
-        #formsBooking.bookingFacilityLocation.data = booking.get_facility()
-        formsBooking.bookingFacilityID.data = booking.get_booking_id()
+        formsBooking.bookingFacilityID.data = booking.get_facility()
         formsBooking.bookingDate.data = booking.get_date()
         formsBooking.bookingTimeSlot.data = booking.get_timeslot()
 
@@ -1329,11 +1335,23 @@ def deleteBookings(id):
     except:
         print('Error in retrieving bookings.')
 
-    bookingsDict.pop(id)  
+    bookingFacilDict = {}
+    bookingFacilDB = shelve.open('BookingFacil')
+    try:
+        if 'BookingFacil' in bookingFacilDB:
+            bookingFacilDict = bookingFacilDB['BookingFacil']
+        else:
+            bookingFacilDB['BookingFacil'] = bookingFacilDict
+    except:
+        print('Error in retrieving bookings.')
+
+    bookingsDict.pop(id)
     bookingDB['Bookings'] = bookingsDict
+    bookingFacilDict.pop(id)
+    bookingFacilDB['BookingFacil'] = bookingFacilDict
 
     bookingDB.close()
-    print(bookingsDict.keys())
+    bookingFacilDB.close()
 
     return redirect(url_for('bookingCurrent'))
 

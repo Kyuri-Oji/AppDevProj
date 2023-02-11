@@ -1,71 +1,37 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, DateField, DateTimeField, TextAreaField, PasswordField, SubmitField, BooleanField, RadioField, SelectField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, InputRequired
-from datetime import date, datetime
+import random
 
-import shelve
+class FacilityBooking:
+     def __init__(self,facility,date,timeslot):
+          self.__booking_id=""
+          self.__facility=facility
+          self.__date=date
+          self.__timeslot=timeslot
 
-def all_numbers(form,field):
-    if field.data.isdigit()==False:
-        raise ValidationError("Field must be all numbers")
+     def set_booking_id(self):
+          year,month,day=str(self.__date).split("-")
+          facility=self.__facility.split("-")[0].strip()
+          randomID=""
+          for i in range(4): # 4-Digit Random
+            randomID+=random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
+          self.__booking_id=day+month+year+facility+randomID
+     
+     def set_facility(self,facility):
+          self.__facility=facility
 
-facilDict = {}
-facilDB = shelve.open('Facilities')
-try:    
-    if 'Facilites' in facilDB:
-        facilDict = facilDB['Facilities']
-    else:
-        facilDB['Facilites'] = facilDict
-except:
-    print('Error in retrieving facilites.')
-    
-facilityIDList = []
-facilityUIDList = []
-facilityLocationList = []
+     def set_date(self,date):
+          self.__date=date
 
-for facil in facilDict:
-    facils = facilDict.get(facil)
-    facilAvailability = facils.get_fac_status()
-    if facilAvailability == 'Available':
-        facilityUID = facils.get_uniqueID()
-        facilityUIDList.append(facilityUID)
-        
-        facilityID = facils.get_fac_id()
-        facilityIDList.append(facilityID)
-        
-        facilityLocation = facils.get_fac_loc()
-        facilityLocationList.append(facilityLocation)
+     def set_timeslot(self,timeslot):
+          self.__timeslot=timeslot
 
+     def get_booking_id(self):
+          return self.__booking_id
 
-class bookingForm(FlaskForm):
-    bookingFacilityLocation = SelectField('Facility Location: ',
-                                         validators=[DataRequired()],
-                                         choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Bradell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])  
-    bookingFacilityID = SelectField('Facility: ',  
-                                 validators=[DataRequired()],
-                                 choices=[(facilityIDList[i], f"{facilityLocationList[i]}: {facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))])
-    bookingDate = DateField('Booking Date: ',
-                                validators=[InputRequired()],
-                                # format='%d/%m/%y',
-                                render_kw={'placeholder' : 'DD-MM-YY'})
-    bookingTimeSlot = SelectField('Booking Timeslot: ',
-                                    validators=[DataRequired()],
-                                    choices=[('', 'Select'), ('10am to 11am', '10am to 11am'), ('11am to 12pm', '11am to 12pm'), ('12pm to 1pm', '12pm to 1pm'), ('1pm to 2pm', '1pm to 2pm'), ('2pm to 3pm', '2pm to 3pm'), ('3pm to 4pm', '3pm to 4pm'), ('4pm to 5pm', '4pm to 5pm'), ('5pm to 6pm', '5pm to 6pm'), ('6pm to 7pm', '6pm to 7pm')])
-    submit = SubmitField('Continue')
+     def get_facility(self):
+          return self.__facility
 
-class paymentForm(FlaskForm):
-    paymentMethod = SelectField('Payment Method: ',
-                                validators=[DataRequired()],
-                                choices=[('', 'Select'), ('American Express', 'American Express'), ('Mastercard', 'Mastercard'), ('VISA', 'VISA')])
-    cardNumber = StringField('Card Number: ',
-                            validators=[DataRequired(), all_numbers, Length(min = 12, max = 12)])
-    expirationDate = DateField('Expiration Date: ',
-                                validators=[DataRequired()],
-                                render_kw={'placeholder' : 'MM-YY'}) #adds a placeholder
-    securityPIN = StringField('Security PIN: ',
-                            validators=[DataRequired(), all_numbers, Length(min = 3, max = 3)])
-    submit = SubmitField('Book Facility')
-    
-# Use data from facilitiesdb for choices
-# Set restrictions using data from facilitiesdb
-# When editing, use data from booking as placeholder
+     def get_date(self):
+          return self.__date
+
+     def get_timeslot(self):
+          return self.__timeslot
