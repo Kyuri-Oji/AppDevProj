@@ -19,6 +19,10 @@ from modules.search import *
 from modules.sort import *
 from modules.refreshList import *
 
+# Sets the facilityIDList n facilityUIDList from refreshList.py as a local variable
+facilityIDList_App = facilityIDList
+facilityUIDList_App = facilityUIDList
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8ecce6a32ba6703d10b72f3ccea07175'
 app.config["SESSION_PERMANENT"] = False
@@ -400,10 +404,12 @@ def selectEventLocation():
 @app.route('/events/createEvents', methods=['GET', 'POST'])
 def createEvent():
     refreshFacilityList()
+    facilityIDList_createEvent = facilityIDList_App
+    facilityUIDList_createEvent = facilityUIDList_App
     
     formEvents = eventCreateForm()
     # Before Form Submission
-    formEvents.eventVenue.choices = [(facilityIDList[i], f"{facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))] # refreshes the facility list
+    formEvents.eventVenue.choices = [(facilityIDList_createEvent[i], f"{facilityUIDList_createEvent[i]} - {facilityIDList_createEvent[i]}") for i in range(len(facilityUIDList_createEvent))] # refreshes the facility list
     
     facilDict = {}
     facilDB = shelve.open('Facilities')
@@ -472,8 +478,6 @@ def createEvent():
         return render_template('404.html') 
 
 # EDIT EVENTS ROUTING
-@app.route('/events/editEvents', methods=['GET', 'POST'])
-def editEvent():
     # DO NOT TOUCH!!!!!!!!
     formEvents = eventEditForm()
     if formEvents.validate_on_submit() and request.method == 'POST':
@@ -514,8 +518,13 @@ def editEvent():
 
 @app.route('/events/editEvents/<int:id>', methods=['GET', 'POST'])
 def editEventDirect(id):
+    refreshFacilityList()
+    
+    facilityIDList_editEvent = facilityIDList_App
+    facilityUIDList_editEvent = facilityUIDList_App
     # DO NOT TOUCH!!!!!!!!
     formEvents = eventEditForm2()
+    formEvents.editEventVenue.choices = [(facilityIDList_editEvent[i], f"{facilityUIDList_editEvent[i]} - {facilityIDList_editEvent[i]}") for i in range(len(facilityUIDList_editEvent))] # refreshes the facility list
     
     facilDict = {}
     facilDB = shelve.open('Facilities')
@@ -603,33 +612,6 @@ def editEventDirect(id):
         
     if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
         return render_template('Events/eventEditDirect.html', formEvents = formEvents)
-    else:
-        return render_template('404.html')
-
-@app.route('/events/deleteEvents', methods=['GET', 'POST'])
-def deleteEvent():
-    formEvents = eventDeleteForm()
-    if formEvents.validate_on_submit() and request.method == 'POST':
-        eventDB = shelve.open('Events')
-        eventsDict = {}
-        try:
-            if 'Events' in eventDB:
-                eventsDict = eventDB['Events']
-            else:
-                eventDB['Events'] = eventsDict
-        except:
-            print('Error in retrieving events.')
-        eventID = formEvents.deleteEventID.data
-        
-        if eventID not in eventsDict.keys():
-            flash('Event ID not found!', 'error')
-        else:
-            eventsDict.pop(eventID)  
-            eventDB['Events'] = eventsDict  
-            return redirect(url_for('eventsPage'))
-        
-    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
-        return render_template('Events/eventDelete.html', formEvents=formEvents, ce=createEvents)
     else:
         return render_template('404.html')
 
@@ -753,255 +735,6 @@ def eventsPage():
     return render_template('Events/eventMain.html', eventsList = eventsList,
                            formSort = formSort,
                            formSearch = formSearch)
-
-# _________________________________________________________________________________________________________________________________________________________________________________________
-# Might consider removing, leave here first
-@app.route('/events/sports', methods=['GET', 'POST'])
-def eventsPageSports():  
-    formSearch = eventSearchForm()
-    formSortEvents = eventSortForm()
-    formSortEventsDescending = eventSortFormDescending()
-    
-    if formSearch.validate_on_submit() and request.method == 'POST':
-        eventSearchData = formSearch.eventSearchItem.data
-        
-        eventSearchFunction(eventSearchData)
-        
-        eventIDList_searchPage = eventSearchIDList # lists from search.py
-        eventNameList_searchPage = eventSearchNameList
-        eventLocationList_searchPage = eventSearchLocationList
-        eventVenueList_searchPage = eventSearchVenueList
-        
-        print(eventIDList_searchPage, eventNameList_searchPage, eventLocationList_searchPage, eventVenueList_searchPage)
-        
-        return render_template('Events/eventMain.html', formSearch = formSearch,
-                               eventIDList_searchPage = eventIDList_searchPage,
-                               eventNameList_searchPage = eventNameList_searchPage,
-                               eventLocationList_searchPage = eventLocationList_searchPage,
-                               eventVenueList_searchPage = eventVenueList_searchPage,
-                               formSortEvents = formSortEvents,
-                               title = eventSearchData)
-        
-    if formSortEvents.validate_on_submit() and request.method == 'POST':
-        eventSortByTimeAscending()
-        eventTimeList = eventListFinalSort
-        
-        return render_template('Events/eventMain.html', formSortEvents = formSortEvents,
-                               formSearch=formSearch,
-                               eventTimeList=eventTimeList,
-                               title="Date (Ascending)")
-        
-    eventsDict = {}
-    eventDB = shelve.open('Events')
-    eventsDict = eventDB['Events']
-    
-    eventsList = []
-    for event in eventsDict:
-        events = eventsDict.get(event)
-        eventsList.append(events)
-    print(eventsList)
-    
-    # Please do not touch this, I really have no clue how to solve this if broken.
-    eventSports = []
-    for event in eventsDict:
-        events = (eventsDict.get(event))
-        if 'Sports' in events.get_eventType():
-            eventSports.append(events)
-    print(eventSports)
-    
-    eventLifestyle = []
-    for event in eventsDict:
-        events = (eventsDict.get(event))
-        if 'Lifestyle' in events.get_eventType():
-            eventLifestyle.append(events)
-    print(eventLifestyle)
-        
-    eventOthers = []
-    for event in eventsDict:
-        events = (eventsDict.get(event))
-        if 'Others' in events.get_eventType():
-            eventOthers.append(events)
-    print(eventOthers)
-    
-    eventTypeList = ['Sports', 'Lifestyle', 'Others']
-    
-    eventTypeDict = {'Sports' : eventSports, 'Lifestyle' : eventLifestyle, 'Others' : eventOthers}
-  
-    return render_template('Events/eventSub/eventSports.html', formSortEvents = formSortEvents,
-                           formSortEventsDescending = formSortEventsDescending,
-                           formSearch = formSearch,
-                           eventsList = eventsList,
-                           eventType = eventTypeList,
-                           eventSports = eventSports,
-                           eventLifestyle = eventLifestyle,
-                           eventOthers = eventOthers,
-                           eventTypeDict = eventTypeDict)
-
-@app.route('/events/lifestyle', methods=['GET', 'POST'])
-def eventsPageLifestyle():
-    formSearch = eventSearchForm()
-    formSortEvents = eventSortForm()
-    formSortEventsDescending = eventSortFormDescending()
-    
-    if formSearch.validate_on_submit() and request.method == 'POST':
-        eventSearchData = formSearch.eventSearchItem.data
-        
-        eventSearchFunction(eventSearchData)
-        
-        eventIDList_searchPage = eventSearchIDList # lists from search.py
-        eventNameList_searchPage = eventSearchNameList
-        eventLocationList_searchPage = eventSearchLocationList
-        eventVenueList_searchPage = eventSearchVenueList
-        
-        print(eventIDList_searchPage, eventNameList_searchPage, eventLocationList_searchPage, eventVenueList_searchPage)
-        
-        return render_template('Events/eventMain.html', formSearch = formSearch,
-                               formSortEventsDescending = formSortEventsDescending,
-                               eventIDList_searchPage = eventIDList_searchPage,
-                               eventNameList_searchPage = eventNameList_searchPage,
-                               eventLocationList_searchPage = eventLocationList_searchPage,
-                               eventVenueList_searchPage = eventVenueList_searchPage,
-                               formSortEvents = formSortEvents,
-                               title = eventSearchData)
-        
-    if formSortEvents.validate_on_submit() and request.method == 'POST':
-        eventSortByTimeAscending()
-        eventTimeList = eventListFinalSort
-        
-        return render_template('Events/eventMain.html', formSortEvents = formSortEvents,
-                               formSearch=formSearch,
-                               eventTimeList=eventTimeList,
-                               title="Date (Ascending)")
-        
-    eventsDict = {}
-    eventDB = shelve.open('Events')
-    eventsDict = eventDB['Events']
-    
-    eventsList = []
-    for event in eventsDict:
-        events = eventsDict.get(event)
-        eventsList.append(events)
-    print(eventsList)
-    
-    # Please do not touch this, I really have no clue how to solve this if broken.
-    eventSports = []
-    for event in eventsDict:
-        events = (eventsDict.get(event))
-        if 'Sports' in events.get_eventType():
-            eventSports.append(events)
-    print(eventSports)
-    
-    eventLifestyle = []
-    for event in eventsDict:
-        events = (eventsDict.get(event))
-        if 'Lifestyle' in events.get_eventType():
-            eventLifestyle.append(events)
-    print(eventLifestyle)
-        
-    eventOthers = []
-    for event in eventsDict:
-        events = (eventsDict.get(event))
-        if 'Others' in events.get_eventType():
-            eventOthers.append(events)
-    print(eventOthers)
-    
-    eventTypeList = ['Sports', 'Lifestyle', 'Others']
-    
-    eventTypeDict = {'Sports' : eventSports, 'Lifestyle' : eventLifestyle, 'Others' : eventOthers}
-  
-    return render_template('Events/eventSub/eventLifestyle.html', formSortEvents = formSortEvents,
-                           formSortEventsDescending = formSortEventsDescending,
-                           formSearch = formSearch,
-                           eventsList = eventsList,
-                           eventType = eventTypeList,
-                           eventSports = eventSports,
-                           eventLifestyle = eventLifestyle,
-                           eventOthers = eventOthers,
-                           eventTypeDict = eventTypeDict)
-
-@app.route('/events/others', methods=['GET', 'POST'])
-def eventsPageOthers():
-    formSearch = eventSearchForm()
-    formSortEvents = eventSortForm()
-    formSortEventsDescending = eventSortFormDescending()
-    
-    if formSearch.validate_on_submit() and request.method == 'POST':
-        eventSearchData = formSearch.eventSearchItem.data
-        
-        eventSearchFunction(eventSearchData)
-        
-        eventIDList_searchPage = eventSearchIDList # lists from search.py
-        eventNameList_searchPage = eventSearchNameList
-        eventLocationList_searchPage = eventSearchLocationList
-        eventVenueList_searchPage = eventSearchVenueList
-        
-        print(eventIDList_searchPage, eventNameList_searchPage, eventLocationList_searchPage, eventVenueList_searchPage)
-        
-        return render_template('Events/eventMain.html', formSearch = formSearch,
-                               eventIDList_searchPage = eventIDList_searchPage,
-                               eventNameList_searchPage = eventNameList_searchPage,
-                               eventLocationList_searchPage = eventLocationList_searchPage,
-                               eventVenueList_searchPage = eventVenueList_searchPage,
-                               formSortEvents = formSortEvents,
-                               title = eventSearchData)
-        
-    if formSortEvents.validate_on_submit() and request.method == 'POST':
-        eventSortByTimeAscending()
-        eventTimeList = eventListFinalSort
-        
-        return render_template('Events/eventMain.html', formSortEvents = formSortEvents,
-                               formSortEventsDescending = formSortEventsDescending,
-                               formSearch=formSearch,
-                               eventTimeList=eventTimeList,
-                               title="Date (Ascending)")
-    
-    eventsDict = {}
-    eventDB = shelve.open('Events')
-    eventsDict = eventDB['Events']
-    
-    eventsList = []
-    for event in eventsDict:
-        events = eventsDict.get(event)
-        eventsList.append(events)
-    print(eventsList)
-    
-    # Please do not touch this, I really have no clue how to solve this if broken.
-    eventSports = []
-    for event in eventsDict:
-        events = (eventsDict.get(event))
-        if 'Sports' in events.get_eventType():
-            eventSports.append(events)
-    print(eventSports)
-    
-    eventLifestyle = []
-    for event in eventsDict:
-        events = (eventsDict.get(event))
-        if 'Lifestyle' in events.get_eventType():
-            eventLifestyle.append(events)
-    print(eventLifestyle)
-        
-    eventOthers = []
-    for event in eventsDict:
-        events = (eventsDict.get(event))
-        if 'Others' in events.get_eventType():
-            eventOthers.append(events)
-    print(eventOthers)
-    
-    eventTypeList = ['Sports', 'Lifestyle', 'Others']
-    
-    eventTypeDict = {'Sports' : eventSports, 'Lifestyle' : eventLifestyle, 'Others' : eventOthers}
-  
-    return render_template('Events/eventSub/eventOthers.html', formSortEvents = formSortEvents,
-                           formSortEventsDescending = formSortEventsDescending,
-                           formSearch = formSearch,
-                           eventsList = eventsList,
-                           eventType = eventTypeList,
-                           eventSports = eventSports,
-                           eventLifestyle = eventLifestyle,
-                           eventOthers = eventOthers,
-                           eventTypeDict = eventTypeDict)
-# Ignore this part
-# _________________________________________________________________________________________________________________________________________________________________________________________
 
 @app.route('/events/signup/<int:id>', methods=['GET', 'POST'])
 def eventSignup(id):
@@ -1501,44 +1234,6 @@ def createFacilities():
     else:
         return render_template('404.html')
 
-@app.route('/facilities/facilitiesEdit/', methods=['GET', 'POST'])
-def editFacilities():
-    formsFacil = EditFacilityForm()
-    facilDict = {}
-    facilDB = shelve.open('Facilities')
-    if formsFacil.validate_on_submit() and request.method == 'POST':  
-        try:    
-            if 'Facilities' in facilDB:
-                facilDict = facilDB['Facilities']
-            else:
-                facilDB['Facilities'] = facilDict
-        except:
-            print('Error in retrieving facilities.')
-        
-        facilID = formsFacil.edit_facility_id.data
-        facilStatus = formsFacil.edit_facility_status.data
-        facilSlots = formsFacil.edit_facility_slots.data
-        facilLocation = formsFacil.edit_facility_location.data
-        facilType = formsFacil.edit_facility_type.data
-        facilRates = ("%.2f" % float(formsFacil.facility_rates.data))
-
-        facilityID = str(facilLocation + facilType + facilID)
-        
-        if facilityID not in facilDict.keys():
-            print('Error.')
-            flash('Facility ID not found in Facilities Database.')
-        else:
-            facil = Facilities(facilityID, facilStatus, facilSlots, facilLocation, facilRates, facilType, id)
-            facilDict[facil.get_uniqueID()] = facil
-            facilDB['Facilities'] = facilDict
-    
-        return redirect(url_for('facilitiesPage'))
-    
-    if session['User'][0] == 'Administrator' and session['User'][1] == '0000000':
-        return render_template('Facilities/facilitiesEdit.html', formsFacil = formsFacil)
-    else:
-        return render_template('404.html')
-
 @app.route('/facilities/facilitiesEdit/<int:id>', methods=['GET', 'POST'])
 def editFacilities2(id):
     formsFacil = EditFacilityForm()
@@ -1637,3 +1332,4 @@ if __name__ == '__main__':
 # 27Jan2023 - It's only getting longer. When will our suffering end? (1265th Line)
 # 1Feb2023 - It's only geting loonger..... When can i retire? - Alan (1376th Line)
 # 10Feb2023 - THE SORT FUNCTION IS WORKING WHEEEEEEE - Alan (1584th Line)
+# 11Feb2023 - Removed so many lines of code damn
