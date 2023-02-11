@@ -17,6 +17,7 @@ from OOP.Facilities import *
 
 from modules.search import *
 from modules.sort import *
+from modules.refreshList import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8ecce6a32ba6703d10b72f3ccea07175'
@@ -387,18 +388,23 @@ def selectEventLocation():
         print('An Error Has Occured.')
     
     if formEvents.validate_on_submit() and request.method == 'POST': 
+
         eventLocation = formEvents.eventLocation.data
         eventLocationDict['location'] = eventLocation
         eventDB['eventLocation'] = eventLocationDict
-        
+
         return redirect(url_for('createEvent'))
     
     return render_template('Events/eventLocationSelect.html', formEvents = formEvents)
 
 @app.route('/events/createEvents', methods=['GET', 'POST'])
 def createEvent():
+    refreshFacilityList()
+    
     formEvents = eventCreateForm()
     # Before Form Submission
+    formEvents.eventVenue.choices = [(facilityIDList[i], f"{facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))] # refreshes the facility list
+    
     facilDict = {}
     facilDB = shelve.open('Facilities')
     try:    
@@ -408,17 +414,6 @@ def createEvent():
             facilDB['Facilities'] = facilDict
     except:
         print('Error in retrieving facilities.')
-        
-    facilityIDList = []
-    facilityUIDList = []
-    for facil in facilDict:
-        facils = facilDict.get(facil)
-        facilAvailability = facils.get_fac_status()
-        if facilAvailability == 'Available':
-            facilityUID = facils.get_uniqueID()
-            facilityUIDList.append(facilityUID)
-            facilityID = facils.get_fac_id()
-            facilityIDList.append(facilityID)
             
     eventLocationDict = {}
     eventLocationDB = shelve.open('tempEventLocation')
@@ -1446,7 +1441,6 @@ def createFacilities():
         facil = Facilities(facilID, facilStatus, facilSlots, facilLocation, facilRates ,facilType, uniqueID)
         facilDict[facil.get_uniqueID()] = facil # get id
         facilDB['Facilities'] = facilDict
-        
         
         facilDB.close()
         return redirect(url_for('facilitiesPage'))

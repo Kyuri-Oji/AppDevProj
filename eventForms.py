@@ -5,31 +5,31 @@ from datetime import datetime, date
 import time
 import shelve
 
-facilDict = {}
-facilDB = shelve.open('Facilities')
-try:    
-    if 'Facilites' in facilDB:
-        facilDict = facilDB['Facilities']
-    else:
-        facilDB['Facilites'] = facilDict
-except:
-    print('Error in retrieving facilites.')
+# from modules.refreshList import *
 
-facilIDList = []
-facilityIDList = []
-facilityUIDList = []
-for facil in facilDict:
-    facils = facilDict.get(facil)
-    facilAvailability = facils.get_fac_status()
-    if facilAvailability == 'Available':
-        facilityUID = facils.get_uniqueID()
-        facilityUIDList.append(facilityUID)
-        facilityID = facils.get_fac_id()
-        facilityIDList.append(facilityID)
+# facilIDList = []
+# facilityIDList = []
+# facilityUIDList = []
+
+# facilDict = {}
+# facilDB = shelve.open('Facilities')
+# try:    
+#     if 'Facilities' in facilDB:
+#         facilDict = facilDB['Facilities']
+#     else:
+#         facilDB['Facilities'] = facilDict
+# except:
+#     print('Error in retrieving Facilities.')
+
+# for facil in facilDict:
+#     facils = facilDict.get(facil)
+#     facilAvailability = facils.get_fac_status()
+#     if facilAvailability == 'Available':
+#         facilityUID = facils.get_uniqueID()
+#         facilityUIDList.append(facilityUID)
+#         facilityID = facils.get_fac_id()
+#         facilityIDList.append(facilityID)
         
-print(facilityUIDList)
-print(facilityIDList)
-
 class eventLocationCreateForm(FlaskForm):
     eventLocation =  SelectField('Facility Location : ',
                                 validators=[DataRequired()],
@@ -39,31 +39,6 @@ class eventLocationCreateForm(FlaskForm):
     submit = SubmitField('Next ')
 
 class eventCreateForm(FlaskForm):
-    facilDict = {}
-    facilDB = shelve.open('Facilities')
-    try:    
-        if 'Facilites' in facilDB:
-            facilDict = facilDB['Facilities']
-        else:
-            facilDB['Facilites'] = facilDict
-    except:
-        print('Error in retrieving facilites.')
-
-    facilIDList = []
-    facilityIDList = []
-    facilityUIDList = []
-    for facil in facilDict:
-        facils = facilDict.get(facil)
-        facilAvailability = facils.get_fac_status()
-        if facilAvailability == 'Available':
-            facilityUID = facils.get_uniqueID()
-            facilityUIDList.append(facilityUID)
-            facilityID = facils.get_fac_id()
-            facilityIDList.append(facilityID)
-            
-    print(facilityUIDList)
-    print(facilityIDList)
-    
     eventName = StringField('Event Name :', 
                             validators=[DataRequired(), Length(min = 2, max = 30)])
     eventDesc = TextAreaField('Event Description : ',
@@ -100,7 +75,7 @@ class eventCreateForm(FlaskForm):
                                 choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Braddell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])
     eventVenue = SelectField('Event Venue : ',
                              validators=[DataRequired()],
-                             choices=[(facilityIDList[i], f"{facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))])
+                             )
     eventStatus = SelectField('Event Status : ',
                               validators=[DataRequired()],
                               choices=[('', 'Select'), ('Active', 'Active'), ('Closed', 'Closed')])
@@ -136,12 +111,12 @@ class eventCreateForm(FlaskForm):
         facilDict = {}
         facilDB = shelve.open('Facilities')
         try:    
-            if 'Facilites' in facilDB:
+            if 'Facilities' in facilDB:
                 facilDict = facilDB['Facilities']
             else:
-                facilDB['Facilites'] = facilDict
+                facilDB['Facilities'] = facilDict
         except:
-            print('Error in retrieving facilites.')
+            print('Error in retrieving Facilities.')
 
         facilityIDList = []
         facilitySlotsList = []
@@ -218,8 +193,7 @@ class eventEditForm(FlaskForm):
                                 validators=[DataRequired()],
                                 choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Braddell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])
     editEventVenue = SelectField('Event Venue : ',
-                             validators=[DataRequired()],
-                             choices=[(facilityIDList[i], f"{facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))])
+                             validators=[DataRequired()])
     editEventStatus = SelectField('Event Status : ',
                               validators=[DataRequired()],
                               choices=[('', 'Select'), ('Active', 'Active'), ('Closed', 'Closed')])
@@ -261,8 +235,7 @@ class eventEditForm2(FlaskForm):
                                 validators=[DataRequired()],
                                 choices=[('', 'Select'), ('Ang Mo Kio', 'Ang Mo Kio'), ('Hougang', 'Hougang'), ('Macpherson', 'Macpherson'), ('Braddell', 'Braddell'), ('Seletar', 'Seletar'), ('Golden Mile', 'Golden Mile')])
     editEventVenue = SelectField('Event Venue : ',
-                             validators=[DataRequired()],
-                             choices=[(facilityIDList[i], f"{facilityUIDList[i]} - {facilityIDList[i]}") for i in range(len(facilityUIDList))])
+                             validators=[DataRequired()])
     editEventStatus = SelectField('Event Status : ',
                               validators=[DataRequired()],
                               choices=[('', 'Select'), ('Active', 'Active'), ('Closed', 'Closed')])
@@ -282,12 +255,12 @@ class eventEditForm2(FlaskForm):
         facilDict = {}
         facilDB = shelve.open('Facilities')
         try:    
-            if 'Facilites' in facilDB:
+            if 'Facilities' in facilDB:
                 facilDict = facilDB['Facilities']
             else:
-                facilDB['Facilites'] = facilDict
+                facilDB['Facilities'] = facilDict
         except:
-            print('Error in retrieving facilites.')
+            print('Error in retrieving Facilities.')
 
         facilityIDList = []
         facilitySlotsList = []
