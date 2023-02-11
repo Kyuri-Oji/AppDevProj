@@ -14,13 +14,6 @@
             <a href="{{url_for('eventRegistered')}}" class='text-decoration-none | font-monospace text-dark | col-auto | mx-3'>Event History</a>
             <a href='#' class='text-decoration-none | font-monospace text-dark | col-auto | mx-3'>Payment Methods</a>
             <a href='#' class='text-decoration-none | font-monospace text-dark | col-auto | mx-3'>Settings</a>
-            <a href='#' class='text-decoration-none | font-monospace text-dark | col-auto | ms-5'>Membership : <span class='text-info'>Administrator</span></a>
-        </div>
-          <form class="d-flex | end-0 position-absolute | pe-2" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
-        </div>
     </nav>
     <div class='mx-auto my-2 py-2 | bg-light' style='width:80%'>
         <small class='text-muted | font-monospace | ms-3'>To change information, click on item!</small>
@@ -49,8 +42,7 @@
             </p>
             {%endif%}
         </div>
-        <a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#logoutModal' style="width:10%">Log Out</a>
-                    
+        <a href="#" class='text-decoration-none btn btn-danger' data-bs-toggle='modal' data-bs-target='#logoutModal' style="width:10%">Log Out</a>    
         <div class='modal fade' id='logoutModal' tabindex='-1' aria-labelledby='logoutModalLabel' aria-hidden='true'>
             <div class='modal-dialog'>
                 <div class='modal-content'>

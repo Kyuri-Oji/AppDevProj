@@ -29,7 +29,7 @@
 </head>
 
 <body>
-    <header class="bg-dark | bg-gradient | pt-2">
+    <header class="bg-dark | bg-gradient">
         <h1 class="d-flex | flex-row | mb-0">
             <div id="titleHeader" class="p-4 | ms-3 | text-primary ">
                 <a href="/home" class="fst-italic">ActivePlay</a>
@@ -82,7 +82,6 @@
                     {%if "User" in session%}
                         {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
                             <li><a name="adminOnly" class="dropdown-item text-danger" href="{{url_for('createFacilities')}}">Create Facilities</a></li>
-                            <li><a name="adminOnly" class='dropdown-item text-danger' href="{{url_for('editFacilities')}}">Edit Facilities</a></li>
                         {%endif%}
                     {%endif%}
                 </ul>
@@ -98,7 +97,6 @@
                     {%if "User" in session%}
                         {%if session.User[0] == 'Administrator' and session.User[1] == '0000000'%}
                             <li><a name="adminOnly" class="dropdown-item text-danger" href="{{url_for('createEvent')}}">Create Events</a></li>
-                            <li><a class='dropdown-item text-danger' href="{{url_for('editEvent')}}">Edit Events</a><li>
                         {%endif%}
                     {%endif%}
                 </ul>
@@ -131,7 +129,7 @@
                     </form>
                 </div>
             {%else%}
-            <div class="my-auto | p-3 pt-4 mt-2 | end-0 position-absolute ">
+            <div class="my-auto | p-3 mt-2 | end-0 position-absolute ">
                 <button class="text-primary | bg-transparent | border-0 | fs-5 | pe-3 | border-end | border-2 | border-secondary | border-gradient | ">
                     <a href='/register' class='text-decoration-none'>Register</a>
                 </button>
@@ -152,7 +150,7 @@
 
     {% block content %}{% endblock %}
 
-    <footer class="bg-dark bg-gradient bottom-0 | footer-fixed-bottom">
+    <footer class="bg-dark bg-gradient bottom-0 | absolute">
         <div class="text-white | p-3 pb-1 ps-4 |">
             Sports Facilities and Events in Singapore
         </div>

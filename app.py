@@ -1,4 +1,5 @@
 from flask import Flask, render_template, url_for, flash, redirect, request, session
+from flask_mail import Mail, Message
 import shelve
 from datetime import datetime, date
 import secrets
@@ -19,13 +20,17 @@ from modules.search import *
 from modules.sort import *
 from modules.refreshList import *
 
+import smtplib
+
 # Sets the facilityIDList n facilityUIDList from refreshList.py as a local variable
 facilityIDList_App = facilityIDList
 facilityUIDList_App = facilityUIDList
 
 app = Flask(__name__)
+
 app.config['SECRET_KEY'] = '8ecce6a32ba6703d10b72f3ccea07175'
 app.config["SESSION_PERMANENT"] = False
+
 
 # Main pages
 @app.route('/')
@@ -111,8 +116,9 @@ def register():
             user = User(userName, userFirstName, userLastName, userEmail, userID, userPhoneNo, userDateJoined, userPass)
             dictUsers[user.get_uid()] = user
             db['Users'] = dictUsers
+            
+            session['User'] = [userName, userID, userEmail, userFirstName, userLastName, userPhoneNo, userDateJoined]
             return redirect(url_for('home'))
-
     return render_template('registration.html', title = 'Register', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -376,30 +382,7 @@ def adminWorkspace():
         return render_template('404.html')
 
 # Event Functions
-@app.route('/events/selectEventLocation', methods=['GET', 'POST'])
-def selectEventLocation():
-    formEvents = eventLocationCreateForm()
-    
-    eventLocationDict = {}
-    eventDB = shelve.open('tempEventLocation')
-    
-    try:
-        if 'eventLocation' in eventDB:
-            eventLocationDict = eventDB['eventLocation']
-        else:
-            eventDB['eventLocation'] = eventLocationDict
-    except:
-        print('An Error Has Occured.')
-    
-    if formEvents.validate_on_submit() and request.method == 'POST': 
 
-        eventLocation = formEvents.eventLocation.data
-        eventLocationDict['location'] = eventLocation
-        eventDB['eventLocation'] = eventLocationDict
-
-        return redirect(url_for('createEvent'))
-    
-    return render_template('Events/eventLocationSelect.html', formEvents = formEvents)
 
 @app.route('/events/createEvents', methods=['GET', 'POST'])
 def createEvent():
@@ -833,8 +816,6 @@ def eventRegistered():
     else:
         return redirect(url_for('login'))
 
-@app.route('/events/search', methods=['GET', 'POST'])
-def eventSearch():
     formEvents = eventSearchForm()
     
     eventIDList_searchPage = []
@@ -1090,6 +1071,21 @@ def deleteBookings(id):
 
 @app.route('/booking/bookingHistory')
 def bookingHistory():
+    if 'User' in session:
+        userID = session['User'][1]
+        bookingsDict = {}
+        bookingDB = shelve.open('Bookings')
+        bookingsDict = bookingDB['Bookings']
+    
+        bookingsList=[]
+        for booking in bookingsDict:
+            bookings = bookingsDict.get(booking)
+            if bookings.get_date()>=date.today():
+                bookingsList.append(bookings)
+
+        return render_template('Booking/bookingHistory.html', bookingsList=bookingsList)
+    else:
+        return redirect(url_for('login'))
     if 'User' in session:
         userID = session['User'][1]
         bookingsDict = {}

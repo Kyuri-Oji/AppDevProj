@@ -32,7 +32,8 @@ Used to keep track of work progress, updates, and TO-DO List
 19. Remove "this field is required" message on user edit
 20. Different checkout amount for different session ==> Need to add an hour section for booking
 21. Add error message for no search item found.
-22. Fix the issue of dynamic facilities for event creation
+22. Fix the issue of dynamic facilities for event creation ✔️ (11/2/23)
+23. Validation for all edit functions (IMPT) 
 
 
 // Updates
@@ -57,6 +58,12 @@ Used to keep track of work progress, updates, and TO-DO List
 1/2/23 - Added Search Function - Alan
 7/2/23 - Sort Function now works - Alan
 10/2/23 - Sort function is now optimised to use a SelectField instead of seperate forms - Alan
+        - Added view all for view users after searching
+10/2/23 - Made event venue selection update per facility created.
+12/2/23 - Removed several redundant pages
+        - Changed css styling in certain pages
+        - Debugged Bookings
+        - Log in after registering a user
 
 
 // Work Progress
